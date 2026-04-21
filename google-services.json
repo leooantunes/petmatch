@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "591812364758",
+    "project_id": "ongpets-882ef",
+    "storage_bucket": "ongpets-882ef.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:591812364758:android:1e270c8b38a15d3322fc77",
+        "android_client_info": {
+          "package_name": "com.petmatch"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "591812364758-0hnh317ev067mcpo66ml27rindnml34g.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDy6NPwi9NtkU-PQEesK7xGWnWvg2IAuqg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "591812364758-0hnh317ev067mcpo66ml27rindnml34g.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

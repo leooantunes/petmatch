@@ -1,0 +1,138 @@
+import { StyleSheet } from "react-native";
+import {
+  BORDER_RADIUS,
+  COLORS,
+  FONT_SIZE,
+  FONT_WEIGHT,
+  SPACING,
+} from "../../styles/colors";
+
+export const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: COLORS.backgroundLight,
+    marginTop: SPACING.lg,
+  },
+  content: {
+    flex: 1,
+    padding: SPACING.xl,
+    paddingBottom: SPACING.xxl + 80,
+  },
+  header: {
+    fontSize: FONT_SIZE.xl,
+    fontWeight: FONT_WEIGHT.extraBold,
+    color: COLORS.primaryDark,
+    marginBottom: SPACING.sm,
+  },
+  description: {
+    fontSize: FONT_SIZE.sm,
+    color: COLORS.primaryMedium,
+    textAlign: "center",
+    marginBottom: SPACING.lg,
+  },
+  actionRow: {
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+    gap: SPACING.md,
+    marginBottom: SPACING.xl,
+  },
+  editButton: {
+    flex: 1,
+    paddingVertical: SPACING.sm,
+    paddingHorizontal: SPACING.lg,
+    borderRadius: BORDER_RADIUS.lg,
+    backgroundColor: COLORS.primary,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  editButtonText: {
+    color: COLORS.white,
+    fontWeight: FONT_WEIGHT.bold,
+    fontSize: FONT_SIZE.md,
+  },
+  logoutButton: {
+    flex: 1,
+    paddingVertical: SPACING.sm,
+    paddingHorizontal: SPACING.lg,
+    borderRadius: BORDER_RADIUS.lg,
+    backgroundColor: COLORS.primary,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  logoutButtonText: {
+    color: COLORS.white,
+    fontWeight: FONT_WEIGHT.bold,
+    fontSize: FONT_SIZE.md,
+  },
+  sectionTitle: {
+    fontSize: FONT_SIZE.lg,
+    fontWeight: FONT_WEIGHT.bold,
+    color: COLORS.primaryDark,
+    marginBottom: SPACING.md,
+  },
+  card: {
+    backgroundColor: COLORS.white,
+    borderRadius: BORDER_RADIUS.xl,
+    padding: SPACING.lg,
+    marginBottom: SPACING.lg,
+    shadowColor: COLORS.shadowColor,
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.1,
+    shadowRadius: 10,
+    elevation: 4,
+  },
+  cardHeader: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: SPACING.sm,
+  },
+  cardImage: {
+    width: "100%",
+    height: 180,
+    borderRadius: BORDER_RADIUS.md,
+    marginBottom: SPACING.md,
+  },
+  cardName: {
+    fontSize: FONT_SIZE.lg,
+    fontWeight: FONT_WEIGHT.extraBold,
+    color: COLORS.primaryDark,
+  },
+  removeButton: {
+    width: 40,
+    height: 40,
+    alignItems: "center",
+    justifyContent: "center",
+    borderRadius: BORDER_RADIUS.full,
+    backgroundColor: COLORS.primary,
+  },
+  removeButtonText: {
+    color: COLORS.white,
+    fontSize: FONT_SIZE.xs,
+    fontWeight: FONT_WEIGHT.bold,
+  },
+  cardInfoRow: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    gap: SPACING.sm,
+    marginBottom: SPACING.sm,
+  },
+  tag: {
+    backgroundColor: COLORS.backgroundVeryLight,
+    paddingHorizontal: SPACING.sm,
+    paddingVertical: 4,
+    borderRadius: BORDER_RADIUS.full,
+    marginRight: SPACING.sm,
+    marginBottom: SPACING.xs,
+  },
+  tagText: {
+    color: COLORS.primaryMedium,
+    fontSize: FONT_SIZE.xs,
+  },
+  cardDescription: {
+    fontSize: FONT_SIZE.sm,
+    color: COLORS.primaryLight,
+    lineHeight: 20,
+  },
+});
