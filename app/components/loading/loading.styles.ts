@@ -21,6 +21,15 @@ export const loadingStyles = StyleSheet.create({
     shadowRadius: 18,
     elevation: 20,
   },
+  pawWrapper: {
+    alignItems: "center",
+    justifyContent: "center",
+    width: 72,
+    height: 72,
+    borderRadius: 36,
+    backgroundColor: COLORS.backgroundVeryLight,
+    marginBottom: SPACING.sm,
+  },
   loaderText: {
     marginTop: SPACING.sm,
     color: COLORS.primaryDark,

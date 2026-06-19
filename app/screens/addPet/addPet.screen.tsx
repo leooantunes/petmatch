@@ -1,12 +1,14 @@
 import { db } from "@/firebase";
 import { FirebaseError } from "@firebase/util";
 import { addDoc, collection } from "@react-native-firebase/firestore";
+import storage from "@react-native-firebase/storage";
 import * as ImagePicker from "expo-image-picker";
 import { useRouter } from "expo-router";
 import React, { useEffect, useState } from "react";
 import {
   Alert,
   Image,
+  Platform,
   ScrollView,
   Switch,
   Text,
@@ -49,12 +51,25 @@ export default function AddPetScreen() {
       quality: 0.7,
     });
 
-    const canceled = "canceled" in result ? result.canceled : result.cancelled;
-    const uri = "uri" in result ? result.uri : result.assets?.[0]?.uri;
+    const canceled = result.canceled;
+    const uri = result.assets?.[0]?.uri;
 
     if (!canceled && uri) {
       setPhotoUrl(uri);
     }
+  };
+
+  const uploadPetPhoto = async (localUri: string): Promise<string> => {
+    const filename = localUri.split("/").pop() || `pet_${Date.now()}`;
+    const storageRef = storage().ref(`petPhotos/${filename}`);
+
+    if (Platform.OS === "android") {
+      await storageRef.putFile(localUri);
+    } else {
+      await storageRef.putFile(localUri.replace("file://", ""));
+    }
+
+    return await storageRef.getDownloadURL();
   };
 
   useEffect(() => {
@@ -68,14 +83,20 @@ export default function AddPetScreen() {
   const handleSubmit = async () => {
     showLoading();
     try {
+      let uploadedPhotoUrl = photoUrl;
+
+      if (photoUrl) {
+        uploadedPhotoUrl = await uploadPetPhoto(photoUrl);
+      }
+
       await addDoc(petsCollection, {
         name,
         age,
         breed,
         neutered,
-        city,
+        location: city,
         description,
-        photoUrl,
+        image: uploadedPhotoUrl,
       });
       router.push("/screens/petList/petList.screen");
     } catch (e: any) {

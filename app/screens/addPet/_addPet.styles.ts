@@ -44,7 +44,8 @@ export const styles = StyleSheet.create({
     paddingHorizontal: SPACING.md,
     marginBottom: SPACING.md,
     fontSize: FONT_SIZE.md,
-    color: COLORS.primaryDarker,
+    color: COLORS.primary,
+    fontWeight: FONT_WEIGHT.bold,
     backgroundColor: COLORS.white,
   },
   switchRow: {

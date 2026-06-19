@@ -70,6 +70,12 @@ export const styles = StyleSheet.create({
     fontSize: FONT_SIZE.xs,
     color: COLORS.white,
   },
+  emptyText: {
+    fontSize: FONT_SIZE.md,
+    color: COLORS.primaryDark,
+    textAlign: "center",
+    marginTop: SPACING.xl,
+  },
   petDescription: {
     fontSize: FONT_SIZE.sm,
     color: COLORS.primaryLight,

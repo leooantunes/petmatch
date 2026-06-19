@@ -47,7 +47,8 @@ export const styles = StyleSheet.create({
     paddingHorizontal: SPACING.md,
     fontSize: FONT_SIZE.md,
     marginBottom: SPACING.md,
-    color: COLORS.primaryDarker,
+    color: COLORS.primary,
+    fontWeight: FONT_WEIGHT.bold,
     backgroundColor: COLORS.backgroundVeryLight,
   },
   buttonPrimary: {

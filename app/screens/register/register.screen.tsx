@@ -13,30 +13,33 @@ import {
   View,
 } from "react-native";
 import { useLoading } from "../../components/loading/loading.component";
+import { UserRegistration } from "../../types/user";
 import { styles } from "./_register.styles";
 
 export default function RegisterScreen() {
   const router = useRouter();
-  const [email, setEmail] = useState("");
-  const [phone, setPhone] = useState("");
-  const [city, setCity] = useState("");
-  const [password, setPassword] = useState("");
+  const [form, setForm] = useState<UserRegistration>({
+    email: "",
+    phone: "",
+    city: "",
+    password: "",
+  });
   const { showLoading, hideLoading } = useLoading();
-  const user = collection(db, "users");
+  const usersCollection = collection(db, "users");
 
   const handleRegister = async () => {
     showLoading();
     try {
       const credential = await auth().createUserWithEmailAndPassword(
-        email,
-        password,
+        form.email,
+        form.password,
       );
 
-      await addDoc(user, {
-        user: credential.user.email,
-        email,
-        phone,
-        city,
+      await addDoc(usersCollection, {
+        uid: credential.user.uid,
+        email: form.email,
+        phone: form.phone,
+        city: form.city,
       });
 
       router.push("/screens/petList/petList.screen");
@@ -63,8 +66,8 @@ export default function RegisterScreen() {
           placeholderTextColor="#b8d9bd"
           keyboardType="email-address"
           autoCapitalize="none"
-          value={email}
-          onChangeText={setEmail}
+          value={form.email}
+          onChangeText={(email) => setForm({ ...form, email })}
           textContentType="emailAddress"
         />
 
@@ -73,8 +76,8 @@ export default function RegisterScreen() {
           placeholder="Celular"
           placeholderTextColor="#b8d9bd"
           keyboardType="phone-pad"
-          value={phone}
-          onChangeText={setPhone}
+          value={form.phone}
+          onChangeText={(phone) => setForm({ ...form, phone })}
           textContentType="telephoneNumber"
         />
 
@@ -82,8 +85,8 @@ export default function RegisterScreen() {
           style={styles.input}
           placeholder="Cidade"
           placeholderTextColor="#b8d9bd"
-          value={city}
-          onChangeText={setCity}
+          value={form.city}
+          onChangeText={(city) => setForm({ ...form, city })}
         />
 
         <TextInput
@@ -91,8 +94,8 @@ export default function RegisterScreen() {
           placeholder="Senha"
           placeholderTextColor="#b8d9bd"
           secureTextEntry
-          value={password}
-          onChangeText={setPassword}
+          value={form.password}
+          onChangeText={(password) => setForm({ ...form, password })}
           textContentType="password"
         />
 

@@ -1,4 +1,8 @@
-import { AntDesign, FontAwesome } from "@expo/vector-icons";
+import {
+  AntDesign,
+  FontAwesome,
+  MaterialCommunityIcons,
+} from "@expo/vector-icons";
 import { FirebaseError } from "@firebase/util";
 import auth from "@react-native-firebase/auth";
 import { useRouter } from "expo-router";
@@ -12,18 +16,25 @@ import {
   View,
 } from "react-native";
 import { useLoading } from "../../components/loading/loading.component";
+import { COLORS } from "../../styles/colors";
+import { UserCredentials } from "../../types/user";
 import { styles } from "./_login.styles";
 
 export default function LoginScreen() {
   const router = useRouter();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [credentials, setCredentials] = useState<UserCredentials>({
+    email: "",
+    password: "",
+  });
   const { showLoading, hideLoading } = useLoading();
 
   const onLogin = async () => {
     showLoading();
     try {
-      await auth().signInWithEmailAndPassword(email, password);
+      await auth().signInWithEmailAndPassword(
+        credentials.email,
+        credentials.password,
+      );
       router.push("/screens/petList/petList.screen");
     } catch (e: any) {
       const err = e as FirebaseError;
@@ -44,6 +55,23 @@ export default function LoginScreen() {
   return (
     <View style={styles.container}>
       <View style={styles.card}>
+        <View style={styles.logoWrapper}>
+          <View style={styles.illustrationWrapper}>
+            <MaterialCommunityIcons
+              name="dog"
+              size={58}
+              color={COLORS.primaryMedium}
+              style={styles.dogIcon}
+            />
+            <MaterialCommunityIcons
+              name="cat"
+              size={50}
+              color={COLORS.primaryDark}
+              style={styles.catIcon}
+            />
+          </View>
+        </View>
+
         <Text style={styles.title}>PetMatch</Text>
         <Text style={styles.subtitle}>Adoção responsável começa aqui</Text>
 
@@ -53,8 +81,8 @@ export default function LoginScreen() {
           placeholderTextColor="#b8d9bd"
           keyboardType="email-address"
           autoCapitalize="none"
-          value={email}
-          onChangeText={setEmail}
+          value={credentials.email}
+          onChangeText={(email) => setCredentials({ ...credentials, email })}
           textContentType="emailAddress"
         />
 
@@ -63,8 +91,10 @@ export default function LoginScreen() {
           placeholder="Senha"
           placeholderTextColor="#b8d9bd"
           secureTextEntry
-          value={password}
-          onChangeText={setPassword}
+          value={credentials.password}
+          onChangeText={(password) =>
+            setCredentials({ ...credentials, password })
+          }
           textContentType="password"
         />
 

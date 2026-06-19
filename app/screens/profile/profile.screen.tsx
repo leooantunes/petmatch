@@ -9,41 +9,45 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import { Pet } from "../../types/pets";
 import { styles } from "./_profile.styles";
 
-const initialPets = [
+const initialPets: Pet[] = [
   {
     id: "1",
     name: "Luna",
     age: "2 anos",
     breed: "SRD",
-    city: "São Paulo",
+    location: "São Paulo",
     description: "Extremamente carinhosa e adora brincar com crianças.",
     image: "https://placedog.net/640/480?id=1",
+    neutered: false,
   },
   {
     id: "2",
     name: "Milo",
     age: "1 ano",
     breed: "Shih Tzu",
-    city: "Belo Horizonte",
+    location: "Belo Horizonte",
     description: "Pequeno, tranquilo e ideal para apartamento.",
     image: "https://placedog.net/640/480?id=2",
+    neutered: false,
   },
   {
     id: "3",
     name: "Nina",
     age: "3 anos",
     breed: "SRD",
-    city: "Curitiba",
+    location: "Curitiba",
     description: "Muito sociável e adora passeios ao ar livre.",
     image: "https://placedog.net/640/480?id=3",
+    neutered: false,
   },
 ];
 
 export default function ProfileScreen() {
   const router = useRouter();
-  const [pets, setPets] = useState(initialPets);
+  const [pets, setPets] = useState<Pet[]>(initialPets);
 
   const handleEditProfile = () => {
     router.push("/screens/editProfile/editProfile.screen");
@@ -51,6 +55,22 @@ export default function ProfileScreen() {
 
   const handleLogout = () => {
     router.replace("/screens/login/login.screen");
+  };
+
+  const handlePetPress = (pet: Pet) => {
+    router.push({
+      pathname: "/screens/pdpet/pdpet.screen",
+      params: {
+        id: pet.id,
+        name: pet.name,
+        age: pet.age,
+        breed: pet.breed,
+        location: pet.location,
+        description: pet.description,
+        image: pet.image,
+        neutered: pet.neutered ? "true" : "false",
+      },
+    });
   };
 
   const handleDeletePet = (petId: string) => {
@@ -89,7 +109,11 @@ export default function ProfileScreen() {
           keyExtractor={(item) => item.id}
           showsVerticalScrollIndicator={false}
           renderItem={({ item }) => (
-            <View style={styles.card}>
+            <TouchableOpacity
+              activeOpacity={0.85}
+              style={styles.card}
+              onPress={() => handlePetPress(item)}
+            >
               <View style={styles.cardHeader}>
                 <Text style={styles.cardName}>{item.name}</Text>
                 <TouchableOpacity
@@ -108,11 +132,11 @@ export default function ProfileScreen() {
                   <Text style={styles.tagText}>{item.breed}</Text>
                 </View>
                 <View style={styles.tag}>
-                  <Text style={styles.tagText}>{item.city}</Text>
+                  <Text style={styles.tagText}>{item.location}</Text>
                 </View>
               </View>
               <Text style={styles.cardDescription}>{item.description}</Text>
-            </View>
+            </TouchableOpacity>
           )}
           ListEmptyComponent={
             <Text style={styles.description}>Nenhum pet cadastrado ainda.</Text>

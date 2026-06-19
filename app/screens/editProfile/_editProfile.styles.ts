@@ -44,7 +44,8 @@ export const styles = StyleSheet.create({
     marginBottom: SPACING.md,
     fontSize: FONT_SIZE.md,
     backgroundColor: COLORS.white,
-    color: COLORS.primaryDarker,
+    color: COLORS.primary,
+    fontWeight: FONT_WEIGHT.bold,
   },
   button: {
     height: 52,

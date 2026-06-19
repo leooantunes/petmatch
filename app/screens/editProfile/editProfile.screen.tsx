@@ -8,19 +8,28 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import { UserProfile } from "../../types/user";
 import { styles } from "./_editProfile.styles";
 
 export default function EditProfileScreen() {
   const router = useRouter();
-  const [name, setName] = useState("Maria Silva");
-  const [email, setEmail] = useState("maria@example.com");
-  const [phone, setPhone] = useState("(11) 99999-9999");
-  const [age, setAge] = useState("28");
-  const [city, setCity] = useState("São Paulo");
-  const [password, setPassword] = useState("12345678");
+  const [profile, setProfile] = useState<UserProfile>({
+    name: "Maria Silva",
+    email: "maria@example.com",
+    phone: "(11) 99999-9999",
+    age: "28",
+    city: "São Paulo",
+    password: "12345678",
+  });
 
   const handleSave = () => {
-    if (!name || !email || !phone || !age || !city) {
+    if (
+      !profile.name ||
+      !profile.email ||
+      !profile.phone ||
+      !profile.age ||
+      !profile.city
+    ) {
       Alert.alert(
         "Dados incompletos",
         "Por favor, preencha todos os campos obrigatórios.",
@@ -46,8 +55,8 @@ export default function EditProfileScreen() {
           style={styles.input}
           placeholder="Nome completo"
           placeholderTextColor="#b8d9bd"
-          value={name}
-          onChangeText={setName}
+          value={profile.name}
+          onChangeText={(name) => setProfile({ ...profile, name })}
         />
 
         <Text style={styles.label}>Email</Text>
@@ -55,8 +64,8 @@ export default function EditProfileScreen() {
           style={styles.input}
           placeholder="Email"
           placeholderTextColor="#b8d9bd"
-          value={email}
-          onChangeText={setEmail}
+          value={profile.email}
+          onChangeText={(email) => setProfile({ ...profile, email })}
           keyboardType="email-address"
           autoCapitalize="none"
         />
@@ -66,8 +75,8 @@ export default function EditProfileScreen() {
           style={styles.input}
           placeholder="Celular"
           placeholderTextColor="#b8d9bd"
-          value={phone}
-          onChangeText={setPhone}
+          value={profile.phone}
+          onChangeText={(phone) => setProfile({ ...profile, phone })}
           keyboardType="phone-pad"
         />
 
@@ -76,8 +85,8 @@ export default function EditProfileScreen() {
           style={styles.input}
           placeholder="Idade"
           placeholderTextColor="#b8d9bd"
-          value={age}
-          onChangeText={setAge}
+          value={profile.age}
+          onChangeText={(age) => setProfile({ ...profile, age })}
           keyboardType="numeric"
         />
 
@@ -86,8 +95,8 @@ export default function EditProfileScreen() {
           style={styles.input}
           placeholder="Cidade"
           placeholderTextColor="#b8d9bd"
-          value={city}
-          onChangeText={setCity}
+          value={profile.city}
+          onChangeText={(city) => setProfile({ ...profile, city })}
         />
 
         <Text style={styles.label}>Senha</Text>
@@ -96,8 +105,8 @@ export default function EditProfileScreen() {
           placeholder="Senha"
           placeholderTextColor="#b8d9bd"
           secureTextEntry
-          value={password}
-          onChangeText={setPassword}
+          value={profile.password}
+          onChangeText={(password) => setProfile({ ...profile, password })}
         />
 
         <TouchableOpacity style={styles.button} onPress={handleSave}>

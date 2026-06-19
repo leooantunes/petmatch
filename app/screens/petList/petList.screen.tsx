@@ -1,59 +1,60 @@
-import React from "react";
-import {
-  Alert,
-  FlatList,
-  Image,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { db } from "@/firebase";
+import { collection, getDocs } from "@react-native-firebase/firestore";
+import { useRouter } from "expo-router";
+import React, { useEffect, useState } from "react";
+import { FlatList, Image, Text, TouchableOpacity, View } from "react-native";
+import { Pet } from "../../types/pets";
 import { styles } from "./_petList.styles";
 
-const pets = [
-  {
-    id: "1",
-    name: "Luna",
-    age: "2 anos",
-    breed: "SRD",
-    location: "São Paulo",
-    description: "Extremamente carinhosa e adora brincar com crianças.",
-    image: "https://placedog.net/640/480?id=1",
-  },
-  {
-    id: "2",
-    name: "Milo",
-    age: "1 ano",
-    breed: "Shih Tzu",
-    location: "Belo Horizonte",
-    description: "Pequeno, tranquilo e ideal para apartamento.",
-    image: "https://placedog.net/640/480?id=2",
-  },
-  {
-    id: "3",
-    name: "Nina",
-    age: "3 anos",
-    breed: "SRD",
-    location: "Curitiba",
-    description: "Muito sociável e adora passeios ao ar livre.",
-    image: "https://placedog.net/640/480?id=3",
-  },
-];
-
 export default function PetListScreen() {
-  const handlePetPress = (pet: (typeof pets)[number]) => {
-    Alert.alert("Pet selecionado", `Você clicou em ${pet.name}`);
-  };
+  const router = useRouter();
+  const [pets, setPets] = useState<Pet[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const handleHomePress = () => {
-    Alert.alert("Home", "Você está na home.");
-  };
+  useEffect(() => {
+    const loadPets = async () => {
+      setLoading(true);
+      try {
+        const querySnapshot = await getDocs(collection(db, "pets"));
+        const loadedPets: Pet[] = querySnapshot.docs.map((doc) => {
+          const data = doc.data() as Record<string, any>;
 
-  const handleProfilePress = () => {
-    Alert.alert("Perfil", "Abrir perfil do usuário.");
-  };
+          return {
+            id: doc.id,
+            name: data.name ?? "",
+            age: data.age ?? "",
+            breed: data.breed ?? "",
+            location: data.location ?? data.city ?? "",
+            description: data.description ?? "",
+            image: data.image ?? data.photoUrl ?? "",
+            neutered: data.neutered ?? false,
+          };
+        });
+        setPets(loadedPets);
+      } catch (error) {
+        console.error("Erro ao carregar pets:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  const handleAddPetPress = () => {
-    Alert.alert("Cadastrar pet", "Ir para o formulário de cadastro de pet.");
+    loadPets();
+  }, []);
+
+  const handlePetPress = (pet: Pet) => {
+    router.push({
+      pathname: "/screens/pdpet/pdpet.screen",
+      params: {
+        id: pet.id,
+        name: pet.name,
+        age: pet.age,
+        breed: pet.breed,
+        location: pet.location,
+        description: pet.description,
+        image: pet.image,
+        neutered: pet.neutered ? "true" : "false",
+      },
+    });
   };
 
   return (
@@ -63,6 +64,13 @@ export default function PetListScreen() {
         keyExtractor={(item) => item.id}
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.listContent}
+        ListEmptyComponent={
+          loading ? (
+            <Text style={styles.emptyText}>Carregando pets...</Text>
+          ) : (
+            <Text style={styles.emptyText}>Nenhum pet encontrado.</Text>
+          )
+        }
         renderItem={({ item }) => (
           <TouchableOpacity
             activeOpacity={0.8}
