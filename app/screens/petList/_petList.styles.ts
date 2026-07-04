@@ -15,7 +15,7 @@ export const styles = StyleSheet.create({
   },
   listContent: {
     padding: SPACING.xl,
-    paddingBottom: SPACING.xxl + 80,
+    paddingBottom: SPACING.xl,
   },
   header: {
     fontSize: FONT_SIZE.xl,

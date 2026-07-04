@@ -2,13 +2,30 @@ import { AntDesign } from "@expo/vector-icons";
 import { Stack, useRouter, useSegments } from "expo-router";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { LoadingProvider } from "./components/loading/loading.component";
-import { COLORS, FONT_SIZE, FONT_WEIGHT, SPACING } from "./styles/colors";
+import { COLORS, FONT_WEIGHT } from "./styles/colors";
 
 export default function RootLayout() {
   const segments = useSegments() as string[];
   const router = useRouter();
+  const currentRoute = segments.at(-1) ?? "";
   const hideNavbar =
-    segments.includes("login") || segments.includes("register");
+    segments.includes("login") ||
+    segments.includes("register") ||
+    currentRoute === "addPet" ||
+    currentRoute === "addPet.screen" ||
+    segments.includes("addPet");
+  const isHomeActive =
+    currentRoute === "petList" ||
+    currentRoute === "petList.screen" ||
+    segments.includes("petList");
+  const isAddPetActive =
+    currentRoute === "addPet" ||
+    currentRoute === "addPet.screen" ||
+    segments.includes("addPet");
+  const isProfileActive =
+    currentRoute === "profile" ||
+    currentRoute === "profile.screen" ||
+    segments.includes("profile");
 
   const handleHome = () => router.push("/screens/petList/petList.screen");
   const handleAddPet = () => router.push("/screens/addPet/addPet.screen");
@@ -20,21 +37,91 @@ export default function RootLayout() {
         <Stack screenOptions={{ headerShown: false }} />
         {!hideNavbar && (
           <View style={styles.navbar}>
-            <TouchableOpacity style={styles.navButton} onPress={handleHome}>
-              <AntDesign name="home" size={24} color={COLORS.primaryDark} />
-              <Text style={styles.navButtonText}>Home</Text>
+            <TouchableOpacity
+              style={[styles.navButton, isHomeActive && styles.navButtonActive]}
+              onPress={handleHome}
+            >
+              <View
+                style={
+                  isHomeActive
+                    ? styles.navItemCircleActive
+                    : styles.navItemCircleInactive
+                }
+              >
+                <AntDesign
+                  name="home"
+                  size={14}
+                  color={isHomeActive ? COLORS.white : COLORS.primaryDark}
+                />
+              </View>
+              <Text
+                style={[
+                  styles.navButtonText,
+                  isHomeActive && styles.navButtonTextActive,
+                ]}
+              >
+                Home
+              </Text>
             </TouchableOpacity>
 
             <TouchableOpacity
-              style={styles.navPlusButton}
+              style={[
+                styles.navButton,
+                isAddPetActive && styles.navButtonActive,
+              ]}
               onPress={handleAddPet}
             >
-              <AntDesign name="plus" size={28} color={COLORS.white} />
+              <View
+                style={
+                  isAddPetActive
+                    ? styles.navItemCircleActive
+                    : styles.navItemCircleInactive
+                }
+              >
+                <AntDesign
+                  name="plus"
+                  size={14}
+                  color={isAddPetActive ? COLORS.white : COLORS.primaryDark}
+                />
+              </View>
+              <Text
+                style={[
+                  styles.navButtonText,
+                  isAddPetActive && styles.navButtonTextActive,
+                ]}
+              >
+                New Pet
+              </Text>
             </TouchableOpacity>
 
-            <TouchableOpacity style={styles.navButton} onPress={handleProfile}>
-              <AntDesign name="user" size={24} color={COLORS.primaryDark} />
-              <Text style={styles.navButtonText}>Perfil</Text>
+            <TouchableOpacity
+              style={[
+                styles.navButton,
+                isProfileActive && styles.navButtonActive,
+              ]}
+              onPress={handleProfile}
+            >
+              <View
+                style={
+                  isProfileActive
+                    ? styles.navItemCircleActive
+                    : styles.navItemCircleInactive
+                }
+              >
+                <AntDesign
+                  name="user-switch"
+                  size={14}
+                  color={isProfileActive ? COLORS.white : COLORS.primaryDark}
+                />
+              </View>
+              <Text
+                style={[
+                  styles.navButtonText,
+                  isProfileActive && styles.navButtonTextActive,
+                ]}
+              >
+                Perfil
+              </Text>
             </TouchableOpacity>
           </View>
         )}
@@ -46,41 +133,59 @@ export default function RootLayout() {
 const styles = StyleSheet.create({
   navbar: {
     position: "absolute",
-    left: 0,
-    right: 0,
-    bottom: 0,
-    height: 70,
+    left: 50,
+    right: 50,
+    bottom: 50,
+    height: 48,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    paddingHorizontal: SPACING.xl,
+    padding: 6,
     backgroundColor: COLORS.white,
-    borderTopWidth: 1,
-    borderTopColor: COLORS.borderVeryLight,
+    borderRadius: 999,
+    borderWidth: 1,
+    borderColor: COLORS.borderVeryLight,
     shadowColor: COLORS.shadowColor,
-    shadowOffset: { width: 0, height: -5 },
+    shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.12,
-    shadowRadius: 12,
-    elevation: 12,
+    shadowRadius: 8,
+    elevation: 5,
   },
   navButton: {
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
+    minHeight: 32,
+    borderRadius: 999,
+    paddingHorizontal: 4,
+    paddingVertical: 2,
   },
-  navButtonText: {
-    marginTop: SPACING.xs,
-    color: COLORS.primaryDark,
-    fontSize: FONT_SIZE.sm,
-    fontWeight: FONT_WEIGHT.bold,
-  },
-  navPlusButton: {
-    width: 64,
-    height: 64,
-    borderRadius: 32,
+  navButtonActive: {
     backgroundColor: COLORS.primary,
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 999,
+  },
+  navItemCircleActive: {
     alignItems: "center",
     justifyContent: "center",
-    marginTop: -50,
+    marginBottom: 1,
+  },
+  navItemCircleInactive: {
+    width: 22,
+    height: 22,
+    borderRadius: 11,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  navButtonText: {
+    marginTop: 1,
+    color: COLORS.primaryDark,
+    fontSize: 10,
+    fontWeight: FONT_WEIGHT.bold,
+  },
+  navButtonTextActive: {
+    color: COLORS.white,
+    fontWeight: FONT_WEIGHT.extraBold,
   },
 });

@@ -14,7 +14,7 @@ export const styles = StyleSheet.create({
   },
   scrollContent: {
     padding: SPACING.xl,
-    paddingBottom: SPACING.xxl,
+    paddingBottom: SPACING.xl,
   },
   backButton: {
     flexDirection: "row",
@@ -27,12 +27,31 @@ export const styles = StyleSheet.create({
     fontSize: FONT_SIZE.md,
     fontWeight: FONT_WEIGHT.bold,
   },
+  imageCarouselContainer: {
+    marginBottom: SPACING.lg,
+  },
   petImage: {
     width: "100%",
     height: 280,
     borderRadius: BORDER_RADIUS.xl,
-    marginBottom: SPACING.lg,
     backgroundColor: COLORS.backgroundVeryLight,
+  },
+  carouselDots: {
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: SPACING.sm,
+    gap: SPACING.xs,
+  },
+  carouselDot: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    backgroundColor: COLORS.borderLight,
+  },
+  carouselDotActive: {
+    width: 20,
+    backgroundColor: COLORS.primary,
   },
   headerRow: {
     flexDirection: "row",

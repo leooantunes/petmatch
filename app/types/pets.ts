@@ -6,6 +6,7 @@ export type Pet = {
   location: string;
   description: string;
   image: string;
+  images?: string[];
   neutered: boolean;
 };
 
@@ -17,5 +18,6 @@ export type PetRouteParams = {
   location: string;
   description: string;
   image: string;
+  images?: string;
   neutered: string;
 };
