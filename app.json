@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "MyPetMatch",
-    "slug": "petmatch",
+    "slug": "mypetmatch",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/gato-cachorro-pixel-v3.png",
