@@ -1,15 +1,16 @@
 {
   "project_info": {
     "project_number": "591812364758",
+    "firebase_url": "https://ongpets-882ef-default-rtdb.firebaseio.com",
     "project_id": "ongpets-882ef",
     "storage_bucket": "ongpets-882ef.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:591812364758:android:1e270c8b38a15d3322fc77",
+        "mobilesdk_app_id": "1:591812364758:android:15a0e2690383f46022fc77",
         "android_client_info": {
-          "package_name": "com.petmatch"
+          "package_name": "com.leoan.petmatch"
         }
       },
       "oauth_client": [
@@ -29,6 +30,13 @@
             {
               "client_id": "591812364758-0hnh317ev067mcpo66ml27rindnml34g.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "591812364758-jln80b0p3mhlspfl9vet9v337s6r56n7.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.petmatch"
+              }
             }
           ]
         }

@@ -3,9 +3,9 @@
 <plist version="1.0">
 <dict>
 	<key>CLIENT_ID</key>
-	<string>591812364758-jln80b0p3mhlspfl9vet9v337s6r56n7.apps.googleusercontent.com</string>
+	<string>591812364758-anm4h92a17q6momt1la9tuk2cg7r6cu0.apps.googleusercontent.com</string>
 	<key>REVERSED_CLIENT_ID</key>
-	<string>com.googleusercontent.apps.591812364758-jln80b0p3mhlspfl9vet9v337s6r56n7</string>
+	<string>com.googleusercontent.apps.591812364758-anm4h92a17q6momt1la9tuk2cg7r6cu0</string>
 	<key>API_KEY</key>
 	<string>AIzaSyDBRyv_e4CmyG87LgmGtnF2un9hzu5EJ2M</string>
 	<key>GCM_SENDER_ID</key>
@@ -13,7 +13,7 @@
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
-	<string>com.petmatch</string>
+	<string>com.leoan.petmatch</string>
 	<key>PROJECT_ID</key>
 	<string>ongpets-882ef</string>
 	<key>STORAGE_BUCKET</key>
@@ -29,7 +29,7 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:591812364758:ios:30256b27b8885fa322fc77</string>
+	<string>1:591812364758:ios:fa11555d48a4a97022fc77</string>
 	<key>DATABASE_URL</key>
 	<string>https://ongpets-882ef-default-rtdb.firebaseio.com</string>
 </dict>
