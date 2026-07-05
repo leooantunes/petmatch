@@ -134,17 +134,9 @@ export const styles = StyleSheet.create({
     alignItems: "center",
     marginBottom: SPACING.md,
   },
-  dogIcon: {
-    position: "absolute",
-    bottom: 4,
-    left: 12,
-    transform: [{ rotate: "-6deg" }],
-  },
-  catIcon: {
-    position: "absolute",
-    top: 6,
-    left: 42,
-    transform: [{ rotate: "2deg" }],
+  splashImage: {
+    width: 120,
+    height: 120,
   },
   socialGoogle: {
     backgroundColor: COLORS.primary,

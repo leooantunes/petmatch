@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "petmatch",
+    "name": "MyPetMatch",
     "slug": "petmatch",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -14,7 +14,12 @@
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "googleServicesFile": "./GoogleService-Info.plist",
+      "bundleIdentifier": "com.leoan.petmatch",
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false
+      }
     },
     "android": {
       "adaptiveIcon": {
@@ -26,7 +31,7 @@
       "edgeToEdgeEnabled": true,
       "predictiveBackGestureEnabled": false,
       "googleServicesFile": "./google-services.json",
-      "package": "com.petmatch"
+      "package": "com.leoan.petmatch"
     },
     "web": {
       "output": "static",
@@ -59,6 +64,12 @@
     "experiments": {
       "typedRoutes": true,
       "reactCompiler": true
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "c603617a-7dcc-43d0-8106-ae32fcf60b59"
+      }
     }
   }
 }

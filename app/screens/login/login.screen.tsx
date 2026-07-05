@@ -1,14 +1,11 @@
-import {
-  AntDesign,
-  FontAwesome,
-  MaterialCommunityIcons,
-} from "@expo/vector-icons";
+import { AntDesign, FontAwesome } from "@expo/vector-icons";
 import { FirebaseError } from "@firebase/util";
 import auth from "@react-native-firebase/auth";
 import * as AppleAuthentication from "expo-apple-authentication";
 import { useRouter } from "expo-router";
 import React, { useCallback, useState } from "react";
 import {
+  Image,
   Platform,
   Text,
   TextInput,
@@ -18,7 +15,6 @@ import {
 import { useLoading } from "../../components/loading/loading.component";
 import { MODAL_BUTTON, MODAL_TITLE } from "../../components/modal/modalCopy";
 import ModernModal from "../../components/modal/modernModal";
-import { COLORS } from "../../styles/colors";
 import { UserCredentials } from "../../types/user";
 import { styles } from "./_login.styles";
 
@@ -154,23 +150,14 @@ export default function LoginScreen() {
     <View style={styles.container}>
       <View style={styles.card}>
         <View style={styles.logoWrapper}>
-          <View style={styles.illustrationWrapper}>
-            <MaterialCommunityIcons
-              name="dog"
-              size={58}
-              color={COLORS.primaryMedium}
-              style={styles.dogIcon}
-            />
-            <MaterialCommunityIcons
-              name="cat"
-              size={50}
-              color={COLORS.primaryDark}
-              style={styles.catIcon}
-            />
-          </View>
+          <Image
+            source={require("../../../assets/images/gato-cachorro-pixel-v3.png")}
+            style={styles.splashImage}
+            resizeMode="contain"
+          />
         </View>
 
-        <Text style={styles.title}>PetMatch</Text>
+        <Text style={styles.title}>MyPetMatch</Text>
         <Text style={styles.subtitle}>Adoção responsável começa aqui</Text>
 
         <TextInput
