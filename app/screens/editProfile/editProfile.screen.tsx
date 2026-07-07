@@ -1,7 +1,6 @@
 import { db } from "@/firebase";
 import { AntDesign } from "@expo/vector-icons";
 import auth from "@react-native-firebase/auth";
-import { doc, getDoc, setDoc } from "@react-native-firebase/firestore";
 import storage from "@react-native-firebase/storage";
 import * as ImagePicker from "expo-image-picker";
 import { useRouter } from "expo-router";
@@ -92,8 +91,11 @@ export default function EditProfileScreen() {
       }
 
       try {
-        const snapshot = await getDoc(doc(db, "users", currentUser.uid));
-        if (snapshot.exists()) {
+        const snapshot = await db()
+          .collection("users")
+          .doc(currentUser.uid)
+          .get();
+        if (snapshot.exists) {
           const data = snapshot.data() as Record<string, any>;
           setProfile({
             name: data.name ?? currentUser.displayName ?? "",
@@ -193,8 +195,7 @@ export default function EditProfileScreen() {
         photoUrl = await uploadProfileImage(profileImage);
       }
 
-      await setDoc(
-        doc(db, "users", currentUser.uid),
+      await db().collection("users").doc(currentUser.uid).set(
         {
           uid: currentUser.uid,
           name: profile.name,

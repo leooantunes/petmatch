@@ -1,16 +1,6 @@
 import { db } from "@/firebase";
 import { AntDesign, FontAwesome } from "@expo/vector-icons";
 import auth from "@react-native-firebase/auth";
-import {
-  collection,
-  deleteDoc,
-  doc,
-  getDoc,
-  getDocs,
-  query,
-  setDoc,
-  where,
-} from "@react-native-firebase/firestore";
 import storage from "@react-native-firebase/storage";
 import * as ImagePicker from "expo-image-picker";
 import { useRouter } from "expo-router";
@@ -118,8 +108,11 @@ export default function ProfileScreen() {
       }
 
       try {
-        const profileSnapshot = await getDoc(doc(db, "users", currentUser.uid));
-        if (profileSnapshot.exists()) {
+        const profileSnapshot = await db()
+          .collection("users")
+          .doc(currentUser.uid)
+          .get();
+        if (profileSnapshot.exists) {
           const data = profileSnapshot.data() as Record<string, any>;
           setUserName(data.name ?? currentUser.displayName ?? "Usuário");
           setUserEmail(data.email ?? currentUser.email ?? "");
@@ -129,11 +122,10 @@ export default function ProfileScreen() {
           );
         }
 
-        const q = query(
-          collection(db, "pets"),
-          where("ownerId", "==", currentUser.uid),
-        );
-        const snapshot = await getDocs(q);
+        const snapshot = await db()
+          .collection("pets")
+          .where("ownerId", "==", currentUser.uid)
+          .get();
         const loadedPets: Pet[] = snapshot.docs.map((docSnap) => {
           const data = docSnap.data() as Record<string, any>;
           const rawImages = data.images ?? data.photoUrls ?? data.photos ?? [];
@@ -204,11 +196,13 @@ export default function ProfileScreen() {
         }
 
         const uploadedUrl = await uploadProfileImage(result.assets[0].uri);
-        await setDoc(
-          doc(db, "users", currentUser.uid),
-          { photoUrl: uploadedUrl, updatedAt: new Date() },
-          { merge: true },
-        );
+        await db()
+          .collection("users")
+          .doc(currentUser.uid)
+          .set(
+            { photoUrl: uploadedUrl, updatedAt: new Date() },
+            { merge: true },
+          );
         setProfileImage(uploadedUrl);
       } catch (error) {
         console.error("Erro ao atualizar foto de perfil:", error);
@@ -265,7 +259,7 @@ export default function ProfileScreen() {
     const removePet = async () => {
       try {
         showLoading();
-        await deleteDoc(doc(db, "pets", petId));
+        await db().collection("pets").doc(petId).delete();
         const remainingPets = pets.filter((pet) => pet.id !== petId);
         setPets(remainingPets);
         showModal({

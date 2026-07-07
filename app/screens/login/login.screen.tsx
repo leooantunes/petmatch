@@ -3,7 +3,7 @@ import { FirebaseError } from "@firebase/util";
 import auth from "@react-native-firebase/auth";
 import * as AppleAuthentication from "expo-apple-authentication";
 import { useRouter } from "expo-router";
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import {
   Image,
   Platform,
@@ -46,6 +46,10 @@ export default function LoginScreen() {
     showCancelButton: false,
   });
 
+  useEffect(() => {
+    console.log("[LoginScreen] Component mounted");
+  }, []);
+
   const showModal = (next: Omit<ModalState, "visible">) => {
     setModal({ ...next, visible: true });
   };
@@ -69,13 +73,19 @@ export default function LoginScreen() {
   const onLogin = async () => {
     showLoading();
     try {
+      console.log(
+        "[LoginScreen] Attempting login with email:",
+        credentials.email,
+      );
       await auth().signInWithEmailAndPassword(
         credentials.email,
         credentials.password,
       );
+      console.log("[LoginScreen] Login successful, navigating to petList");
       router.push("/screens/petList/petList.screen");
     } catch (e: any) {
       const err = e as FirebaseError;
+      console.error("[LoginScreen] Login error:", err);
       showModal({
         title: MODAL_TITLE.error,
         message:

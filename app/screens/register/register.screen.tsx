@@ -1,7 +1,6 @@
 import { db } from "@/firebase";
 import { FirebaseError } from "@firebase/util";
 import auth from "@react-native-firebase/auth";
-import { doc, setDoc } from "@react-native-firebase/firestore";
 import { useRouter } from "expo-router";
 import React, { useState } from "react";
 import {
@@ -79,7 +78,7 @@ export default function RegisterScreen() {
         form.password,
       );
 
-      await setDoc(doc(db, "users", credential.user.uid), {
+      await db().collection("users").doc(credential.user.uid).set({
         uid: credential.user.uid,
         name: form.name,
         email: form.email,

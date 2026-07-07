@@ -1,6 +1,5 @@
 import { db } from "@/firebase";
 import { FontAwesome } from "@expo/vector-icons";
-import { doc, getDoc } from "@react-native-firebase/firestore";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import React, { useEffect, useMemo, useState } from "react";
 import {
@@ -105,8 +104,8 @@ const getOwnerPhoneFromPetData = async (
     return "";
   }
 
-  const userSnapshot = await getDoc(doc(db, "users", ownerId));
-  if (!userSnapshot.exists()) {
+  const userSnapshot = await db().collection("users").doc(ownerId).get();
+  if (!userSnapshot.exists) {
     return "";
   }
 
@@ -155,8 +154,8 @@ export default function PdpPetScreen() {
 
       try {
         showLoading();
-        const snapshot = await getDoc(doc(db, "pets", pet.id));
-        if (snapshot.exists()) {
+        const snapshot = await db().collection("pets").doc(pet.id).get();
+        if (snapshot.exists) {
           const data = snapshot.data() as Record<string, any>;
           const loadedImages = extractPetImages(data);
           setImages(loadedImages);

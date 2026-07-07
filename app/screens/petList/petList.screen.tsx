@@ -1,5 +1,4 @@
 import { db } from "@/firebase";
-import { collection, getDocs } from "@react-native-firebase/firestore";
 import { useRouter } from "expo-router";
 import React, { useEffect, useState } from "react";
 import { FlatList, Image, Text, TouchableOpacity, View } from "react-native";
@@ -56,7 +55,7 @@ export default function PetListScreen() {
       setIsLoadingList(true);
       showLoading();
       try {
-        const querySnapshot = await getDocs(collection(db, "pets"));
+        const querySnapshot = await db().collection("pets").get();
         const loadedPets: Pet[] = querySnapshot.docs.map((doc) => {
           const data = doc.data() as Record<string, any>;
           const rawImages = data.images ?? data.photoUrls ?? data.photos ?? [];

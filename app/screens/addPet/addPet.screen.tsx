@@ -2,7 +2,6 @@ import { db } from "@/firebase";
 import { AntDesign } from "@expo/vector-icons";
 import { FirebaseError } from "@firebase/util";
 import auth from "@react-native-firebase/auth";
-import { addDoc, collection } from "@react-native-firebase/firestore";
 import storage from "@react-native-firebase/storage";
 import * as ImagePicker from "expo-image-picker";
 import { useRouter } from "expo-router";
@@ -54,7 +53,6 @@ export default function AddPetScreen() {
     cancelText: MODAL_BUTTON.cancel,
     showCancelButton: false,
   });
-  const petsCollection = collection(db, "pets");
   const { showLoading, hideLoading } = useLoading();
 
   const showModal = (next: Omit<ModalState, "visible">) => {
@@ -155,18 +153,20 @@ export default function AddPetScreen() {
         return;
       }
 
-      await addDoc(petsCollection, {
-        name,
-        age,
-        breed,
-        neutered,
-        location: city,
-        description,
-        image: uploadedPhotoUrls[0],
-        images: uploadedPhotoUrls,
-        ownerId: auth().currentUser?.uid ?? null,
-        createdAt: new Date(),
-      });
+      await db()
+        .collection("pets")
+        .add({
+          name,
+          age,
+          breed,
+          neutered,
+          location: city,
+          description,
+          image: uploadedPhotoUrls[0],
+          images: uploadedPhotoUrls,
+          ownerId: auth().currentUser?.uid ?? null,
+          createdAt: new Date(),
+        });
 
       showModal({
         title: MODAL_TITLE.success,

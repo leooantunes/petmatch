@@ -1,6 +1,7 @@
 import { AntDesign } from "@expo/vector-icons";
 import { Stack, useRouter, useSegments } from "expo-router";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { ErrorBoundary } from "./components/errorBoundary/errorBoundary.component";
 import { LoadingProvider } from "./components/loading/loading.component";
 import { COLORS, FONT_WEIGHT } from "./styles/colors";
 
@@ -32,101 +33,106 @@ export default function RootLayout() {
   const handleProfile = () => router.push("/screens/profile/profile.screen");
 
   return (
-    <LoadingProvider>
-      <>
-        <Stack screenOptions={{ headerShown: false }} />
-        {!hideNavbar && (
-          <View style={styles.navbar}>
-            <TouchableOpacity
-              style={[styles.navButton, isHomeActive && styles.navButtonActive]}
-              onPress={handleHome}
-            >
-              <View
-                style={
-                  isHomeActive
-                    ? styles.navItemCircleActive
-                    : styles.navItemCircleInactive
-                }
-              >
-                <AntDesign
-                  name="home"
-                  size={14}
-                  color={isHomeActive ? COLORS.white : COLORS.primaryDark}
-                />
-              </View>
-              <Text
+    <ErrorBoundary>
+      <LoadingProvider>
+        <>
+          <Stack screenOptions={{ headerShown: false }} />
+          {!hideNavbar && (
+            <View style={styles.navbar}>
+              <TouchableOpacity
                 style={[
-                  styles.navButtonText,
-                  isHomeActive && styles.navButtonTextActive,
+                  styles.navButton,
+                  isHomeActive && styles.navButtonActive,
                 ]}
+                onPress={handleHome}
               >
-                Home
-              </Text>
-            </TouchableOpacity>
+                <View
+                  style={
+                    isHomeActive
+                      ? styles.navItemCircleActive
+                      : styles.navItemCircleInactive
+                  }
+                >
+                  <AntDesign
+                    name="home"
+                    size={14}
+                    color={isHomeActive ? COLORS.white : COLORS.primaryDark}
+                  />
+                </View>
+                <Text
+                  style={[
+                    styles.navButtonText,
+                    isHomeActive && styles.navButtonTextActive,
+                  ]}
+                >
+                  Home
+                </Text>
+              </TouchableOpacity>
 
-            <TouchableOpacity
-              style={[
-                styles.navButton,
-                isAddPetActive && styles.navButtonActive,
-              ]}
-              onPress={handleAddPet}
-            >
-              <View
-                style={
-                  isAddPetActive
-                    ? styles.navItemCircleActive
-                    : styles.navItemCircleInactive
-                }
-              >
-                <AntDesign
-                  name="plus"
-                  size={14}
-                  color={isAddPetActive ? COLORS.white : COLORS.primaryDark}
-                />
-              </View>
-              <Text
+              <TouchableOpacity
                 style={[
-                  styles.navButtonText,
-                  isAddPetActive && styles.navButtonTextActive,
+                  styles.navButton,
+                  isAddPetActive && styles.navButtonActive,
                 ]}
+                onPress={handleAddPet}
               >
-                New Pet
-              </Text>
-            </TouchableOpacity>
+                <View
+                  style={
+                    isAddPetActive
+                      ? styles.navItemCircleActive
+                      : styles.navItemCircleInactive
+                  }
+                >
+                  <AntDesign
+                    name="plus"
+                    size={14}
+                    color={isAddPetActive ? COLORS.white : COLORS.primaryDark}
+                  />
+                </View>
+                <Text
+                  style={[
+                    styles.navButtonText,
+                    isAddPetActive && styles.navButtonTextActive,
+                  ]}
+                >
+                  New Pet
+                </Text>
+              </TouchableOpacity>
 
-            <TouchableOpacity
-              style={[
-                styles.navButton,
-                isProfileActive && styles.navButtonActive,
-              ]}
-              onPress={handleProfile}
-            >
-              <View
-                style={
-                  isProfileActive
-                    ? styles.navItemCircleActive
-                    : styles.navItemCircleInactive
-                }
-              >
-                <AntDesign
-                  name="user-switch"
-                  size={14}
-                  color={isProfileActive ? COLORS.white : COLORS.primaryDark}
-                />
-              </View>
-              <Text
+              <TouchableOpacity
                 style={[
-                  styles.navButtonText,
-                  isProfileActive && styles.navButtonTextActive,
+                  styles.navButton,
+                  isProfileActive && styles.navButtonActive,
                 ]}
+                onPress={handleProfile}
               >
-                Perfil
-              </Text>
-            </TouchableOpacity>
-          </View>
-        )}
-      </>
-    </LoadingProvider>
+                <View
+                  style={
+                    isProfileActive
+                      ? styles.navItemCircleActive
+                      : styles.navItemCircleInactive
+                  }
+                >
+                  <AntDesign
+                    name="user-switch"
+                    size={14}
+                    color={isProfileActive ? COLORS.white : COLORS.primaryDark}
+                  />
+                </View>
+                <Text
+                  style={[
+                    styles.navButtonText,
+                    isProfileActive && styles.navButtonTextActive,
+                  ]}
+                >
+                  Perfil
+                </Text>
+              </TouchableOpacity>
+            </View>
+          )}
+        </>
+      </LoadingProvider>
+    </ErrorBoundary>
   );
 }
 
