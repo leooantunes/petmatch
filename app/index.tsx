@@ -26,8 +26,8 @@ export default function Index() {
   }
 
   if (isLoggedIn) {
-    return <Redirect href={{ pathname: "/screens/petList/petList.screen" }} />;
+    return <Redirect href="/screens/petList/petList.screen" />;
   }
 
-  return <Redirect href={{ pathname: "/screens/login/login.screen" }} />;
+  return <Redirect href="/screens/login/login.screen" />;
 }

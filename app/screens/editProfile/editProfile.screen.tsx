@@ -237,10 +237,7 @@ export default function EditProfileScreen() {
           correto.
         </Text>
 
-        <TouchableOpacity
-          style={styles.photoSection}
-          onPress={pickProfileImage}
-        >
+        <TouchableOpacity style={styles.photoSection} onPress={pickProfileImage}>
           <Image
             source={{ uri: profileImage }}
             style={styles.profileImage}
@@ -321,10 +318,7 @@ export default function EditProfileScreen() {
           <Text style={styles.buttonText}>Salvar</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity
-          style={styles.cancelButton}
-          onPress={() => router.back()}
-        >
+        <TouchableOpacity style={styles.cancelButton} onPress={() => router.back()}>
           <Text style={styles.cancelText}>Cancelar</Text>
         </TouchableOpacity>
       </ScrollView>

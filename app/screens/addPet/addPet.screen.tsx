@@ -93,7 +93,8 @@ export default function AddPetScreen() {
   };
 
   const uploadPetPhoto = async (localUri: string): Promise<string> => {
-    const filename = `pet_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
+    const uniqueId = globalThis.crypto?.randomUUID?.() ?? `${Date.now()}`;
+    const filename = `pet_${uniqueId}`;
     const storageRef = storage().ref(`petPhotos/${filename}`);
     const normalizedUri =
       Platform.OS === "android" ? localUri : localUri.replace("file://", "");
@@ -120,8 +121,7 @@ export default function AddPetScreen() {
 
   useEffect(() => {
     (async () => {
-      const { status } =
-        await ImagePicker.requestMediaLibraryPermissionsAsync();
+      const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
       setHasGalleryPermission(status === "granted");
     })();
   }, []);
