@@ -10,9 +10,6 @@
       "android": {
         "gradleCommand": ":app:assembleRelease",
         "buildType": "apk",
-        "runtimeVersion": {
-          "policy": "appVersion"
-        },
         "env": {
           "GRADLE_EXTRA_CLASSPATH": "com.google.firebase:firebase-crashlytics-gradle:3.0.1"
         }
@@ -24,9 +21,6 @@
     "preview4": {
       "distribution": "internal"
     },
-    "production": {},
-    "runtimeVersion": {
-      "policy": "appVersion"
-    }
+    "production": {}
   }
 }

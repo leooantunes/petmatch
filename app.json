@@ -5,6 +5,9 @@
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/petmatch-icon.png",
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
     "splash": {
       "image": "./assets/images/gato-cachorro-pixel-v3.png",
       "resizeMode": "contain",
@@ -47,7 +50,14 @@
         "android.permission.READ_EXTERNAL_STORAGE",
         "android.permission.WRITE_EXTERNAL_STORAGE",
         "android.permission.READ_MEDIA_IMAGES",
-        "android.permission.INTERNET"
+        "android.permission.INTERNET",
+        "android.permission.RECORD_AUDIO",
+        "android.permission.CAMERA",
+        "android.permission.READ_EXTERNAL_STORAGE",
+        "android.permission.WRITE_EXTERNAL_STORAGE",
+        "android.permission.READ_MEDIA_IMAGES",
+        "android.permission.INTERNET",
+        "android.permission.RECORD_AUDIO"
       ]
     },
     "web": {
@@ -95,6 +105,9 @@
       "eas": {
         "projectId": "929e01dd-9ae8-48c5-9f34-f4d2a0c00218"
       }
+    },
+    "updates": {
+      "url": "https://u.expo.dev/929e01dd-9ae8-48c5-9f34-f4d2a0c00218"
     }
   }
 }
