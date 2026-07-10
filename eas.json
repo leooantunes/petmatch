@@ -9,6 +9,7 @@
       "channel": "preview2",
       "android": {
         "gradleCommand": ":app:assembleRelease",
+        "distribution": "internal",
         "buildType": "apk",
         "env": {
           "GRADLE_EXTRA_CLASSPATH": "com.google.firebase:firebase-crashlytics-gradle:3.0.1"

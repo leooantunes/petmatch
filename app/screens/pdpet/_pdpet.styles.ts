@@ -14,7 +14,7 @@ export const styles = StyleSheet.create({
   },
   scrollContent: {
     padding: SPACING.xl,
-    paddingBottom: SPACING.xl,
+    paddingBottom: SPACING.xl + 120,
   },
   backButton: {
     flexDirection: "row",

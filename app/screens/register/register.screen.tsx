@@ -4,10 +4,14 @@ import auth from "@react-native-firebase/auth";
 import { useRouter } from "expo-router";
 import React, { useState } from "react";
 import {
+  Keyboard,
+  KeyboardAvoidingView,
+  Platform,
   ScrollView,
   Text,
   TextInput,
   TouchableOpacity,
+  TouchableWithoutFeedback,
   View,
 } from "react-native";
 import { useLoading } from "../../components/loading/loading.component";
@@ -111,84 +115,99 @@ export default function RegisterScreen() {
   };
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
-      <View style={styles.card}>
-        <Text style={styles.title}>Cadastre-se</Text>
-        <Text style={styles.subtitle}>
-          Crie sua conta para encontrar um novo amigo
-        </Text>
+    <KeyboardAvoidingView
+      style={{ flex: 1 }}
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+    >
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+        <ScrollView
+          contentContainerStyle={[styles.container, { flexGrow: 1 }]}
+          keyboardShouldPersistTaps="handled"
+          showsVerticalScrollIndicator={false}
+        >
+          <View style={styles.card}>
+            <Text style={styles.title}>Cadastre-se</Text>
+            <Text style={styles.subtitle}>
+              Crie sua conta para encontrar um novo amigo
+            </Text>
 
-        <TextInput
-          style={styles.input}
-          placeholder="Nome"
-          placeholderTextColor="#b8d9bd"
-          value={form.name}
-          onChangeText={(name) => setForm({ ...form, name })}
-        />
+            <TextInput
+              style={styles.input}
+              placeholder="Nome"
+              placeholderTextColor="#b8d9bd"
+              value={form.name}
+              onChangeText={(name) => setForm({ ...form, name })}
+            />
 
-        <TextInput
-          style={styles.input}
-          placeholder="Email"
-          placeholderTextColor="#b8d9bd"
-          keyboardType="email-address"
-          autoCapitalize="none"
-          value={form.email}
-          onChangeText={(email) => setForm({ ...form, email })}
-          textContentType="emailAddress"
-        />
+            <TextInput
+              style={styles.input}
+              placeholder="Email"
+              placeholderTextColor="#b8d9bd"
+              keyboardType="email-address"
+              autoCapitalize="none"
+              value={form.email}
+              onChangeText={(email) => setForm({ ...form, email })}
+              textContentType="emailAddress"
+            />
 
-        <TextInput
-          style={styles.input}
-          placeholder="Celular"
-          placeholderTextColor="#b8d9bd"
-          keyboardType="phone-pad"
-          value={form.phone}
-          onChangeText={(phone) => setForm({ ...form, phone })}
-          textContentType="telephoneNumber"
-        />
+            <TextInput
+              style={styles.input}
+              placeholder="Celular"
+              placeholderTextColor="#b8d9bd"
+              keyboardType="phone-pad"
+              value={form.phone}
+              onChangeText={(phone) => setForm({ ...form, phone })}
+              textContentType="telephoneNumber"
+            />
 
-        <TextInput
-          style={styles.input}
-          placeholder="Cidade"
-          placeholderTextColor="#b8d9bd"
-          value={form.city}
-          onChangeText={(city) => setForm({ ...form, city })}
-        />
+            <TextInput
+              style={styles.input}
+              placeholder="Cidade"
+              placeholderTextColor="#b8d9bd"
+              value={form.city}
+              onChangeText={(city) => setForm({ ...form, city })}
+            />
 
-        <TextInput
-          style={styles.input}
-          placeholder="Senha"
-          placeholderTextColor="#b8d9bd"
-          secureTextEntry
-          value={form.password}
-          onChangeText={(password) => setForm({ ...form, password })}
-          textContentType="password"
-        />
+            <TextInput
+              style={styles.input}
+              placeholder="Senha"
+              placeholderTextColor="#b8d9bd"
+              secureTextEntry
+              value={form.password}
+              onChangeText={(password) => setForm({ ...form, password })}
+              textContentType="password"
+            />
 
-        <TouchableOpacity style={styles.buttonPrimary} onPress={handleRegister}>
-          <Text style={styles.buttonPrimaryText}>Criar conta</Text>
-        </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.buttonPrimary}
+              onPress={handleRegister}
+            >
+              <Text style={styles.buttonPrimaryText}>Criar conta</Text>
+            </TouchableOpacity>
 
-        <Text style={styles.helperText}>
-          Seus dados são confidenciais e usados apenas para criar seu perfil.
-        </Text>
+            <Text style={styles.helperText}>
+              Seus dados são confidenciais e usados apenas para criar seu
+              perfil.
+            </Text>
 
-        <Text style={styles.footerText}>
-          Já tem conta? <Text style={styles.linkText}>Entrar</Text>
-        </Text>
-      </View>
+            <Text style={styles.footerText}>
+              Já tem conta? <Text style={styles.linkText}>Entrar</Text>
+            </Text>
+          </View>
 
-      <ModernModal
-        visible={modal.visible}
-        title={modal.title}
-        message={modal.message}
-        variant={modal.variant}
-        confirmText={modal.confirmText}
-        cancelText={modal.cancelText}
-        showCancelButton={modal.showCancelButton}
-        onConfirm={modal.onConfirm}
-        onClose={hideModal}
-      />
-    </ScrollView>
+          <ModernModal
+            visible={modal.visible}
+            title={modal.title}
+            message={modal.message}
+            variant={modal.variant}
+            confirmText={modal.confirmText}
+            cancelText={modal.cancelText}
+            showCancelButton={modal.showCancelButton}
+            onConfirm={modal.onConfirm}
+            onClose={hideModal}
+          />
+        </ScrollView>
+      </TouchableWithoutFeedback>
+    </KeyboardAvoidingView>
   );
 }

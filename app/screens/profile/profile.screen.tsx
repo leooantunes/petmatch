@@ -112,7 +112,7 @@ export default function ProfileScreen() {
           .collection("users")
           .doc(currentUser.uid)
           .get();
-        if (profileSnapshot.exists) {
+        if (profileSnapshot.exists()) {
           const data = profileSnapshot.data() as Record<string, any>;
           setUserName(data.name ?? currentUser.displayName ?? "Usuário");
           setUserEmail(data.email ?? currentUser.email ?? "");
@@ -330,6 +330,7 @@ export default function ProfileScreen() {
           data={pets}
           keyExtractor={(item) => item.id}
           showsVerticalScrollIndicator={false}
+          contentContainerStyle={styles.listContent}
           ListEmptyComponent={
             loadingPets ? (
               <Text style={styles.description}>Carregando seus pets...</Text>

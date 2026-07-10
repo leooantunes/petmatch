@@ -6,10 +6,14 @@ import { useRouter } from "expo-router";
 import React, { useCallback, useEffect, useState } from "react";
 import {
   Image,
+  Keyboard,
+  KeyboardAvoidingView,
   Platform,
+  ScrollView,
   Text,
   TextInput,
   TouchableOpacity,
+  TouchableWithoutFeedback,
   View,
 } from "react-native";
 import { useLoading } from "../../components/loading/loading.component";
@@ -157,84 +161,96 @@ export default function LoginScreen() {
   };
 
   return (
-    <View style={styles.container}>
-      <View style={styles.card}>
-        <View style={styles.logoWrapper}>
-          <Image
-            source={require("../../../assets/images/gato-cachorro-pixel-v3.png")}
-            style={styles.splashImage}
-            resizeMode="contain"
-          />
-        </View>
+    <KeyboardAvoidingView
+      style={{ flex: 1 }}
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+    >
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+        <ScrollView
+          contentContainerStyle={[styles.container, { flexGrow: 1 }]}
+          keyboardShouldPersistTaps="handled"
+          showsVerticalScrollIndicator={false}
+        >
+          <View style={styles.card}>
+            <View style={styles.logoWrapper}>
+              <Image
+                source={require("../../../assets/images/gato-cachorro-pixel-v3.png")}
+                style={styles.splashImage}
+                resizeMode="contain"
+              />
+            </View>
 
-        <Text style={styles.title}>MyPetMatch</Text>
-        <Text style={styles.subtitle}>Adoção responsável começa aqui</Text>
+            <Text style={styles.subtitle}>Adoção responsável começa aqui</Text>
 
-        <TextInput
-          style={styles.input}
-          placeholder="Email"
-          placeholderTextColor="#b8d9bd"
-          keyboardType="email-address"
-          autoCapitalize="none"
-          value={credentials.email}
-          onChangeText={(email) => setCredentials({ ...credentials, email })}
-          textContentType="emailAddress"
-        />
+            <TextInput
+              style={styles.input}
+              placeholder="Email"
+              placeholderTextColor="#b8d9bd"
+              keyboardType="email-address"
+              autoCapitalize="none"
+              value={credentials.email}
+              onChangeText={(email) =>
+                setCredentials({ ...credentials, email })
+              }
+              textContentType="emailAddress"
+            />
 
-        <TextInput
-          style={styles.input}
-          placeholder="Senha"
-          placeholderTextColor="#b8d9bd"
-          secureTextEntry
-          value={credentials.password}
-          onChangeText={(password) =>
-            setCredentials({ ...credentials, password })
-          }
-          textContentType="password"
-        />
+            <TextInput
+              style={styles.input}
+              placeholder="Senha"
+              placeholderTextColor="#b8d9bd"
+              secureTextEntry
+              value={credentials.password}
+              onChangeText={(password) =>
+                setCredentials({ ...credentials, password })
+              }
+              textContentType="password"
+            />
 
-        <TouchableOpacity style={styles.loginButton} onPress={onLogin}>
-          <Text style={styles.loginButtonText}>Entrar</Text>
-        </TouchableOpacity>
-
-        <View style={styles.bottomInfo}>
-          <Text style={styles.tip}>Ainda não tem conta?</Text>
-          <TouchableOpacity onPress={onCreateAccount}>
-            <Text style={styles.linkText}>Criar conta</Text>
-          </TouchableOpacity>
-        </View>
-
-        <View style={styles.dividerRow}>
-          <View style={styles.divider} />
-          <Text style={styles.dividerText}>OU</Text>
-          <View style={styles.divider} />
-        </View>
-
-        <View style={styles.containerSocial}>
-          <TouchableOpacity
-            style={[styles.socialButton, styles.socialGoogle]}
-            onPress={() => onSocialLogin("google")}
-          >
-            <AntDesign style={styles.socialButtonText} name="google" />
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            style={[styles.socialButton, styles.socialFacebook]}
-            onPress={() => onSocialLogin("facebook")}
-          >
-            <FontAwesome style={styles.socialButtonText} name="facebook" />
-          </TouchableOpacity>
-
-          {Platform.OS === "ios" && (
-            <TouchableOpacity
-              style={[styles.socialButton, styles.socialApple]}
-              onPress={() => onSocialLogin("apple")}
-            >
-              <AntDesign style={styles.socialButtonText} name="apple" />
+            <TouchableOpacity style={styles.loginButton} onPress={onLogin}>
+              <Text style={styles.loginButtonText}>Entrar</Text>
             </TouchableOpacity>
-          )}
-        </View>
-      </View>
+
+            <View style={styles.bottomInfo}>
+              <Text style={styles.tip}>Ainda não tem conta?</Text>
+              <TouchableOpacity onPress={onCreateAccount}>
+                <Text style={styles.linkText}>Criar conta</Text>
+              </TouchableOpacity>
+            </View>
+
+            <View style={styles.dividerRow}>
+              <View style={styles.divider} />
+              <Text style={styles.dividerText}>OU</Text>
+              <View style={styles.divider} />
+            </View>
+
+            <View style={styles.containerSocial}>
+              <TouchableOpacity
+                style={[styles.socialButton, styles.socialGoogle]}
+                onPress={() => onSocialLogin("google")}
+              >
+                <AntDesign style={styles.socialButtonText} name="google" />
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={[styles.socialButton, styles.socialFacebook]}
+                onPress={() => onSocialLogin("facebook")}
+              >
+                <FontAwesome style={styles.socialButtonText} name="facebook" />
+              </TouchableOpacity>
+
+              {Platform.OS === "ios" && (
+                <TouchableOpacity
+                  style={[styles.socialButton, styles.socialApple]}
+                  onPress={() => onSocialLogin("apple")}
+                >
+                  <AntDesign style={styles.socialButtonText} name="apple" />
+                </TouchableOpacity>
+              )}
+            </View>
+          </View>
+        </ScrollView>
+      </TouchableWithoutFeedback>
 
       <ModernModal
         visible={modal.visible}
@@ -247,6 +263,6 @@ export default function LoginScreen() {
         onConfirm={modal.onConfirm}
         onClose={hideModal}
       />
-    </View>
+    </KeyboardAvoidingView>
   );
 }

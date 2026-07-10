@@ -155,7 +155,7 @@ export default function PdpPetScreen() {
       try {
         showLoading();
         const snapshot = await db().collection("pets").doc(pet.id).get();
-        if (snapshot.exists) {
+        if (snapshot.exists()) {
           const data = snapshot.data() as Record<string, any>;
           const loadedImages = extractPetImages(data);
           setImages(loadedImages);
@@ -235,7 +235,10 @@ export default function PdpPetScreen() {
       ]}
     >
       <ScrollView contentContainerStyle={styles.scrollContent}>
-        <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
+        <TouchableOpacity
+          style={styles.backButton}
+          onPress={() => router.back()}
+        >
           <FontAwesome name="arrow-left" size={18} color={COLORS.primary} />
           <Text style={styles.backButtonText}>Voltar</Text>
         </TouchableOpacity>
@@ -309,7 +312,10 @@ export default function PdpPetScreen() {
           </View>
         </View>
 
-        <TouchableOpacity style={styles.adoptButton} onPress={handleOpenWhatsApp}>
+        <TouchableOpacity
+          style={styles.adoptButton}
+          onPress={handleOpenWhatsApp}
+        >
           <Text style={styles.adoptButtonText}>Quero adotar</Text>
         </TouchableOpacity>
       </ScrollView>

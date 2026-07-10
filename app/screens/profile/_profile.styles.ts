@@ -30,6 +30,9 @@ export const styles = StyleSheet.create({
     textAlign: "center",
     marginBottom: SPACING.lg,
   },
+  listContent: {
+    paddingBottom: SPACING.xl + 120,
+  },
   userSection: {
     flexDirection: "row",
     alignItems: "center",

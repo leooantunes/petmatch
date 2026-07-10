@@ -48,6 +48,53 @@ export const styles = StyleSheet.create({
     fontWeight: FONT_WEIGHT.bold,
     backgroundColor: COLORS.white,
   },
+  dropdownContainer: {
+    marginBottom: SPACING.md,
+  },
+  dropdownButton: {
+    minHeight: 48,
+    borderWidth: 1,
+    borderColor: COLORS.borderLight,
+    borderRadius: BORDER_RADIUS.md,
+    paddingHorizontal: SPACING.md,
+    backgroundColor: COLORS.white,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+  },
+  dropdownButtonText: {
+    flex: 1,
+    color: COLORS.primary,
+    fontSize: FONT_SIZE.md,
+    fontWeight: FONT_WEIGHT.bold,
+    marginRight: SPACING.sm,
+  },
+  dropdownPlaceholder: {
+    color: COLORS.primaryMedium,
+    fontWeight: FONT_WEIGHT.medium,
+  },
+  dropdownMenu: {
+    marginTop: SPACING.xs,
+    borderWidth: 1,
+    borderColor: COLORS.borderLight,
+    borderRadius: BORDER_RADIUS.md,
+    backgroundColor: COLORS.white,
+    overflow: "hidden",
+    maxHeight: 220,
+  },
+  dropdownScroll: {
+    maxHeight: 220,
+  },
+  dropdownItem: {
+    paddingHorizontal: SPACING.md,
+    paddingVertical: SPACING.md,
+    borderBottomWidth: 1,
+    borderBottomColor: COLORS.borderVeryLight,
+  },
+  dropdownItemText: {
+    color: COLORS.primaryDark,
+    fontSize: FONT_SIZE.md,
+  },
   switchRow: {
     flexDirection: "row",
     alignItems: "center",
@@ -150,10 +197,11 @@ export const styles = StyleSheet.create({
     alignItems: "center",
   },
   photosGrid: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    gap: SPACING.sm,
     marginBottom: SPACING.md,
+  },
+  photosGridRow: {
+    gap: SPACING.sm,
+    marginBottom: SPACING.sm,
   },
   photoCard: {
     width: "48%",

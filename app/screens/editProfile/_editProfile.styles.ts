@@ -15,6 +15,7 @@ export const styles = StyleSheet.create({
   scrollContent: {
     padding: SPACING.xl,
     marginTop: SPACING.lg,
+    paddingBottom: SPACING.xl + 120,
   },
   header: {
     fontSize: FONT_SIZE.xxl,
@@ -95,6 +96,17 @@ export const styles = StyleSheet.create({
   },
   cancelText: {
     color: COLORS.primary,
+    fontSize: FONT_SIZE.sm,
+    fontWeight: FONT_WEIGHT.bold,
+  },
+  deleteAccountButton: {
+    marginTop: SPACING.md,
+    alignSelf: "center",
+    paddingVertical: SPACING.sm,
+    paddingHorizontal: SPACING.md,
+  },
+  deleteAccountText: {
+    color: "#B42318",
     fontSize: FONT_SIZE.sm,
     fontWeight: FONT_WEIGHT.bold,
   },

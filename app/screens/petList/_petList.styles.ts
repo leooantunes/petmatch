@@ -15,7 +15,7 @@ export const styles = StyleSheet.create({
   },
   listContent: {
     padding: SPACING.xl,
-    paddingBottom: SPACING.xl,
+    paddingBottom: SPACING.xl + 120,
   },
   header: {
     fontSize: FONT_SIZE.xl,
@@ -55,6 +55,8 @@ export const styles = StyleSheet.create({
   },
   petInfoRow: {
     flexDirection: "row",
+    flexWrap: "wrap",
+    alignItems: "flex-start",
     marginBottom: SPACING.sm,
   },
   petInfoTag: {
@@ -65,6 +67,8 @@ export const styles = StyleSheet.create({
     marginRight: SPACING.sm,
     marginBottom: SPACING.xs,
     color: COLORS.white,
+    alignSelf: "flex-start",
+    flexShrink: 0,
   },
   petInfoLabel: {
     fontSize: FONT_SIZE.xs,

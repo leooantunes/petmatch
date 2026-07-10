@@ -7,11 +7,14 @@ import { useRouter } from "expo-router";
 import React, { useEffect, useState } from "react";
 import {
   Image,
+  Keyboard,
+  KeyboardAvoidingView,
   Platform,
   ScrollView,
   Text,
   TextInput,
   TouchableOpacity,
+  TouchableWithoutFeedback,
   View,
 } from "react-native";
 import { useLoading } from "../../components/loading/loading.component";
@@ -95,7 +98,7 @@ export default function EditProfileScreen() {
           .collection("users")
           .doc(currentUser.uid)
           .get();
-        if (snapshot.exists) {
+        if (snapshot.exists()) {
           const data = snapshot.data() as Record<string, any>;
           setProfile({
             name: data.name ?? currentUser.displayName ?? "",
@@ -228,100 +231,181 @@ export default function EditProfileScreen() {
     }
   };
 
+  const confirmDeleteAccount = () => {
+    showModal({
+      title: MODAL_TITLE.warning,
+      message:
+        "Tem certeza que deseja excluir sua conta? Esta ação é permanente.",
+      variant: "warning",
+      confirmText: "Excluir conta",
+      cancelText: MODAL_BUTTON.cancel,
+      showCancelButton: true,
+      onConfirm: handleDeleteAccount,
+    });
+  };
+
+  const handleDeleteAccount = async () => {
+    const currentUser = auth().currentUser;
+    if (!currentUser) {
+      showModal({
+        title: MODAL_TITLE.warning,
+        message: MODAL_MESSAGE.sessionExpired,
+        variant: "warning",
+        onConfirm: () => router.replace("/screens/login/login.screen"),
+      });
+      return;
+    }
+
+    showLoading();
+    try {
+      await db().collection("users").doc(currentUser.uid).delete();
+      await currentUser.delete();
+      showModal({
+        title: MODAL_TITLE.success,
+        message: "Conta excluída com sucesso.",
+        variant: "success",
+        confirmText: MODAL_BUTTON.continue,
+        onConfirm: () => router.replace("/screens/login/login.screen"),
+      });
+    } catch (error: any) {
+      console.error("Erro ao excluir conta:", error);
+      if (error?.code === "auth/requires-recent-login") {
+        showModal({
+          title: MODAL_TITLE.warning,
+          message:
+            "Para excluir sua conta, faça login novamente e tente outra vez.",
+          variant: "warning",
+        });
+      } else {
+        showModal({
+          title: MODAL_TITLE.error,
+          message: "Nao foi possivel excluir sua conta no momento.",
+          variant: "error",
+        });
+      }
+    } finally {
+      hideLoading();
+    }
+  };
+
   return (
-    <View style={styles.container}>
-      <ScrollView contentContainerStyle={styles.scrollContent}>
-        <Text style={styles.header}>Editar perfil</Text>
-        <Text style={styles.subtitle}>
-          Atualize suas informações de usuário para manter seu perfil sempre
-          correto.
-        </Text>
+    <KeyboardAvoidingView
+      style={styles.container}
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+    >
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+        <ScrollView
+          contentContainerStyle={styles.scrollContent}
+          keyboardShouldPersistTaps="handled"
+          showsVerticalScrollIndicator={false}
+        >
+          <Text style={styles.header}>Editar perfil</Text>
+          <Text style={styles.subtitle}>
+            Atualize suas informações de usuário para manter seu perfil sempre
+            correto.
+          </Text>
 
-        <TouchableOpacity style={styles.photoSection} onPress={pickProfileImage}>
-          <Image
-            source={{ uri: profileImage }}
-            style={styles.profileImage}
-            onError={() => setProfileImage(defaultProfileImage)}
+          <TouchableOpacity
+            style={styles.photoSection}
+            onPress={pickProfileImage}
+          >
+            <Image
+              source={{ uri: profileImage }}
+              style={styles.profileImage}
+              onError={() => setProfileImage(defaultProfileImage)}
+            />
+            <View style={styles.photoOverlay}>
+              <AntDesign name="camera" size={18} color={COLORS.white} />
+            </View>
+          </TouchableOpacity>
+          <Text style={styles.photoHint}>
+            Toque para trocar a foto de perfil
+          </Text>
+
+          <Text style={styles.label}>Nome</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="Nome completo"
+            placeholderTextColor="#b8d9bd"
+            value={profile.name}
+            onChangeText={(name) => setProfile({ ...profile, name })}
+            editable={!loading}
           />
-          <View style={styles.photoOverlay}>
-            <AntDesign name="camera" size={18} color={COLORS.white} />
-          </View>
-        </TouchableOpacity>
-        <Text style={styles.photoHint}>Toque para trocar a foto de perfil</Text>
 
-        <Text style={styles.label}>Nome</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="Nome completo"
-          placeholderTextColor="#b8d9bd"
-          value={profile.name}
-          onChangeText={(name) => setProfile({ ...profile, name })}
-          editable={!loading}
-        />
+          <Text style={styles.label}>Email</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="Email"
+            placeholderTextColor="#b8d9bd"
+            value={profile.email}
+            onChangeText={(email) => setProfile({ ...profile, email })}
+            keyboardType="email-address"
+            autoCapitalize="none"
+            editable={!loading}
+          />
 
-        <Text style={styles.label}>Email</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="Email"
-          placeholderTextColor="#b8d9bd"
-          value={profile.email}
-          onChangeText={(email) => setProfile({ ...profile, email })}
-          keyboardType="email-address"
-          autoCapitalize="none"
-          editable={!loading}
-        />
+          <Text style={styles.label}>Celular</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="Celular"
+            placeholderTextColor="#b8d9bd"
+            value={profile.phone}
+            onChangeText={(phone) => setProfile({ ...profile, phone })}
+            keyboardType="phone-pad"
+            editable={!loading}
+          />
 
-        <Text style={styles.label}>Celular</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="Celular"
-          placeholderTextColor="#b8d9bd"
-          value={profile.phone}
-          onChangeText={(phone) => setProfile({ ...profile, phone })}
-          keyboardType="phone-pad"
-          editable={!loading}
-        />
+          <Text style={styles.label}>Idade</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="Idade"
+            placeholderTextColor="#b8d9bd"
+            value={profile.age}
+            onChangeText={(age) => setProfile({ ...profile, age })}
+            keyboardType="numeric"
+            editable={!loading}
+          />
 
-        <Text style={styles.label}>Idade</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="Idade"
-          placeholderTextColor="#b8d9bd"
-          value={profile.age}
-          onChangeText={(age) => setProfile({ ...profile, age })}
-          keyboardType="numeric"
-          editable={!loading}
-        />
+          <Text style={styles.label}>Cidade</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="Cidade"
+            placeholderTextColor="#b8d9bd"
+            value={profile.city}
+            onChangeText={(city) => setProfile({ ...profile, city })}
+            editable={!loading}
+          />
 
-        <Text style={styles.label}>Cidade</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="Cidade"
-          placeholderTextColor="#b8d9bd"
-          value={profile.city}
-          onChangeText={(city) => setProfile({ ...profile, city })}
-          editable={!loading}
-        />
+          <Text style={styles.label}>Senha</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="Senha"
+            placeholderTextColor="#b8d9bd"
+            secureTextEntry
+            value={profile.password}
+            onChangeText={(password) => setProfile({ ...profile, password })}
+            editable={!loading}
+          />
 
-        <Text style={styles.label}>Senha</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="Senha"
-          placeholderTextColor="#b8d9bd"
-          secureTextEntry
-          value={profile.password}
-          onChangeText={(password) => setProfile({ ...profile, password })}
-          editable={!loading}
-        />
+          <TouchableOpacity style={styles.button} onPress={handleSave}>
+            <Text style={styles.buttonText}>Salvar</Text>
+          </TouchableOpacity>
 
-        <TouchableOpacity style={styles.button} onPress={handleSave}>
-          <Text style={styles.buttonText}>Salvar</Text>
-        </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.cancelButton}
+            onPress={() => router.back()}
+          >
+            <Text style={styles.cancelText}>Cancelar</Text>
+          </TouchableOpacity>
 
-        <TouchableOpacity style={styles.cancelButton} onPress={() => router.back()}>
-          <Text style={styles.cancelText}>Cancelar</Text>
-        </TouchableOpacity>
-      </ScrollView>
+          <TouchableOpacity
+            style={styles.deleteAccountButton}
+            onPress={confirmDeleteAccount}
+          >
+            <Text style={styles.deleteAccountText}>Excluir conta</Text>
+          </TouchableOpacity>
+        </ScrollView>
+      </TouchableWithoutFeedback>
 
       <ModernModal
         visible={modal.visible}
@@ -334,6 +418,6 @@ export default function EditProfileScreen() {
         onConfirm={modal.onConfirm}
         onClose={hideModal}
       />
-    </View>
+    </KeyboardAvoidingView>
   );
 }
