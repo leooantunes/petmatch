@@ -69,6 +69,7 @@
       "expo-router",
       "expo-image-picker",
       "@react-native-firebase/app",
+      "./plugins/withFirebaseStaticFramework",
       [
         "expo-splash-screen",
         {

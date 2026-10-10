@@ -3,7 +3,8 @@
     "preview": {
       "android": {
         "buildType": "apk"
-      }
+      },
+      "channel": "preview"
     },
     "preview2": {
       "channel": "preview2",
@@ -17,17 +18,22 @@
       }
     },
     "preview3": {
-      "developmentClient": true
+      "developmentClient": true,
+      "channel": "preview3"
     },
     "preview4": {
-      "distribution": "internal"
+      "distribution": "internal",
+      "channel": "preview4"
     },
     "ios-simulator": {
       "distribution": "internal",
       "ios": {
         "simulator": true
-      }
+      },
+      "channel": "ios-simulator"
     },
-    "production": {}
+    "production": {
+      "channel": "production"
+    }
   }
 }
