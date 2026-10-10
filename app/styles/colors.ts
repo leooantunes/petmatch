@@ -15,6 +15,10 @@ export const COLORS = {
   // Neutros
   white: "#ffffff",
   black: "#171717",
+  textSecondary: "#6e6e73",
+  fieldBackground: "#f2f2f7",
+  separator: "#e5e5ea",
+  danger: "#d70015",
 
   // Sociais
   google: "#de5245",
