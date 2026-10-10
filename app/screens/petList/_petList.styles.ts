@@ -14,8 +14,14 @@ export const styles = StyleSheet.create({
     marginTop: SPACING.lg,
   },
   listContent: {
+    flexGrow: 1,
     padding: SPACING.xl,
     paddingBottom: SPACING.xl + 120,
+  },
+  emptyState: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
   },
   header: {
     fontSize: FONT_SIZE.xl,

@@ -16,16 +16,32 @@ This is an [Expo](https://expo.dev) project created with [`create-expo-app`](htt
    npx expo start
    ```
 
-3. Configure social login environment variables
+3. Configure Google Sign-In environment variables
 
    ```bash
    cp .env.example .env
    ```
 
-   Fill the `.env` file with:
-   - `EXPO_PUBLIC_GOOGLE_ANDROID_CLIENT_ID`
-   - `EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID`
-   - `EXPO_PUBLIC_FACEBOOK_APP_ID`
+   `EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID` is optional; set it only when the iOS
+   OAuth client ID must differ from the one in `GoogleService-Info.plist`.
+
+   In Firebase Authentication, enable the **Google** and **Apple** providers.
+   Register the Android package name and SHA-1 certificate, and the iOS bundle ID,
+   in the corresponding Google OAuth clients. For Apple, also enable **Sign in with
+   Apple** for the app identifier in the Apple Developer portal and configure its
+   service ID in Firebase Authentication.
+
+   Social authentication uses native modules and must be tested in a development
+   build or production build; it is not supported by Expo Go.
+
+4. Create an iOS Simulator build in the cloud
+
+   ```bash
+   npm run build:ios:simulator
+   ```
+
+   This build does not require the paid Apple Developer Program, but it can only
+   run on an iOS Simulator on a Mac.
 
 In the output, you'll find options to open the app in a
 

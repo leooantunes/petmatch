@@ -2,6 +2,7 @@ import { db } from "@/firebase";
 import { useRouter } from "expo-router";
 import React, { useEffect, useState } from "react";
 import { FlatList, Image, Text, TouchableOpacity, View } from "react-native";
+import { EmptyList } from "../../components/emptyList/emptyList.component";
 import { useLoading } from "../../components/loading/loading.component";
 import { MODAL_TITLE } from "../../components/modal/modalCopy";
 import ModernModal from "../../components/modal/modernModal";
@@ -112,11 +113,13 @@ export default function PetListScreen() {
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.listContent}
         ListEmptyComponent={
-          isLoadingList ? (
-            <Text style={styles.emptyText}>Carregando pets...</Text>
-          ) : (
-            <Text style={styles.emptyText}>Nenhum pet encontrado.</Text>
-          )
+          <View style={styles.emptyState}>
+            {isLoadingList ? (
+              <Text style={styles.emptyText}>Carregando pets...</Text>
+            ) : (
+              <EmptyList icon="paw" message="Nenhum pet encontrado." />
+            )}
+          </View>
         }
         renderItem={({ item }) => (
           <TouchableOpacity

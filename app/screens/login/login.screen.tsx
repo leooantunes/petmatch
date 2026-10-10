@@ -1,6 +1,10 @@
-import { AntDesign, FontAwesome } from "@expo/vector-icons";
+import { AntDesign } from "@expo/vector-icons";
 import { FirebaseError } from "@firebase/util";
 import auth from "@react-native-firebase/auth";
+import {
+  GoogleSignin,
+  isSuccessResponse,
+} from "@react-native-google-signin/google-signin";
 import * as AppleAuthentication from "expo-apple-authentication";
 import { useRouter } from "expo-router";
 import React, { useCallback, useEffect, useState } from "react";
@@ -16,6 +20,8 @@ import {
   TouchableWithoutFeedback,
   View,
 } from "react-native";
+import { configureGoogleSignIn } from "../../config/socialAuthEnv";
+import { db } from "@/firebase";
 import { useLoading } from "../../components/loading/loading.component";
 import { MODAL_BUTTON, MODAL_TITLE } from "../../components/modal/modalCopy";
 import ModernModal from "../../components/modal/modernModal";
@@ -51,7 +57,7 @@ export default function LoginScreen() {
   });
 
   useEffect(() => {
-    console.log("[LoginScreen] Component mounted");
+    configureGoogleSignIn();
   }, []);
 
   const showModal = (next: Omit<ModalState, "visible">) => {
@@ -106,6 +112,63 @@ export default function LoginScreen() {
     router.push("/screens/register/register.screen");
   };
 
+  const createOrUpdateSocialProfile = useCallback(async () => {
+    const currentUser = auth().currentUser;
+    if (!currentUser) {
+      throw new Error("Usuario nao autenticado.");
+    }
+
+    const userReference = db().collection("users").doc(currentUser.uid);
+    const userSnapshot = await userReference.get();
+    const profile = {
+      uid: currentUser.uid,
+      ...(currentUser.displayName ? { name: currentUser.displayName } : {}),
+      ...(currentUser.email ? { email: currentUser.email } : {}),
+      ...(currentUser.photoURL ? { photoUrl: currentUser.photoURL } : {}),
+      ...(!userSnapshot.exists ? { createdAt: new Date() } : {}),
+      updatedAt: new Date(),
+    };
+
+    await userReference.set(profile, { merge: true });
+  }, []);
+
+  const startGoogleLogin = useCallback(async () => {
+    showLoading();
+    try {
+      if (Platform.OS === "android") {
+        await GoogleSignin.hasPlayServices({
+          showPlayServicesUpdateDialog: true,
+        });
+      }
+
+      const response = await GoogleSignin.signIn();
+      if (!isSuccessResponse(response)) {
+        return;
+      }
+
+      const { idToken } = response.data;
+      if (!idToken) {
+        socialLoginFailed("Nao foi possivel obter token do Google.");
+        return;
+      }
+
+      const credential = auth.GoogleAuthProvider.credential(idToken);
+      await auth().signInWithCredential(credential);
+      await createOrUpdateSocialProfile();
+      router.replace("/screens/petList/petList.screen");
+    } catch (error) {
+      socialLoginFailed("Nao foi possivel entrar com Google.", error);
+    } finally {
+      hideLoading();
+    }
+  }, [
+    createOrUpdateSocialProfile,
+    hideLoading,
+    router,
+    showLoading,
+    socialLoginFailed,
+  ]);
+
   const startAppleLogin = useCallback(async () => {
     if (Platform.OS !== "ios") {
       showModal({
@@ -134,6 +197,7 @@ export default function LoginScreen() {
         appleCredential.identityToken,
       );
       await auth().signInWithCredential(credential);
+      await createOrUpdateSocialProfile();
       router.replace("/screens/petList/petList.screen");
     } catch (error: any) {
       if (error?.code !== "ERR_REQUEST_CANCELED") {
@@ -142,22 +206,23 @@ export default function LoginScreen() {
     } finally {
       hideLoading();
     }
-  }, [hideLoading, router, showLoading, socialLoginFailed]);
+  }, [
+    hideLoading,
+    router,
+    showLoading,
+    socialLoginFailed,
+    createOrUpdateSocialProfile,
+  ]);
 
-  const onSocialLogin = async (provider: "google" | "facebook" | "apple") => {
-    if (provider === "apple") {
-      await startAppleLogin();
+  const onSocialLogin = async (provider: "google" | "apple") => {
+    if (provider === "google") {
+      await startGoogleLogin();
       return;
     }
 
-    showModal({
-      title: MODAL_TITLE.info,
-      message:
-        provider === "google"
-          ? "Login com Google sera reativado quando a configuracao social estiver pronta."
-          : "Login com Facebook sera reativado quando a configuracao social estiver pronta.",
-      variant: "info",
-    });
+    if (provider === "apple") {
+      await startAppleLogin();
+    }
   };
 
   return (
@@ -230,13 +295,6 @@ export default function LoginScreen() {
                 onPress={() => onSocialLogin("google")}
               >
                 <AntDesign style={styles.socialButtonText} name="google" />
-              </TouchableOpacity>
-
-              <TouchableOpacity
-                style={[styles.socialButton, styles.socialFacebook]}
-                onPress={() => onSocialLogin("facebook")}
-              >
-                <FontAwesome style={styles.socialButtonText} name="facebook" />
               </TouchableOpacity>
 
               {Platform.OS === "ios" && (

@@ -1,11 +1,47 @@
 import { AntDesign } from "@expo/vector-icons";
+import {
+  Inter_400Regular,
+  Inter_700Bold,
+  Inter_800ExtraBold,
+  useFonts,
+} from "@expo-google-fonts/inter";
 import { Stack, useRouter, useSegments } from "expo-router";
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import {
+  StyleSheet,
+  StyleProp,
+  Text,
+  TextInput,
+  TextStyle,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import { ErrorBoundary } from "./components/errorBoundary/errorBoundary.component";
 import { LoadingProvider } from "./components/loading/loading.component";
-import { COLORS, FONT_WEIGHT } from "./styles/colors";
+import { COLORS } from "./styles/colors";
+
+type DefaultStyledComponent = {
+  defaultProps?: {
+    style?: StyleProp<TextStyle>;
+  };
+};
+
+function setDefaultFont(component: DefaultStyledComponent) {
+  component.defaultProps = {
+    ...component.defaultProps,
+    style: [{ fontFamily: "Inter_400Regular" }, component.defaultProps?.style],
+  };
+}
+
+// React Native supports defaultProps at runtime, though it is absent from its current typings.
+setDefaultFont(Text as typeof Text & DefaultStyledComponent);
+setDefaultFont(TextInput as typeof TextInput & DefaultStyledComponent);
 
 export default function RootLayout() {
+  const [fontsLoaded, fontError] = useFonts({
+    Inter_400Regular,
+    Inter_700Bold,
+    Inter_800ExtraBold,
+  });
   const segments = useSegments() as string[];
   const router = useRouter();
   const currentRoute = segments.at(-1) ?? "";
@@ -31,6 +67,14 @@ export default function RootLayout() {
   const handleHome = () => router.push("/screens/petList/petList.screen");
   const handleAddPet = () => router.push("/screens/addPet/addPet.screen");
   const handleProfile = () => router.push("/screens/profile/profile.screen");
+
+  if (fontError) {
+    throw fontError;
+  }
+
+  if (!fontsLoaded) {
+    return null;
+  }
 
   return (
     <ErrorBoundary>
@@ -188,10 +232,10 @@ const styles = StyleSheet.create({
     marginTop: 1,
     color: COLORS.primaryDark,
     fontSize: 10,
-    fontWeight: FONT_WEIGHT.bold,
+    fontFamily: "Inter_700Bold",
   },
   navButtonTextActive: {
     color: COLORS.white,
-    fontWeight: FONT_WEIGHT.extraBold,
+    fontFamily: "Inter_800ExtraBold",
   },
 });

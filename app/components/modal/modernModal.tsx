@@ -23,9 +23,9 @@ const iconMap: Record<
   ModalVariant,
   { name: keyof typeof AntDesign.glyphMap; color: string }
 > = {
-  success: { name: "checkcircle", color: "#22C55E" },
-  error: { name: "closecircle", color: "#EF4444" },
-  info: { name: "infocircle", color: COLORS.primary },
+  success: { name: "check-circle", color: "#22C55E" },
+  error: { name: "close-circle", color: "#EF4444" },
+  info: { name: "info-circle", color: COLORS.primary },
   warning: { name: "warning", color: "#F59E0B" },
 };
 

@@ -13,6 +13,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import { EmptyList } from "../../components/emptyList/emptyList.component";
 import { useLoading } from "../../components/loading/loading.component";
 import {
   MODAL_BUTTON,
@@ -326,6 +327,15 @@ export default function ProfileScreen() {
           </View>
         </View>
 
+        <TouchableOpacity
+          style={styles.ongsButton}
+          onPress={() => router.push("../ongs/ongs.screen")}
+          activeOpacity={0.85}
+        >
+          <FontAwesome name="heart" size={16} color={COLORS.white} />
+          <Text style={styles.ongsButtonText}>Conheça nossas ONGs amigas</Text>
+        </TouchableOpacity>
+
         <FlatList
           data={pets}
           keyExtractor={(item) => item.id}
@@ -335,9 +345,7 @@ export default function ProfileScreen() {
             loadingPets ? (
               <Text style={styles.description}>Carregando seus pets...</Text>
             ) : (
-              <Text style={styles.description}>
-                Nenhum pet cadastrado ainda.
-              </Text>
+              <EmptyList icon="paw" message="Nenhum pet cadastrado ainda." />
             )
           }
           renderItem={({ item }) => (

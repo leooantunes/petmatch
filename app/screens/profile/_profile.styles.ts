@@ -89,6 +89,21 @@ export const styles = StyleSheet.create({
     gap: SPACING.sm,
     marginLeft: "auto",
   },
+  ongsButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: SPACING.sm,
+    paddingVertical: SPACING.md,
+    marginBottom: SPACING.lg,
+    borderRadius: BORDER_RADIUS.full,
+    backgroundColor: COLORS.primary,
+  },
+  ongsButtonText: {
+    color: COLORS.white,
+    fontSize: FONT_SIZE.sm,
+    fontWeight: FONT_WEIGHT.bold,
+  },
   iconButton: {
     width: 38,
     height: 38,

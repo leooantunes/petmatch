@@ -5,7 +5,6 @@ export default function ScreensLayout() {
     <Stack
       screenOptions={{
         headerShown: false,
-        animationEnabled: true,
       }}
     />
   );

@@ -37,22 +37,50 @@ type ModalState = {
   onConfirm?: () => void;
 };
 
-const parseDogBreeds = (message?: Record<string, string[]>): string[] => {
-  const entries = Object.entries(message ?? {});
+const parseDogBreeds = (data: unknown): string[] => {
+  if (
+    !data ||
+    typeof data !== "object" ||
+    !("message" in data) ||
+    !data.message ||
+    typeof data.message !== "object"
+  ) {
+    return [];
+  }
+
+  const entries = Object.entries(data.message as Record<string, unknown>);
   const parsedBreeds: string[] = [];
 
   for (const [breedName, subBreeds] of entries) {
-    if (!subBreeds?.length) {
+    if (!Array.isArray(subBreeds) || subBreeds.length === 0) {
       parsedBreeds.push(breedName);
       continue;
     }
 
     for (const subBreed of subBreeds) {
-      parsedBreeds.push(`${subBreed} ${breedName}`);
+      if (typeof subBreed === "string") {
+        parsedBreeds.push(`${subBreed} ${breedName}`);
+      }
     }
   }
 
   return parsedBreeds;
+};
+
+const parseCatBreeds = (data: unknown): string[] => {
+  if (!Array.isArray(data)) {
+    console.warn("A API de racas de gatos retornou um formato invalido.");
+    return [];
+  }
+
+  return data.flatMap((item) =>
+    item &&
+    typeof item === "object" &&
+    "name" in item &&
+    typeof item.name === "string"
+      ? [item.name]
+      : [],
+  );
 };
 
 const AGE_RANGES = [
@@ -157,7 +185,7 @@ export default function AddPetScreen() {
   };
 
   useEffect(() => {
-    (async () => {
+    void (async () => {
       const { status } =
         await ImagePicker.requestMediaLibraryPermissionsAsync();
       setHasGalleryPermission(status === "granted");
@@ -174,18 +202,25 @@ export default function AddPetScreen() {
           fetch("https://api.thecatapi.com/v1/breeds"),
         ]);
 
-        const dogData = (await dogResponse.json()) as {
-          message?: Record<string, string[]>;
-        };
-        const catData = (await catResponse.json()) as {
-          name?: string;
-        }[];
+        if (!dogResponse.ok) {
+          throw new Error(
+            `A API de racas de caes respondeu com status ${dogResponse.status}.`,
+          );
+        }
 
-        const dogBreeds = parseDogBreeds(dogData.message);
+        const dogData: unknown = await dogResponse.json();
+        const catData: unknown = catResponse.ok
+          ? await catResponse.json()
+          : [];
 
-        const catBreeds = (catData ?? [])
-          .map((item) => item.name)
-          .filter((item): item is string => Boolean(item));
+        if (!catResponse.ok) {
+          console.warn(
+            `A API de racas de gatos respondeu com status ${catResponse.status}.`,
+          );
+        }
+
+        const dogBreeds = parseDogBreeds(dogData);
+        const catBreeds = parseCatBreeds(catData);
 
         const normalizedBreeds = Array.from(
           new Set(
@@ -213,7 +248,7 @@ export default function AddPetScreen() {
       }
     };
 
-    loadBreeds();
+    void loadBreeds();
   }, []);
 
   const getCurrentCity = async (): Promise<string> => {
