@@ -7,24 +7,26 @@ import {
 } from "@react-native-google-signin/google-signin";
 import * as AppleAuthentication from "expo-apple-authentication";
 import { useRouter } from "expo-router";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
+import * as Haptics from "expo-haptics";
 import {
   Image,
-  Keyboard,
   KeyboardAvoidingView,
   Platform,
+  Pressable,
   ScrollView,
   Text,
   TextInput,
-  TouchableOpacity,
-  TouchableWithoutFeedback,
   View,
 } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { configureGoogleSignIn } from "../../config/socialAuthEnv";
 import { db } from "@/firebase";
 import { useLoading } from "../../components/loading/loading.component";
 import { MODAL_BUTTON, MODAL_TITLE } from "../../components/modal/modalCopy";
+import { FormField } from "../../components/formField/formField.component";
 import ModernModal from "../../components/modal/modernModal";
+import { COLORS } from "../../styles/colors";
 import { UserCredentials } from "../../types/user";
 import { styles } from "./_login.styles";
 
@@ -41,6 +43,8 @@ type ModalState = {
 
 export default function LoginScreen() {
   const router = useRouter();
+  const insets = useSafeAreaInsets();
+  const passwordRef = useRef<TextInput>(null);
   const [credentials, setCredentials] = useState<UserCredentials>({
     email: "",
     password: "",
@@ -92,10 +96,12 @@ export default function LoginScreen() {
         credentials.password,
       );
       console.log("[LoginScreen] Login successful, navigating to petList");
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
       router.push("/screens/petList/petList.screen");
     } catch (e: any) {
       const err = e as FirebaseError;
       console.error("[LoginScreen] Login error:", err);
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
       showModal({
         title: MODAL_TITLE.error,
         message:
@@ -227,88 +233,111 @@ export default function LoginScreen() {
 
   return (
     <KeyboardAvoidingView
-      style={{ flex: 1 }}
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      style={styles.screen}
+      behavior={Platform.OS === "ios" ? undefined : "height"}
     >
-      <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
-        <ScrollView
-          contentContainerStyle={[styles.container, { flexGrow: 1 }]}
-          keyboardShouldPersistTaps="handled"
-          showsVerticalScrollIndicator={false}
+      <ScrollView
+        contentContainerStyle={[
+          styles.container,
+          { paddingTop: insets.top + 32, paddingBottom: insets.bottom + 16 },
+        ]}
+        keyboardShouldPersistTaps="handled"
+        keyboardDismissMode="interactive"
+        automaticallyAdjustKeyboardInsets
+        showsVerticalScrollIndicator={false}
+      >
+        <Image
+          source={require("../../../assets/images/gato-cachorro-pixel-v3.png")}
+          style={styles.logo}
+          resizeMode="cover"
+        />
+
+        <Text style={styles.title}>Entrar</Text>
+        <Text style={styles.subtitle}>Adoção responsável começa aqui.</Text>
+
+        <FormField
+          label="E-mail"
+          placeholder="voce@exemplo.com"
+          keyboardType="email-address"
+          autoCapitalize="none"
+          autoCorrect={false}
+          autoComplete="email"
+          textContentType="emailAddress"
+          returnKeyType="next"
+          submitBehavior="submit"
+          onSubmitEditing={() => passwordRef.current?.focus()}
+          value={credentials.email}
+          onChangeText={(email) => setCredentials({ ...credentials, email })}
+        />
+
+        <FormField
+          ref={passwordRef}
+          label="Senha"
+          placeholder="Sua senha"
+          secureTextEntry
+          autoComplete="current-password"
+          textContentType="password"
+          returnKeyType="go"
+          onSubmitEditing={onLogin}
+          value={credentials.password}
+          onChangeText={(password) =>
+            setCredentials({ ...credentials, password })
+          }
+        />
+
+        <Pressable
+          style={({ pressed }) => [
+            styles.primaryButton,
+            pressed && styles.pressed,
+          ]}
+          onPress={onLogin}
         >
-          <View style={styles.card}>
-            <View style={styles.logoWrapper}>
-              <Image
-                source={require("../../../assets/images/gato-cachorro-pixel-v3.png")}
-                style={styles.splashImage}
-                resizeMode="contain"
-              />
-            </View>
+          <Text style={styles.primaryButtonText}>Entrar</Text>
+        </Pressable>
 
-            <Text style={styles.subtitle}>Adoção responsável começa aqui</Text>
+        <View style={styles.dividerRow}>
+          <View style={styles.divider} />
+          <Text style={styles.dividerText}>ou</Text>
+          <View style={styles.divider} />
+        </View>
 
-            <TextInput
-              style={styles.input}
-              placeholder="Email"
-              placeholderTextColor="#b8d9bd"
-              keyboardType="email-address"
-              autoCapitalize="none"
-              value={credentials.email}
-              onChangeText={(email) =>
-                setCredentials({ ...credentials, email })
-              }
-              textContentType="emailAddress"
-            />
+        {Platform.OS === "ios" && (
+          <AppleAuthentication.AppleAuthenticationButton
+            buttonType={
+              AppleAuthentication.AppleAuthenticationButtonType.CONTINUE
+            }
+            buttonStyle={
+              AppleAuthentication.AppleAuthenticationButtonStyle.BLACK
+            }
+            cornerRadius={14}
+            style={styles.appleButton}
+            onPress={() => onSocialLogin("apple")}
+          />
+        )}
 
-            <TextInput
-              style={styles.input}
-              placeholder="Senha"
-              placeholderTextColor="#b8d9bd"
-              secureTextEntry
-              value={credentials.password}
-              onChangeText={(password) =>
-                setCredentials({ ...credentials, password })
-              }
-              textContentType="password"
-            />
+        <Pressable
+          style={({ pressed }) => [
+            styles.googleButton,
+            pressed && styles.pressed,
+          ]}
+          onPress={() => onSocialLogin("google")}
+        >
+          <AntDesign name="google" size={18} color={COLORS.black} />
+          <Text style={styles.googleButtonText}>Continuar com Google</Text>
+        </Pressable>
 
-            <TouchableOpacity style={styles.loginButton} onPress={onLogin}>
-              <Text style={styles.loginButtonText}>Entrar</Text>
-            </TouchableOpacity>
+        <View style={styles.spacer} />
 
-            <View style={styles.bottomInfo}>
-              <Text style={styles.tip}>Ainda não tem conta?</Text>
-              <TouchableOpacity onPress={onCreateAccount}>
-                <Text style={styles.linkText}>Criar conta</Text>
-              </TouchableOpacity>
-            </View>
-
-            <View style={styles.dividerRow}>
-              <View style={styles.divider} />
-              <Text style={styles.dividerText}>OU</Text>
-              <View style={styles.divider} />
-            </View>
-
-            <View style={styles.containerSocial}>
-              <TouchableOpacity
-                style={[styles.socialButton, styles.socialGoogle]}
-                onPress={() => onSocialLogin("google")}
-              >
-                <AntDesign style={styles.socialButtonText} name="google" />
-              </TouchableOpacity>
-
-              {Platform.OS === "ios" && (
-                <TouchableOpacity
-                  style={[styles.socialButton, styles.socialApple]}
-                  onPress={() => onSocialLogin("apple")}
-                >
-                  <AntDesign style={styles.socialButtonText} name="apple" />
-                </TouchableOpacity>
-              )}
-            </View>
-          </View>
-        </ScrollView>
-      </TouchableWithoutFeedback>
+        <Pressable
+          style={({ pressed }) => [
+            styles.secondaryButton,
+            pressed && styles.pressed,
+          ]}
+          onPress={onCreateAccount}
+        >
+          <Text style={styles.secondaryButtonText}>Criar uma conta</Text>
+        </Pressable>
+      </ScrollView>
 
       <ModernModal
         visible={modal.visible}

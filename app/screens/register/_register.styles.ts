@@ -1,93 +1,42 @@
 import { StyleSheet } from "react-native";
-import {
-  BORDER_RADIUS,
-  COLORS,
-  FONT_SIZE,
-  FONT_WEIGHT,
-  SPACING,
-} from "../../styles/colors";
+import { COLORS, FONT_SIZE, SPACING } from "../../styles/colors";
 
 export const styles = StyleSheet.create({
-  container: {
+  screen: {
     flex: 1,
-    backgroundColor: COLORS.backgroundLight,
-    justifyContent: "center",
-    alignItems: "center",
-    paddingHorizontal: SPACING.xl,
-  },
-  card: {
-    width: "100%",
     backgroundColor: COLORS.white,
-    borderRadius: BORDER_RADIUS.xl,
-    padding: SPACING.xxl,
-    shadowColor: COLORS.shadowColor,
-    shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.12,
-    shadowRadius: 15,
-    elevation: 8,
   },
-  title: {
-    fontSize: FONT_SIZE.xxl,
-    color: COLORS.primaryDark,
-    fontWeight: FONT_WEIGHT.extraBold,
-    textAlign: "center",
-    marginBottom: SPACING.sm,
+  container: {
+    paddingHorizontal: SPACING.lg,
+    paddingBottom: SPACING.xxl * 2,
   },
   subtitle: {
-    fontSize: FONT_SIZE.sm,
-    color: COLORS.primaryLight,
-    textAlign: "center",
-    marginBottom: SPACING.lg,
-  },
-  input: {
-    height: 50,
-    borderWidth: 1,
-    borderColor: COLORS.borderLight,
-    borderRadius: BORDER_RADIUS.md,
-    paddingHorizontal: SPACING.md,
     fontSize: FONT_SIZE.md,
-    marginBottom: SPACING.md,
-    color: COLORS.primary,
-    fontWeight: FONT_WEIGHT.bold,
-    backgroundColor: COLORS.backgroundVeryLight,
+    color: COLORS.textSecondary,
+    marginBottom: SPACING.xxl,
   },
-  buttonPrimary: {
+  primaryButton: {
     height: 52,
     backgroundColor: COLORS.primary,
-    borderRadius: BORDER_RADIUS.lg,
+    borderRadius: 14,
     alignItems: "center",
     justifyContent: "center",
     marginTop: SPACING.sm,
-    marginBottom: SPACING.md,
   },
-  buttonPrimaryText: {
+  primaryButtonText: {
     color: COLORS.white,
-    fontWeight: FONT_WEIGHT.bold,
-    fontSize: FONT_SIZE.md,
+    fontFamily: "Inter_700Bold",
+    fontSize: FONT_SIZE.md + 1,
+  },
+  pressed: {
+    opacity: 0.7,
   },
   helperText: {
-    color: COLORS.primaryMedium,
-    fontSize: FONT_SIZE.sm,
+    color: COLORS.textSecondary,
+    fontSize: 13,
     textAlign: "center",
-    marginBottom: SPACING.lg,
-  },
-  fieldRow: {
-    width: "100%",
-    flexDirection: "row",
-    justifyContent: "space-between",
-    gap: SPACING.md,
-  },
-  halfInput: {
-    flex: 1,
-  },
-  footerText: {
-    color: COLORS.primaryMedium,
-    textAlign: "center",
-    marginTop: SPACING.md,
-  },
-  linkText: {
-    color: COLORS.primary,
-    fontWeight: FONT_WEIGHT.bold,
+    marginTop: SPACING.lg,
+    lineHeight: 18,
   },
 });
 

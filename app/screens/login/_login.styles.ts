@@ -1,151 +1,99 @@
 import { StyleSheet } from "react-native";
-import {
-  BORDER_RADIUS,
-  COLORS,
-  FONT_SIZE,
-  FONT_WEIGHT,
-  SPACING,
-} from "../../styles/colors";
+import { COLORS, FONT_SIZE, SPACING } from "../../styles/colors";
 
 export const styles = StyleSheet.create({
-  container: {
+  screen: {
     flex: 1,
-    backgroundColor: COLORS.backgroundLight,
-    justifyContent: "center",
-    alignItems: "center",
-    paddingHorizontal: SPACING.xl,
-  },
-  card: {
-    width: "100%",
     backgroundColor: COLORS.white,
-    borderRadius: BORDER_RADIUS.xl,
-    padding: SPACING.xxl,
-    shadowColor: COLORS.shadowColor,
-    shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.12,
-    shadowRadius: 15,
-    elevation: 8,
   },
-  containerSocial: {
-    flexDirection: "row",
-    justifyContent: "center",
-    alignItems: "center",
-    gap: 12,
-    flex: 1,
-    marginVertical: 25,
+  container: {
+    flexGrow: 1,
+    paddingHorizontal: SPACING.lg,
+  },
+  logo: {
+    width: 72,
+    height: 72,
+    borderRadius: 16,
+    marginBottom: SPACING.xl,
   },
   title: {
-    fontSize: FONT_SIZE.xxl,
-    color: COLORS.primaryDark,
-    fontWeight: FONT_WEIGHT.extraBold,
-    textAlign: "center",
-    marginBottom: SPACING.sm,
+    fontSize: 34,
+    fontFamily: "Inter_800ExtraBold",
+    color: COLORS.black,
+    letterSpacing: -0.5,
   },
   subtitle: {
-    fontSize: FONT_SIZE.sm,
-    color: COLORS.primaryLight,
-    textAlign: "center",
-    marginBottom: SPACING.lg,
-  },
-  input: {
-    height: 48,
-    borderWidth: 1,
-    borderColor: COLORS.borderLight,
-    borderRadius: BORDER_RADIUS.md,
-    paddingHorizontal: SPACING.md,
     fontSize: FONT_SIZE.md,
-    marginBottom: SPACING.md,
-    color: COLORS.primary,
-    fontWeight: FONT_WEIGHT.bold,
-    backgroundColor: COLORS.backgroundVeryLight,
+    color: COLORS.textSecondary,
+    marginTop: SPACING.xs,
+    marginBottom: SPACING.xxl + SPACING.sm,
   },
-  loginButton: {
+  primaryButton: {
     height: 52,
     backgroundColor: COLORS.primary,
-    borderRadius: BORDER_RADIUS.lg,
+    borderRadius: 14,
     alignItems: "center",
     justifyContent: "center",
     marginTop: SPACING.sm,
-    marginBottom: SPACING.md,
   },
-  loginButtonText: {
+  primaryButtonText: {
     color: COLORS.white,
-    fontWeight: FONT_WEIGHT.bold,
-    fontSize: FONT_SIZE.md,
+    fontFamily: "Inter_700Bold",
+    fontSize: FONT_SIZE.md + 1,
   },
-  bottomInfo: {
-    flexDirection: "row",
-    justifyContent: "center",
-    alignItems: "center",
-    gap: SPACING.xs,
-    marginBottom: SPACING.md,
-  },
-  tip: {
-    color: COLORS.primaryMedium,
-  },
-  linkText: {
-    color: COLORS.primary,
-    fontWeight: FONT_WEIGHT.bold,
+  pressed: {
+    opacity: 0.7,
   },
   dividerRow: {
     flexDirection: "row",
-    justifyContent: "center",
     alignItems: "center",
-    marginVertical: SPACING.md,
     gap: SPACING.md,
+    marginVertical: SPACING.xxl,
   },
   divider: {
     flex: 1,
-    height: 1,
-    backgroundColor: COLORS.borderVeryLight,
+    height: StyleSheet.hairlineWidth,
+    backgroundColor: COLORS.separator,
   },
   dividerText: {
-    color: COLORS.primaryLight,
-    fontWeight: FONT_WEIGHT.medium,
-  },
-  socialButton: {
-    height: FONT_SIZE.xxl,
-    width: FONT_SIZE.xxl,
-    borderRadius: BORDER_RADIUS.xl,
-    justifyContent: "center",
-    alignItems: "center",
-    marginBottom: SPACING.md,
-  },
-  socialButtonText: {
-    color: COLORS.white,
-    fontWeight: FONT_WEIGHT.bold,
+    color: COLORS.textSecondary,
     fontSize: FONT_SIZE.sm,
   },
-  illustrationWrapper: {
-    width: 100,
-    height: 100,
-    borderRadius: BORDER_RADIUS.full,
-    backgroundColor: COLORS.backgroundLight,
-    alignItems: "center",
-    justifyContent: "center",
-    marginBottom: SPACING.lg,
-    shadowColor: COLORS.shadowColor,
-    shadowOffset: { width: 0, height: 6 },
-    shadowOpacity: 0.12,
-    shadowRadius: 10,
-    elevation: 6,
-  },
-  logoWrapper: {
-    alignItems: "center",
+  appleButton: {
+    height: 52,
     marginBottom: SPACING.md,
   },
-  splashImage: {
-    width: 120,
-    height: 120,
+  googleButton: {
+    height: 52,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: SPACING.sm,
+    borderRadius: 14,
+    borderWidth: 1,
+    borderColor: COLORS.separator,
+    backgroundColor: COLORS.white,
   },
-  socialGoogle: {
-    backgroundColor: COLORS.primary,
+  googleButtonText: {
+    color: COLORS.black,
+    fontFamily: "Inter_700Bold",
+    fontSize: FONT_SIZE.md + 1,
   },
-  socialFacebook: {
-    backgroundColor: COLORS.primary,
+  spacer: {
+    flex: 1,
+    minHeight: SPACING.xxl,
   },
-  socialApple: {
-    backgroundColor: COLORS.primary,
+  secondaryButton: {
+    height: 52,
+    borderRadius: 14,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: COLORS.backgroundLight,
+  },
+  secondaryButtonText: {
+    color: COLORS.primaryDark,
+    fontFamily: "Inter_700Bold",
+    fontSize: FONT_SIZE.md + 1,
   },
 });
 

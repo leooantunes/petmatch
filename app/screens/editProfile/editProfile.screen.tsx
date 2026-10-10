@@ -1,4 +1,9 @@
 import { db } from "@/firebase";
+import {
+  formatBrazilianMobile,
+  isValidBrazilianMobile,
+  PHONE_ERROR_MESSAGE,
+} from "@/utils/phone";
 import { AntDesign } from "@expo/vector-icons";
 import auth from "@react-native-firebase/auth";
 import storage from "@react-native-firebase/storage";
@@ -103,7 +108,7 @@ export default function EditProfileScreen() {
           setProfile({
             name: data.name ?? currentUser.displayName ?? "",
             email: data.email ?? currentUser.email ?? "",
-            phone: data.phone ?? "",
+            phone: formatBrazilianMobile(data.phone ?? ""),
             age: data.age ?? "",
             city: data.city ?? "",
             password: "",
@@ -176,6 +181,15 @@ export default function EditProfileScreen() {
       showModal({
         title: MODAL_TITLE.warning,
         message: "Por favor, preencha todos os campos obrigatórios.",
+        variant: "warning",
+      });
+      return;
+    }
+
+    if (!isValidBrazilianMobile(profile.phone)) {
+      showModal({
+        title: MODAL_TITLE.warning,
+        message: PHONE_ERROR_MESSAGE,
         variant: "warning",
       });
       return;
@@ -347,11 +361,15 @@ export default function EditProfileScreen() {
           <Text style={styles.label}>Celular</Text>
           <TextInput
             style={styles.input}
-            placeholder="Celular"
+            placeholder="(31) 99999-9999"
             placeholderTextColor="#b8d9bd"
             value={profile.phone}
-            onChangeText={(phone) => setProfile({ ...profile, phone })}
+            onChangeText={(phone) =>
+              setProfile({ ...profile, phone: formatBrazilianMobile(phone) })
+            }
             keyboardType="phone-pad"
+            textContentType="telephoneNumber"
+            maxLength={15}
             editable={!loading}
           />
 
