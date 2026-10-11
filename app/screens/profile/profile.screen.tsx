@@ -13,6 +13,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { EmptyList } from "../../components/emptyList/emptyList.component";
 import { useLoading } from "../../components/loading/loading.component";
 import {
@@ -72,6 +73,7 @@ type ModalState = {
 
 export default function ProfileScreen() {
   const router = useRouter();
+  const insets = useSafeAreaInsets();
   const { showLoading, hideLoading } = useLoading();
   const [pets, setPets] = useState<Pet[]>([]);
   const [loadingPets, setLoadingPets] = useState(true);
@@ -291,7 +293,7 @@ export default function ProfileScreen() {
   };
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { paddingTop: insets.top }]}>
       <View style={styles.content}>
         <View style={styles.userSection}>
           <TouchableOpacity onPress={pickProfileImage} activeOpacity={0.85}>

@@ -20,6 +20,8 @@ import {
   TouchableWithoutFeedback,
   View,
 } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { BackButton } from "../../components/backButton/backButton.component";
 import { useLoading } from "../../components/loading/loading.component";
 import { MODAL_BUTTON, MODAL_TITLE } from "../../components/modal/modalCopy";
 import ModernModal from "../../components/modal/modernModal";
@@ -95,6 +97,7 @@ const AGE_RANGES = [
 
 export default function AddPetScreen() {
   const router = useRouter();
+  const insets = useSafeAreaInsets();
   const [name, setName] = useState("");
   const [age, setAge] = useState("");
   const [breed, setBreed] = useState("");
@@ -450,7 +453,7 @@ export default function AddPetScreen() {
 
   return (
     <KeyboardAvoidingView
-      style={styles.container}
+      style={[styles.container, { paddingTop: insets.top }]}
       behavior={Platform.OS === "ios" ? "padding" : "height"}
     >
       <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
@@ -459,6 +462,8 @@ export default function AddPetScreen() {
           keyboardShouldPersistTaps="handled"
           showsVerticalScrollIndicator={false}
         >
+          <BackButton />
+
           <Text style={styles.header}>Cadastrar novo pet</Text>
           <Text style={styles.subtitle}>
             Preencha os detalhes abaixo para anunciar um novo amigo.
@@ -635,13 +640,6 @@ export default function AddPetScreen() {
               </TouchableOpacity>
             </>
           )}
-
-          <TouchableOpacity
-            style={styles.textButton}
-            onPress={() => router.back()}
-          >
-            <Text style={styles.textButtonText}>Cancelar</Text>
-          </TouchableOpacity>
         </ScrollView>
       </TouchableWithoutFeedback>
 

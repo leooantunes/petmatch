@@ -2,6 +2,7 @@ import { db } from "@/firebase";
 import { useRouter } from "expo-router";
 import React, { useEffect, useState } from "react";
 import { FlatList, Image, Text, TouchableOpacity, View } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { EmptyList } from "../../components/emptyList/emptyList.component";
 import { useLoading } from "../../components/loading/loading.component";
 import { MODAL_TITLE } from "../../components/modal/modalCopy";
@@ -45,6 +46,7 @@ function PetListImage({ uri, style }: Readonly<{ uri?: string; style?: any }>) {
 
 export default function PetListScreen() {
   const router = useRouter();
+  const insets = useSafeAreaInsets();
   const [pets, setPets] = useState<Pet[]>([]);
   const { showLoading, hideLoading } = useLoading();
   const [isLoadingList, setIsLoadingList] = useState(true);
@@ -106,7 +108,7 @@ export default function PetListScreen() {
   };
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { paddingTop: insets.top }]}>
       <FlatList
         data={pets}
         keyExtractor={(item) => item.id}

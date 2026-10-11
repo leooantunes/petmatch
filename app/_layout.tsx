@@ -46,11 +46,7 @@ export default function RootLayout() {
   const router = useRouter();
   const currentRoute = segments.at(-1) ?? "";
   const hideNavbar =
-    segments.includes("login") ||
-    segments.includes("register") ||
-    currentRoute === "addPet" ||
-    currentRoute === "addPet.screen" ||
-    segments.includes("addPet");
+    segments.includes("login") || segments.includes("register");
   const isHomeActive =
     currentRoute === "petList" ||
     currentRoute === "petList.screen" ||
