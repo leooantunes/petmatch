@@ -11,7 +11,6 @@ export const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: COLORS.backgroundLight,
-    marginTop: SPACING.lg,
   },
   content: {
     flex: 1,

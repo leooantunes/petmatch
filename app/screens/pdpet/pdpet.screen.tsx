@@ -1,21 +1,19 @@
 import { db } from "@/firebase";
-import { FontAwesome } from "@expo/vector-icons";
-import { useLocalSearchParams, useRouter } from "expo-router";
+import { useLocalSearchParams } from "expo-router";
 import React, { useEffect, useMemo, useState } from "react";
 import {
   Image,
   Linking,
-  Platform,
   ScrollView,
-  StatusBar,
   Text,
   TouchableOpacity,
   View,
 } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { BackButton } from "../../components/backButton/backButton.component";
 import { useLoading } from "../../components/loading/loading.component";
 import { MODAL_TITLE } from "../../components/modal/modalCopy";
 import ModernModal from "../../components/modal/modernModal";
-import { COLORS } from "../../styles/colors";
 import { PetRouteParams } from "../../types/pets";
 import { styles } from "./_pdpet.styles";
 
@@ -114,7 +112,7 @@ const getOwnerPhoneFromPetData = async (
 };
 
 export default function PdpPetScreen() {
-  const router = useRouter();
+  const insets = useSafeAreaInsets();
   const { showLoading, hideLoading } = useLoading();
   const params = useLocalSearchParams<PetRouteParams>();
   const [activeImageIndex, setActiveImageIndex] = useState(0);
@@ -226,22 +224,9 @@ export default function PdpPetScreen() {
   };
 
   return (
-    <View
-      style={[
-        styles.container,
-        Platform.OS === "android"
-          ? { paddingTop: StatusBar.currentHeight || 0 }
-          : {},
-      ]}
-    >
+    <View style={[styles.container, { paddingTop: insets.top }]}>
       <ScrollView contentContainerStyle={styles.scrollContent}>
-        <TouchableOpacity
-          style={styles.backButton}
-          onPress={() => router.back()}
-        >
-          <FontAwesome name="arrow-left" size={18} color={COLORS.primary} />
-          <Text style={styles.backButtonText}>Voltar</Text>
-        </TouchableOpacity>
+        <BackButton />
 
         <View style={styles.imageCarouselContainer}>
           <Image
