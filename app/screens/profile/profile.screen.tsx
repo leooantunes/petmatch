@@ -9,10 +9,12 @@ import {
   FlatList,
   Image,
   Platform,
+  StatusBar,
   Text,
   TouchableOpacity,
   View,
 } from "react-native";
+import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
 import { EmptyList } from "../../components/emptyList/emptyList.component";
 import { useLoading } from "../../components/loading/loading.component";
 import {
@@ -65,6 +67,7 @@ type ModalState = {
 
 export default function ProfileScreen() {
   const router = useRouter();
+  const insets = useSafeAreaInsets();
   const { showLoading, hideLoading } = useLoading();
   const [pets, setPets] = useState<Pet[]>([]);
   const [loadingPets, setLoadingPets] = useState(true);
@@ -284,7 +287,8 @@ export default function ProfileScreen() {
   };
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container} edges={['top', 'bottom']}>
+      <StatusBar barStyle="dark-content" backgroundColor="transparent" translucent />
       <View style={styles.content}>
         <View style={styles.userSection}>
           <TouchableOpacity onPress={pickProfileImage} activeOpacity={0.85}>
@@ -333,7 +337,10 @@ export default function ProfileScreen() {
           data={pets}
           keyExtractor={(item) => item.id}
           showsVerticalScrollIndicator={false}
-          contentContainerStyle={styles.listContent}
+          contentContainerStyle={[
+            styles.listContent,
+            { paddingBottom: insets.bottom + 16 },
+          ]}}
           ListEmptyComponent={
             loadingPets ? (
               <Text style={styles.description}>Carregando seus pets...</Text>
@@ -385,6 +392,7 @@ export default function ProfileScreen() {
         onConfirm={modal.onConfirm}
         onClose={hideModal}
       />
-    </View>
+      </View>
+    </SafeAreaView>
   );
 }

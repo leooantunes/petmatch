@@ -7,11 +7,13 @@ import {
   FlatList,
   Image,
   ScrollView,
+  StatusBar,
   Text,
   TextInput,
   TouchableOpacity,
   View,
 } from "react-native";
+import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
 import { MODAL_BUTTON, MODAL_TITLE } from "../../components/modal/modalCopy";
 import ModernModal from "../../components/modal/modernModal";
 import { COLORS } from "../../styles/colors";
@@ -52,6 +54,7 @@ export default function PendingPetsApprovalScreen() {
     message: "",
     variant: "info",
   });
+  const insets = useSafeAreaInsets();
   const router = useRouter();
 
   const showModal = (next: Omit<ModalState, "visible">) => {
@@ -181,7 +184,8 @@ export default function PendingPetsApprovalScreen() {
 
   if (!selectedPet) {
     return (
-      <View style={styles.container}>
+      <SafeAreaView style={styles.container} edges={['top', 'bottom']}>
+        <StatusBar barStyle="dark-content" backgroundColor="transparent" translucent />
         <View style={styles.header}>
           <TouchableOpacity onPress={() => router.back()}>
             <MaterialCommunityIcons
@@ -215,7 +219,10 @@ export default function PendingPetsApprovalScreen() {
           <FlatList
             data={pendingPets}
             keyExtractor={(item) => item.id}
-            contentContainerStyle={styles.listContent}
+            contentContainerStyle={[
+              styles.listContent,
+              { paddingBottom: insets.bottom },
+            ]}
             renderItem={({ item }) => (
               <TouchableOpacity
                 style={styles.petCard}
@@ -253,12 +260,13 @@ export default function PendingPetsApprovalScreen() {
           onConfirm={modal.onConfirm}
           onClose={hideModal}
         />
-      </View>
+      </SafeAreaView>
     );
   }
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container} edges={['top', 'bottom']}>
+      <StatusBar barStyle="dark-content" backgroundColor="transparent" translucent />
       <View style={styles.detailHeader}>
         <TouchableOpacity onPress={() => setSelectedPet(null)}>
           <MaterialCommunityIcons
@@ -273,7 +281,11 @@ export default function PendingPetsApprovalScreen() {
 
       <ScrollView
         style={styles.detailContent}
-        contentContainerStyle={styles.detailContentInner}
+        contentContainerStyle={[
+          styles.detailContentInner,
+          { paddingBottom: insets.bottom + 16 },
+        ]}
+        automaticallyAdjustKeyboardInsets
       >
         <Image
           source={{ uri: selectedPet.image }}
@@ -358,6 +370,6 @@ export default function PendingPetsApprovalScreen() {
         onConfirm={modal.onConfirm}
         onClose={hideModal}
       />
-    </View>
+    </SafeAreaView>
   );
 }
