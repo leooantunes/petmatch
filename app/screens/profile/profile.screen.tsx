@@ -392,7 +392,6 @@ export default function ProfileScreen() {
         onConfirm={modal.onConfirm}
         onClose={hideModal}
       />
-      </View>
     </SafeAreaView>
   );
 }
