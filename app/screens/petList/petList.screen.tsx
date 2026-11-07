@@ -56,7 +56,10 @@ export default function PetListScreen() {
       setIsLoadingList(true);
       showLoading();
       try {
-        const querySnapshot = await db().collection("pets").get();
+        const querySnapshot = await db()
+          .collection("pets")
+          .where("status", "==", "approved")
+          .get();
         const loadedPets: Pet[] = querySnapshot.docs.map((doc) => {
           const data = doc.data() as Record<string, any>;
           const rawImages = data.images ?? data.photoUrls ?? data.photos ?? [];

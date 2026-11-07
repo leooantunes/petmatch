@@ -347,12 +347,13 @@ export default function AddPetScreen() {
           image: uploadedPhotoUrls[0],
           images: uploadedPhotoUrls,
           ownerId: auth().currentUser?.uid ?? null,
+          status: "pending",
           createdAt: new Date(),
         });
 
       showModal({
         title: MODAL_TITLE.success,
-        message: "Seu anuncio foi publicado com sucesso.",
+        message: "Seu anuncio foi enviado para aprovação. Você receberá uma notificação em breve.",
         variant: "success",
         confirmText: MODAL_BUTTON.viewList,
         onConfirm: () => router.push("/screens/petList/petList.screen"),
