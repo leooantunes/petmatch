@@ -9,9 +9,11 @@ import {
   Platform,
   Pressable,
   ScrollView,
+  StatusBar,
   Text,
   TextInput,
 } from "react-native";
+import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
 import { useLoading } from "../../components/loading/loading.component";
 import { MODAL_BUTTON, MODAL_TITLE } from "../../components/modal/modalCopy";
 import {
@@ -38,6 +40,7 @@ type ModalState = {
 
 export default function RegisterScreen() {
   const router = useRouter();
+  const insets = useSafeAreaInsets();
   const emailRef = useRef<TextInput>(null);
   const phoneRef = useRef<TextInput>(null);
   const cityRef = useRef<TextInput>(null);
@@ -147,39 +150,45 @@ export default function RegisterScreen() {
     next.current?.focus();
 
   return (
-    <KeyboardAvoidingView
-      style={styles.screen}
-      behavior={Platform.OS === "ios" ? undefined : "height"}
-    >
-      <Stack.Screen
-        options={{
-          headerShown: true,
-          title: "Criar conta",
-          headerLargeTitle: true,
-          headerBackTitle: "Entrar",
-          headerTintColor: COLORS.primary,
-          headerShadowVisible: false,
-          headerLargeTitleShadowVisible: false,
-          headerStyle: { backgroundColor: COLORS.white },
-          headerTitleStyle: {
-            fontFamily: "Inter_700Bold",
-            color: COLORS.black,
-          },
-          headerLargeTitleStyle: {
-            fontFamily: "Inter_800ExtraBold",
-            color: COLORS.black,
-          },
-        }}
-      />
-
-      <ScrollView
-        contentContainerStyle={styles.container}
-        contentInsetAdjustmentBehavior="automatic"
-        keyboardShouldPersistTaps="handled"
-        keyboardDismissMode="interactive"
-        automaticallyAdjustKeyboardInsets
-        showsVerticalScrollIndicator={false}
+    <SafeAreaView style={styles.screen} edges={['top', 'bottom']}>
+      <StatusBar barStyle="dark-content" backgroundColor="transparent" translucent />
+      <KeyboardAvoidingView
+        style={{ flex: 1 }}
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        keyboardVerticalOffset={Platform.OS === "ios" ? 60 : 0}
       >
+        <Stack.Screen
+          options={{
+            headerShown: true,
+            title: "Criar conta",
+            headerLargeTitle: true,
+            headerBackTitle: "Entrar",
+            headerTintColor: COLORS.primary,
+            headerShadowVisible: false,
+            headerLargeTitleShadowVisible: false,
+            headerStyle: { backgroundColor: COLORS.white },
+            headerTitleStyle: {
+              fontFamily: "Inter_700Bold",
+              color: COLORS.black,
+            },
+            headerLargeTitleStyle: {
+              fontFamily: "Inter_800ExtraBold",
+              color: COLORS.black,
+            },
+          }}
+        />
+
+        <ScrollView
+          contentContainerStyle={[
+            styles.container,
+            { paddingBottom: insets.bottom + 16 },
+          ]}
+          contentInsetAdjustmentBehavior="automatic"
+          keyboardShouldPersistTaps="handled"
+          keyboardDismissMode="interactive"
+          automaticallyAdjustKeyboardInsets
+          showsVerticalScrollIndicator={false}
+        >
         <Text style={styles.subtitle}>
           Crie sua conta para encontrar um novo amigo.
         </Text>
@@ -286,5 +295,6 @@ export default function RegisterScreen() {
         onClose={hideModal}
       />
     </KeyboardAvoidingView>
+    </SafeAreaView>
   );
 }

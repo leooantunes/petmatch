@@ -15,6 +15,7 @@ import {
   Platform,
   Pressable,
   ScrollView,
+  StatusBar,
   Text,
   TextInput,
   View,
@@ -232,20 +233,23 @@ export default function LoginScreen() {
   };
 
   return (
-    <KeyboardAvoidingView
-      style={styles.screen}
-      behavior={Platform.OS === "ios" ? undefined : "height"}
-    >
-      <ScrollView
-        contentContainerStyle={[
-          styles.container,
-          { paddingTop: insets.top + 32, paddingBottom: insets.bottom + 16 },
-        ]}
-        keyboardShouldPersistTaps="handled"
-        keyboardDismissMode="interactive"
-        automaticallyAdjustKeyboardInsets
-        showsVerticalScrollIndicator={false}
+    <>
+      <StatusBar barStyle="dark-content" backgroundColor="transparent" translucent />
+      <KeyboardAvoidingView
+        style={styles.screen}
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        keyboardVerticalOffset={Platform.OS === "ios" ? 40 : 0}
       >
+        <ScrollView
+          contentContainerStyle={[
+            styles.container,
+            { paddingTop: insets.top + 32, paddingBottom: insets.bottom + 16 },
+          ]}
+          keyboardShouldPersistTaps="handled"
+          keyboardDismissMode="interactive"
+          automaticallyAdjustKeyboardInsets
+          showsVerticalScrollIndicator={false}
+        >
         <Image
           source={require("../../../assets/images/gato-cachorro-pixel-v3.png")}
           style={styles.logo}
@@ -351,5 +355,6 @@ export default function LoginScreen() {
         onClose={hideModal}
       />
     </KeyboardAvoidingView>
+    </>
   );
 }
