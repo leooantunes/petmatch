@@ -8,6 +8,9 @@ export type Pet = {
   image: string;
   images?: string[];
   neutered: boolean;
+  status?: "pending" | "approved" | "rejected";
+  ownerId?: string;
+  createdAt?: Date;
 };
 
 export type PetRouteParams = {
@@ -20,4 +23,6 @@ export type PetRouteParams = {
   image: string;
   images?: string;
   neutered: string;
+  status?: string;
+  ownerId?: string;
 };

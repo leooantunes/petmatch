@@ -21,6 +21,7 @@ import {
   MODAL_TITLE,
 } from "../../components/modal/modalCopy";
 import ModernModal from "../../components/modal/modernModal";
+import { useImageFallback } from "../../hooks/useImageFallback";
 import { COLORS } from "../../styles/colors";
 import { Pet } from "../../types/pets";
 import { styles } from "./_profile.styles";
@@ -40,21 +41,13 @@ const mapPetImages = (rawImages: unknown): string[] => {
 };
 
 function PetCardImage({ uri, style }: Readonly<{ uri?: string; style?: any }>) {
-  const [imageUri, setImageUri] = useState(uri ?? defaultProfileImage);
-
-  useEffect(() => {
-    setImageUri(uri ?? defaultProfileImage);
-  }, [uri]);
+  const { imageUri, handleError } = useImageFallback(uri, defaultProfileImage);
 
   return (
     <Image
       source={{ uri: imageUri }}
       style={style}
-      onError={() => {
-        if (imageUri !== defaultProfileImage) {
-          setImageUri(defaultProfileImage);
-        }
-      }}
+      onError={handleError}
     />
   );
 }

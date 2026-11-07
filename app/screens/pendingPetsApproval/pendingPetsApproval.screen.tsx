@@ -12,6 +12,8 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import { MODAL_BUTTON, MODAL_TITLE } from "../../components/modal/modalCopy";
+import ModernModal from "../../components/modal/modernModal";
 import { COLORS } from "../../styles/colors";
 import { styles } from "./_pendingPetsApproval.styles";
 
@@ -27,13 +29,38 @@ interface PendingPet {
   ownerId?: string;
 }
 
+type ModalState = {
+  visible: boolean;
+  title: string;
+  message: string;
+  variant: "success" | "error" | "info" | "warning";
+  confirmText?: string;
+  cancelText?: string;
+  showCancelButton?: boolean;
+  onConfirm?: () => void;
+};
+
 export default function PendingPetsApprovalScreen() {
   const [pendingPets, setPendingPets] = useState<PendingPet[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [selectedPet, setSelectedPet] = useState<PendingPet | null>(null);
   const [rejectionReason, setRejectionReason] = useState("");
   const [isProcessing, setIsProcessing] = useState(false);
+  const [modal, setModal] = useState<ModalState>({
+    visible: false,
+    title: "",
+    message: "",
+    variant: "info",
+  });
   const router = useRouter();
+
+  const showModal = (next: Omit<ModalState, "visible">) => {
+    setModal({ ...next, visible: true });
+  };
+
+  const hideModal = () => {
+    setModal((prev) => ({ ...prev, visible: false }));
+  };
 
   const loadPendingPets = useCallback(async () => {
     setIsLoading(true);
@@ -62,6 +89,11 @@ export default function PendingPetsApprovalScreen() {
       setPendingPets(pets);
     } catch (error) {
       console.error("Erro ao carregar pets pendentes:", error);
+      showModal({
+        title: MODAL_TITLE.error,
+        message: "Erro ao carregar pets pendentes. Tente novamente.",
+        variant: "error",
+      });
     } finally {
       setIsLoading(false);
     }
@@ -86,8 +118,19 @@ export default function PendingPetsApprovalScreen() {
 
       setPendingPets((prev) => prev.filter((pet) => pet.id !== petId));
       setSelectedPet(null);
+      showModal({
+        title: MODAL_TITLE.success,
+        message: "Pet aprovado com sucesso!",
+        variant: "success",
+        confirmText: MODAL_BUTTON.ok,
+      });
     } catch (error) {
       console.error("Erro ao aprovar pet:", error);
+      showModal({
+        title: MODAL_TITLE.error,
+        message: "Erro ao aprovar pet. Tente novamente.",
+        variant: "error",
+      });
     } finally {
       setIsProcessing(false);
     }
@@ -95,7 +138,12 @@ export default function PendingPetsApprovalScreen() {
 
   const handleRejectPet = async (petId: string) => {
     if (!rejectionReason.trim()) {
-      alert("Por favor, forneça um motivo para a rejeição.");
+      showModal({
+        title: MODAL_TITLE.warning,
+        message: "Por favor, forneça um motivo para a rejeição.",
+        variant: "warning",
+        confirmText: MODAL_BUTTON.ok,
+      });
       return;
     }
 
@@ -113,12 +161,206 @@ export default function PendingPetsApprovalScreen() {
       setPendingPets((prev) => prev.filter((pet) => pet.id !== petId));
       setSelectedPet(null);
       setRejectionReason("");
+      showModal({
+        title: MODAL_TITLE.success,
+        message: "Pet rejeitado com sucesso!",
+        variant: "success",
+        confirmText: MODAL_BUTTON.ok,
+      });
     } catch (error) {
       console.error("Erro ao rejeitar pet:", error);
+      showModal({
+        title: MODAL_TITLE.error,
+        message: "Erro ao rejeitar pet. Tente novamente.",
+        variant: "error",
+      });
     } finally {
       setIsProcessing(false);
     }
   };
+
+  if (!selectedPet) {
+    return (
+      <View style={styles.container}>
+        <View style={styles.header}>
+          <TouchableOpacity onPress={() => router.back()}>
+            <MaterialCommunityIcons
+              name="arrow-left"
+              size={24}
+              color={COLORS.primary}
+            />
+          </TouchableOpacity>
+          <Text style={styles.headerTitle}>Aprovar Pets</Text>
+          <View style={styles.badge}>
+            <Text style={styles.badgeText}>{pendingPets.length}</Text>
+          </View>
+        </View>
+
+        {isLoading ? (
+          <View style={styles.centerContainer}>
+            <ActivityIndicator size="large" color={COLORS.primary} />
+          </View>
+        ) : pendingPets.length === 0 ? (
+          <View style={styles.centerContainer}>
+            <MaterialCommunityIcons
+              name="check-all"
+              size={64}
+              color={COLORS.primaryLight}
+            />
+            <Text style={styles.emptyText}>
+              Todos os pets foram aprovados!
+            </Text>
+          </View>
+        ) : (
+          <FlatList
+            data={pendingPets}
+            keyExtractor={(item) => item.id}
+            contentContainerStyle={styles.listContent}
+            renderItem={({ item }) => (
+              <TouchableOpacity
+                style={styles.petCard}
+                onPress={() => setSelectedPet(item)}
+              >
+                <Image source={{ uri: item.image }} style={styles.petImage} />
+                <View style={styles.petInfo}>
+                  <Text style={styles.petName}>{item.name}</Text>
+                  <Text style={styles.petDetails}>
+                    {item.breed} • {item.age}
+                  </Text>
+                  <Text style={styles.petLocation}>{item.location}</Text>
+                  <Text style={styles.petDescription} numberOfLines={2}>
+                    {item.description}
+                  </Text>
+                </View>
+                <MaterialCommunityIcons
+                  name="chevron-right"
+                  size={24}
+                  color={COLORS.primaryMedium}
+                />
+              </TouchableOpacity>
+            )}
+          />
+        )}
+
+        <ModernModal
+          visible={modal.visible}
+          title={modal.title}
+          message={modal.message}
+          variant={modal.variant}
+          confirmText={modal.confirmText}
+          cancelText={modal.cancelText}
+          showCancelButton={modal.showCancelButton}
+          onConfirm={modal.onConfirm}
+          onClose={hideModal}
+        />
+      </View>
+    );
+  }
+
+  return (
+    <View style={styles.container}>
+      <View style={styles.detailHeader}>
+        <TouchableOpacity onPress={() => setSelectedPet(null)}>
+          <MaterialCommunityIcons
+            name="arrow-left"
+            size={24}
+            color={COLORS.primary}
+          />
+        </TouchableOpacity>
+        <Text style={styles.headerTitle}>Revisar Pet</Text>
+        <View style={{ width: 24 }} />
+      </View>
+
+      <ScrollView
+        style={styles.detailContent}
+        contentContainerStyle={styles.detailContentInner}
+      >
+        <Image
+          source={{ uri: selectedPet.image }}
+          style={styles.detailImage}
+        />
+
+        <View style={styles.detailInfo}>
+          <Text style={styles.detailName}>{selectedPet.name}</Text>
+          <Text style={styles.detailSubtitle}>
+            {selectedPet.breed} • {selectedPet.age}
+          </Text>
+          <Text style={styles.detailLocation}>{selectedPet.location}</Text>
+
+          <View style={styles.divider} />
+
+          <Text style={styles.label}>Descrição</Text>
+          <Text style={styles.description}>{selectedPet.description}</Text>
+
+          <View style={styles.divider} />
+
+          <Text style={styles.label}>Motivo da Rejeição (se aplicável)</Text>
+          <TextInput
+            style={styles.reasonInput}
+            placeholder="Descreva o motivo da rejeição..."
+            placeholderTextColor="#b8d9bd"
+            value={rejectionReason}
+            onChangeText={setRejectionReason}
+            multiline
+            editable={!isProcessing}
+          />
+
+          <View style={styles.actions}>
+            <TouchableOpacity
+              style={[styles.button, styles.rejectButton]}
+              onPress={() => handleRejectPet(selectedPet.id)}
+              disabled={isProcessing}
+            >
+              {isProcessing ? (
+                <ActivityIndicator color="white" />
+              ) : (
+                <>
+                  <MaterialCommunityIcons
+                    name="close"
+                    size={20}
+                    color="white"
+                  />
+                  <Text style={styles.buttonText}>Rejeitar</Text>
+                </>
+              )}
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={[styles.button, styles.approveButton]}
+              onPress={() => handleApprovePet(selectedPet.id)}
+              disabled={isProcessing}
+            >
+              {isProcessing ? (
+                <ActivityIndicator color="white" />
+              ) : (
+                <>
+                  <MaterialCommunityIcons
+                    name="check"
+                    size={20}
+                    color="white"
+                  />
+                  <Text style={styles.buttonText}>Aprovar</Text>
+                </>
+              )}
+            </TouchableOpacity>
+          </View>
+        </View>
+      </ScrollView>
+
+      <ModernModal
+        visible={modal.visible}
+        title={modal.title}
+        message={modal.message}
+        variant={modal.variant}
+        confirmText={modal.confirmText}
+        cancelText={modal.cancelText}
+        showCancelButton={modal.showCancelButton}
+        onConfirm={modal.onConfirm}
+        onClose={hideModal}
+      />
+    </View>
+  );
+}
 
   if (!selectedPet) {
     return (

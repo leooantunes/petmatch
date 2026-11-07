@@ -6,11 +6,9 @@ import { EmptyList } from "../../components/emptyList/emptyList.component";
 import { useLoading } from "../../components/loading/loading.component";
 import { MODAL_TITLE } from "../../components/modal/modalCopy";
 import ModernModal from "../../components/modal/modernModal";
+import { useImageFallback } from "../../hooks/useImageFallback";
 import { Pet } from "../../types/pets";
 import { styles } from "./_petList.styles";
-
-const fallbackImage =
-  "https://images.unsplash.com/photo-1517849845537-4d257902454a?auto=format&fit=crop&w=900&q=80";
 
 const mapPetImages = (rawImages: unknown): string[] => {
   if (!Array.isArray(rawImages)) {
@@ -24,21 +22,13 @@ const mapPetImages = (rawImages: unknown): string[] => {
 };
 
 function PetListImage({ uri, style }: Readonly<{ uri?: string; style?: any }>) {
-  const [imageUri, setImageUri] = useState(uri ?? fallbackImage);
-
-  useEffect(() => {
-    setImageUri(uri ?? fallbackImage);
-  }, [uri]);
+  const { imageUri, handleError } = useImageFallback(uri);
 
   return (
     <Image
       source={{ uri: imageUri }}
       style={style}
-      onError={() => {
-        if (imageUri !== fallbackImage) {
-          setImageUri(fallbackImage);
-        }
-      }}
+      onError={handleError}
     />
   );
 }

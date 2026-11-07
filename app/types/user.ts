@@ -27,5 +27,8 @@ export type UserProfile = {
   phone: string;
   age: string;
   city: string;
-  password: string;
+};
+
+export type UserProfileUpdate = UserProfile & {
+  password?: string;
 };

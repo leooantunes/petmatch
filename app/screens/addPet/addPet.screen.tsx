@@ -24,6 +24,7 @@ import { useLoading } from "../../components/loading/loading.component";
 import { MODAL_BUTTON, MODAL_TITLE } from "../../components/modal/modalCopy";
 import ModernModal from "../../components/modal/modernModal";
 import { COLORS } from "../../styles/colors";
+import { API_ENDPOINTS, AGE_RANGES, PETS_CONFIG } from "../../constants/config";
 import { styles } from "./_addPet.styles";
 
 type ModalState = {
@@ -83,16 +84,6 @@ const parseCatBreeds = (data: unknown): string[] => {
   );
 };
 
-const AGE_RANGES = [
-  "0-1 ano",
-  "1-3 anos",
-  "4-6 anos",
-  "7-9 anos",
-  "10-12 anos",
-  "13+ anos",
-  "Idade desconhecida",
-];
-
 export default function AddPetScreen() {
   const router = useRouter();
   const [name, setName] = useState("");
@@ -145,7 +136,7 @@ export default function AddPetScreen() {
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ["images"],
       allowsMultipleSelection: true,
-      quality: 0.7,
+      quality: PETS_CONFIG.PHOTO_QUALITY,
     });
 
     if (!result.canceled) {
@@ -165,7 +156,6 @@ export default function AddPetScreen() {
       Platform.OS === "android" ? localUri : localUri.replace("file://", "");
 
     try {
-      // Verificar se o usuário está autenticado
       const currentUser = auth().currentUser;
       if (!currentUser) {
         throw new Error("Usuário não autenticado. Faça login novamente.");
@@ -198,8 +188,8 @@ export default function AddPetScreen() {
 
       try {
         const [dogResponse, catResponse] = await Promise.all([
-          fetch("https://dog.ceo/api/breeds/list/all"),
-          fetch("https://api.thecatapi.com/v1/breeds"),
+          fetch(API_ENDPOINTS.DOG_BREEDS),
+          fetch(API_ENDPOINTS.CAT_BREEDS),
         ]);
 
         if (!dogResponse.ok) {
@@ -288,6 +278,15 @@ export default function AddPetScreen() {
     }
   };
 
+  const validatePetForm = (): string | null => {
+    if (!name.trim()) return "Nome é obrigatório";
+    if (!age) return "Idade é obrigatória";
+    if (!breed) return "Raça é obrigatória";
+    if (!city.trim()) return "Cidade é obrigatória";
+    if (!description.trim()) return "Descrição é obrigatória";
+    return null;
+  };
+
   const handleStreetAnimalToggle = async () => {
     const nextValue = !isStreetAnimal;
     setIsStreetAnimal(nextValue);
@@ -309,6 +308,16 @@ export default function AddPetScreen() {
   };
 
   const handleSubmit = async () => {
+    const validationError = validatePetForm();
+    if (validationError) {
+      showModal({
+        title: MODAL_TITLE.error,
+        message: validationError,
+        variant: "error",
+      });
+      return;
+    }
+
     showLoading();
     try {
       let uploadedPhotoUrls: string[] = [];
