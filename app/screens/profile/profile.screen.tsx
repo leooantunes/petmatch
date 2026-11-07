@@ -340,7 +340,7 @@ export default function ProfileScreen() {
           contentContainerStyle={[
             styles.listContent,
             { paddingBottom: insets.bottom + 16 },
-          ]}}
+          ]}
           ListEmptyComponent={
             loadingPets ? (
               <Text style={styles.description}>Carregando seus pets...</Text>
