@@ -1,19 +1,10 @@
 /**
  * Animated Card Component
- * Card with fade-in and scale animations on entrance
+ * Wraps content with a fade + rise entrance animation (native driver).
  */
 
 import React, { useEffect, useRef } from 'react';
-import {
-  Animated,
-  ViewStyle,
-  StyleProp,
-  View,
-  ViewProps,
-} from 'react-native';
-import {
-  createFadeScaleAnimation,
-} from '../animations/animationUtils';
+import { Animated, StyleProp, View, ViewProps, ViewStyle } from 'react-native';
 import { designTokens } from '../../constants/designTokens';
 
 export interface AnimatedCardProps extends ViewProps {
@@ -21,42 +12,44 @@ export interface AnimatedCardProps extends ViewProps {
   style?: StyleProp<ViewStyle>;
   duration?: number;
   delay?: number;
+  /** Position in a list; staggers the entrance (capped so long lists don't lag). */
+  index?: number;
   onAnimationComplete?: () => void;
 }
 
-/**
- * AnimatedCard - A card component with fade and scale entrance animation
- */
+const STAGGER_MS = 70;
+const MAX_STAGGER_MS = 420;
+
 export const AnimatedCard = React.forwardRef<View, AnimatedCardProps>(
   (
     {
       children,
       style,
       duration = designTokens.animation.normal,
-      delay = 0,
+      delay,
+      index = 0,
       onAnimationComplete,
       ...props
     },
     ref
   ) => {
-    const animation = useRef(
-      createFadeScaleAnimation(duration)
-    ).current;
+    const progress = useRef(new Animated.Value(0)).current;
+    const startDelay = delay ?? Math.min(index * STAGGER_MS, MAX_STAGGER_MS);
+    const onCompleteRef = useRef(onAnimationComplete);
+    onCompleteRef.current = onAnimationComplete;
 
     useEffect(() => {
-      const timer = setTimeout(() => {
-        animation.startAnimation();
-        if (onAnimationComplete) {
-          const completionTimer = setTimeout(
-            onAnimationComplete,
-            duration
-          );
-          return () => clearTimeout(completionTimer);
-        }
-      }, delay);
-
-      return () => clearTimeout(timer);
-    }, [delay, duration]);
+      const animation = Animated.timing(progress, {
+        toValue: 1,
+        duration,
+        delay: startDelay,
+        useNativeDriver: true,
+      });
+      animation.start(({ finished }) => {
+        if (finished) onCompleteRef.current?.();
+      });
+      return () => animation.stop();
+    }, [progress, duration, startDelay]);
 
     return (
       <Animated.View
@@ -64,8 +57,21 @@ export const AnimatedCard = React.forwardRef<View, AnimatedCardProps>(
         style={[
           style,
           {
-            opacity: animation.fadeOpacity,
-            transform: [{ scale: animation.scaleValue }],
+            opacity: progress,
+            transform: [
+              {
+                translateY: progress.interpolate({
+                  inputRange: [0, 1],
+                  outputRange: [12, 0],
+                }),
+              },
+              {
+                scale: progress.interpolate({
+                  inputRange: [0, 1],
+                  outputRange: [0.98, 1],
+                }),
+              },
+            ],
           },
         ]}
         {...props}

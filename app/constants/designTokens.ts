@@ -44,6 +44,20 @@ export const designTokens = {
 
       // Shadows
       shadowColor: '#2B6F39',
+
+      // Semantic surfaces
+      screen: '#E9F5EA',
+      card: '#FFFFFF',
+      surfaceTint: '#F5FFF5',
+
+      // Semantic text
+      onPrimary: '#FFFFFF',
+      textBrand: '#006B2E',
+      textBrandStrong: '#134A2D',
+      textBrandMuted: '#2A6F3F',
+      textBrandSoft: '#4B8057',
+      placeholder: '#8FB89A',
+      overlay: 'rgba(15, 23, 42, 0.55)',
     },
     dark: {
       // Background
@@ -83,6 +97,20 @@ export const designTokens = {
 
       // Shadows
       shadowColor: '#000000',
+
+      // Semantic surfaces
+      screen: '#101612',
+      card: '#1C231E',
+      surfaceTint: '#1F2B23',
+
+      // Semantic text
+      onPrimary: '#FFFFFF',
+      textBrand: '#8FD19E',
+      textBrandStrong: '#DCEFE0',
+      textBrandMuted: '#A9CDB1',
+      textBrandSoft: '#86B48F',
+      placeholder: '#5F7D67',
+      overlay: 'rgba(0, 0, 0, 0.65)',
     },
   },
 
@@ -95,6 +123,7 @@ export const designTokens = {
     xl: 20,
     xxl: 24,
     xxxl: 32,
+    xxxxl: 40,
   },
 
   // Typography

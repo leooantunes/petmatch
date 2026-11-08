@@ -2,20 +2,25 @@ import { db } from "@/firebase";
 import { useLocalSearchParams } from "expo-router";
 import React, { useEffect, useMemo, useState } from "react";
 import {
-  Image,
+  Animated,
   Linking,
   ScrollView,
+  StatusBar,
   Text,
   TouchableOpacity,
   View,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { BackButton } from "../../components/backButton/backButton.component";
+import { AnimatedButton } from "../../components/buttons/AnimatedButton";
 import { useLoading } from "../../components/loading/loading.component";
 import { MODAL_TITLE } from "../../components/modal/modalCopy";
 import ModernModal from "../../components/modal/modernModal";
+import { designTokens } from "../../constants/designTokens";
+import { useTheme, useThemedStyles } from "../../hooks/useTheme";
 import { PetRouteParams } from "../../types/pets";
-import { styles } from "./_pdpet.styles";
+import { createPdpetStyles } from "./_pdpet.styles";
+import { Icon } from "../../components/icon/Icon";
 
 const fallbackImage =
   "https://images.unsplash.com/photo-1517849845537-4d257902454a?auto=format&fit=crop&w=900&q=80";
@@ -113,6 +118,9 @@ const getOwnerPhoneFromPetData = async (
 
 export default function PdpPetScreen() {
   const insets = useSafeAreaInsets();
+  const theme = useTheme();
+  const styles = useThemedStyles(createPdpetStyles);
+  const imageOpacity = React.useRef(new Animated.Value(0)).current;
   const { showLoading, hideLoading } = useLoading();
   const params = useLocalSearchParams<PetRouteParams>();
   const [activeImageIndex, setActiveImageIndex] = useState(0);
@@ -178,11 +186,11 @@ export default function PdpPetScreen() {
         console.error("PDPet: Error loading images:", error);
         setImages([]);
         setOwnerPhone("");
-        showModal({
-          title: MODAL_TITLE.error,
-          message: "Nao foi possivel carregar todas as fotos deste pet.",
-          variant: "error",
-        });
+        showModal(
+          MODAL_TITLE.error,
+          "Nao foi possivel carregar todas as fotos deste pet.",
+          "error",
+        );
       } finally {
         hideLoading();
       }
@@ -202,6 +210,19 @@ export default function PdpPetScreen() {
       resolvedImages[activeImageIndex] ?? resolvedImages[0] ?? fallbackImage;
     setCurrentImageUri(initialUri);
   }, [activeImageIndex, resolvedImages]);
+
+  // Cross-fade each time the carousel image changes.
+  useEffect(() => {
+    imageOpacity.setValue(0);
+  }, [currentImageUri, imageOpacity]);
+
+  const handleImageLoad = () => {
+    Animated.timing(imageOpacity, {
+      toValue: 1,
+      duration: designTokens.animation.normal,
+      useNativeDriver: true,
+    }).start();
+  };
 
   const handleOpenWhatsApp = async () => {
     const sanitizedPhone = normalizeWhatsAppNumber(ownerPhone);
@@ -241,32 +262,43 @@ export default function PdpPetScreen() {
 
   return (
     <View style={[styles.container, { paddingTop: insets.top }]}>
+      <StatusBar barStyle={theme.statusBarStyle} backgroundColor="transparent" translucent />
       <ScrollView contentContainerStyle={styles.scrollContent}>
         <BackButton />
 
         <View style={styles.imageCarouselContainer}>
-          <Image
-            source={{ uri: currentImageUri }}
-            style={styles.petImage}
-            onError={() => setCurrentImageUri(fallbackImage)}
-          />
-          <View style={styles.carouselDots}>
-            {resolvedImages.map((image, index) => (
-              <TouchableOpacity
-                key={`${image}-${index}`}
-                style={[
-                  styles.carouselDot,
-                  index === activeImageIndex && styles.carouselDotActive,
-                ]}
-                onPress={() => setActiveImageIndex(index)}
-              />
-            ))}
+          <View style={styles.petImage}>
+            <Animated.Image
+              source={{ uri: currentImageUri }}
+              style={[styles.petImage, { opacity: imageOpacity }]}
+              onLoad={handleImageLoad}
+              onError={() => setCurrentImageUri(fallbackImage)}
+              accessibilityLabel={`Foto ${activeImageIndex + 1} de ${resolvedImages.length} de ${pet.name}`}
+            />
           </View>
+          {resolvedImages.length > 1 && (
+            <View style={styles.carouselDots}>
+              {resolvedImages.map((image, index) => (
+                <TouchableOpacity
+                  key={`${image}-${index}`}
+                  style={[
+                    styles.carouselDot,
+                    index === activeImageIndex && styles.carouselDotActive,
+                  ]}
+                  onPress={() => setActiveImageIndex(index)}
+                  hitSlop={8}
+                  accessibilityRole="button"
+                  accessibilityLabel={`Ver foto ${index + 1}`}
+                  accessibilityState={{ selected: index === activeImageIndex }}
+                />
+              ))}
+            </View>
+          )}
         </View>
 
         <View style={styles.headerRow}>
-          <View>
-            <Text style={styles.petName}>{pet.name}</Text>
+          <View style={styles.headerText}>
+            <Text style={styles.petName} accessibilityRole="header">{pet.name}</Text>
             <Text style={styles.petBreed}>{pet.breed}</Text>
           </View>
           <View style={styles.statusBadge}>
@@ -313,12 +345,13 @@ export default function PdpPetScreen() {
           </View>
         </View>
 
-        <TouchableOpacity
+        <AnimatedButton
+          title="Quero adotar"
           style={styles.adoptButton}
+          icon={<Icon name="whatsapp" size={20} color="onPrimary" />}
+          accessibilityHint="Abre uma conversa no WhatsApp com o anunciante"
           onPress={handleOpenWhatsApp}
-        >
-          <Text style={styles.adoptButtonText}>Quero adotar</Text>
-        </TouchableOpacity>
+        />
       </ScrollView>
 
       <ModernModal

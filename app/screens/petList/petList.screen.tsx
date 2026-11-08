@@ -3,13 +3,15 @@ import { useRouter } from "expo-router";
 import React, { useEffect, useState } from "react";
 import { FlatList, Image, StatusBar, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
+import { AnimatedCard } from "../../components/cards/AnimatedCard";
 import { EmptyList } from "../../components/emptyList/emptyList.component";
-import { useLoading } from "../../components/loading/loading.component";
 import { MODAL_TITLE } from "../../components/modal/modalCopy";
 import ModernModal from "../../components/modal/modernModal";
+import { PetCardSkeleton } from "../../components/skeleton/Skeleton";
 import { useImageFallback } from "../../hooks/useImageFallback";
+import { useTheme, useThemedStyles } from "../../hooks/useTheme";
 import { Pet } from "../../types/pets";
-import { styles } from "./_petList.styles";
+import { createPetListStyles } from "./_petList.styles";
 
 const mapPetImages = (rawImages: unknown): string[] => {
   if (!Array.isArray(rawImages)) {
@@ -37,16 +39,17 @@ function PetListImage({ uri, style }: Readonly<{ uri?: string; style?: any }>) {
 export default function PetListScreen() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
+  const theme = useTheme();
+  const styles = useThemedStyles(createPetListStyles);
   const [pets, setPets] = useState<Pet[]>([]);
-  const { showLoading, hideLoading } = useLoading();
   const [isLoadingList, setIsLoadingList] = useState(true);
   const [modalVisible, setModalVisible] = useState(false);
   const [modalMessage, setModalMessage] = useState("");
 
+  // The list shows skeleton cards while loading, so no blocking overlay here.
   useEffect(() => {
     const loadPets = async () => {
       setIsLoadingList(true);
-      showLoading();
       try {
         const querySnapshot = await db()
           .collection("pets")
@@ -76,12 +79,11 @@ export default function PetListScreen() {
         setModalVisible(true);
       } finally {
         setIsLoadingList(false);
-        hideLoading();
       }
     };
 
     loadPets();
-  }, [hideLoading, showLoading]);
+  }, []);
 
   const handlePetPress = (pet: Pet) => {
     router.push({
@@ -102,50 +104,73 @@ export default function PetListScreen() {
 
   return (
     <SafeAreaView style={styles.container} edges={['top', 'bottom']}>
-      <StatusBar barStyle="dark-content" backgroundColor="transparent" translucent />
+      <StatusBar barStyle={theme.statusBarStyle} backgroundColor="transparent" translucent />
       <FlatList
         data={pets}
         keyExtractor={(item) => item.id}
         showsVerticalScrollIndicator={false}
         contentContainerStyle={[
           styles.listContent,
-          { paddingBottom: insets.bottom },
+          { paddingBottom: insets.bottom + 120 },
         ]}
         ListHeaderComponent={
-          <View style={{ alignItems: 'center', marginBottom: 16, marginTop: 8 }}>
+          <View style={styles.listHeader}>
             <Image
               source={require('../../../assets/images/gato-cachorro-pixel-v3.png')}
-              style={{ width: 56, height: 56, resizeMode: 'contain' }}
+              style={styles.headerLogo}
+              accessibilityIgnoresInvertColors
+              accessibilityLabel="PetMatch"
             />
           </View>
         }
         ListEmptyComponent={
-          <View style={styles.emptyState}>
-            {isLoadingList ? (
-              <Text style={styles.emptyText}>Carregando pets...</Text>
-            ) : (
-              <EmptyList icon="paw" message="Nenhum pet encontrado." />
-            )}
-          </View>
-        }
-        renderItem={({ item }) => (
-          <TouchableOpacity
-            activeOpacity={0.8}
-            style={styles.card}
-            onPress={() => handlePetPress(item)}
-          >
-            <PetListImage uri={item.image} style={styles.cardImage} />
-            <View style={styles.cardBody}>
-              <Text style={styles.petName}>{item.name}</Text>
-              <View style={styles.petInfoRow}>
-                <Text style={styles.petInfoTag}>{item.age}</Text>
-                <Text style={styles.petInfoTag}>{item.breed}</Text>
-                <Text style={styles.petInfoTag}>{item.location}</Text>
-              </View>
-              <Text style={styles.petDescription}>{item.description}</Text>
+          isLoadingList ? (
+            <View>
+              <PetCardSkeleton />
+              <PetCardSkeleton />
+              <PetCardSkeleton />
             </View>
-          </TouchableOpacity>
-        )}
+          ) : (
+            <View style={styles.emptyState}>
+              <EmptyList
+                illustration
+                icon="paw"
+                message="Nenhum pet encontrado."
+                hint="Volte mais tarde: novos amigos chegam todos os dias."
+              />
+            </View>
+          )
+        }
+        renderItem={({ item, index }) => {
+          const tags = [item.age, item.breed, item.location].filter(Boolean);
+          return (
+            <AnimatedCard index={index}>
+              <TouchableOpacity
+                activeOpacity={0.85}
+                style={styles.card}
+                onPress={() => handlePetPress(item)}
+                accessibilityRole="button"
+                accessibilityLabel={`${item.name}, ${tags.join(", ")}`}
+                accessibilityHint="Abre os detalhes do pet"
+              >
+                <PetListImage uri={item.image} style={styles.cardImage} />
+                <View style={styles.cardBody}>
+                  <Text style={styles.petName}>{item.name}</Text>
+                  <View style={styles.petInfoRow}>
+                    {tags.map((tag) => (
+                      <Text key={tag} style={styles.petInfoTag}>
+                        {tag}
+                      </Text>
+                    ))}
+                  </View>
+                  <Text style={styles.petDescription} numberOfLines={3}>
+                    {item.description}
+                  </Text>
+                </View>
+              </TouchableOpacity>
+            </AnimatedCard>
+          );
+        }}
       />
 
       <ModernModal

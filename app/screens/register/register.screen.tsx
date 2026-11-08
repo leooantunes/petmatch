@@ -8,7 +8,6 @@ import {
   Image,
   KeyboardAvoidingView,
   Platform,
-  Pressable,
   ScrollView,
   StatusBar,
   Text,
@@ -25,9 +24,10 @@ import {
 } from "@/utils/phone";
 import { FormField } from "../../components/formField/formField.component";
 import ModernModal from "../../components/modal/modernModal";
-import { COLORS } from "../../styles/colors";
 import { UserRegistration } from "../../types/user";
-import { styles } from "./_register.styles";
+import { AnimatedButton } from "../../components/buttons/AnimatedButton";
+import { useTheme, useThemedStyles } from "../../hooks/useTheme";
+import { createRegisterStyles } from "./_register.styles";
 
 type ModalState = {
   visible: boolean;
@@ -43,6 +43,9 @@ type ModalState = {
 export default function RegisterScreen() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
+  const theme = useTheme();
+  const { colors } = theme;
+  const styles = useThemedStyles(createRegisterStyles);
   const emailRef = useRef<TextInput>(null);
   const phoneRef = useRef<TextInput>(null);
   const cityRef = useRef<TextInput>(null);
@@ -153,7 +156,7 @@ export default function RegisterScreen() {
 
   return (
     <SafeAreaView style={styles.screen} edges={['top', 'bottom']}>
-      <StatusBar barStyle="dark-content" backgroundColor="transparent" translucent />
+      <StatusBar barStyle={theme.statusBarStyle} backgroundColor="transparent" translucent />
       <KeyboardAvoidingView
         style={{ flex: 1 }}
         behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -165,17 +168,17 @@ export default function RegisterScreen() {
             title: "Criar conta",
             headerLargeTitle: true,
             headerBackTitle: "Entrar",
-            headerTintColor: COLORS.primary,
+            headerTintColor: colors.primary,
             headerShadowVisible: false,
             headerLargeTitleShadowVisible: false,
-            headerStyle: { backgroundColor: COLORS.white },
+            headerStyle: { backgroundColor: colors.background },
             headerTitleStyle: {
               fontFamily: "Inter_700Bold",
-              color: COLORS.black,
+              color: colors.text,
             },
             headerLargeTitleStyle: {
               fontFamily: "Inter_800ExtraBold",
-              color: COLORS.black,
+              color: colors.text,
             },
           }}
         />
@@ -191,10 +194,11 @@ export default function RegisterScreen() {
           automaticallyAdjustKeyboardInsets
           showsVerticalScrollIndicator={false}
         >
-        <View style={{ alignItems: 'center', marginBottom: 20 }}>
+        <View style={styles.logoWrapper}>
           <Image
-            source={require('../../../../assets/images/gato-cachorro-pixel-v3.png')}
-            style={{ width: 60, height: 60, resizeMode: 'contain' }}
+            source={require('../../../assets/images/gato-cachorro-pixel-v3.png')}
+            style={styles.logo}
+            accessibilityLabel="PetMatch"
           />
         </View>
 
@@ -277,15 +281,12 @@ export default function RegisterScreen() {
           onChangeText={(password) => setForm({ ...form, password })}
         />
 
-        <Pressable
-          style={({ pressed }) => [
-            styles.primaryButton,
-            pressed && styles.pressed,
-          ]}
+        <AnimatedButton
+          title="Criar conta"
+          style={styles.primaryButton}
+          haptic={false}
           onPress={handleRegister}
-        >
-          <Text style={styles.primaryButtonText}>Criar conta</Text>
-        </Pressable>
+        />
 
         <Text style={styles.helperText}>
           Seus dados são confidenciais e usados apenas para criar seu perfil.

@@ -1,7 +1,9 @@
 import { designTokens } from '../constants/designTokens';
 
 /**
- * Backward compatible COLORS object (defaults to light theme)
+ * Backward compatible COLORS object (light theme only).
+ * @deprecated Light-only and breaks dark mode. Use `useTheme().colors` or
+ * `useThemedStyles(createXStyles)` from `hooks/useTheme` instead.
  */
 export const COLORS = {
   // Verdes - Paleta Primary

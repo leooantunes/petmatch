@@ -52,7 +52,8 @@ export const NotificationProvider: React.FC<{ children: React.ReactNode }> = ({
     // Definir como as notificações devem aparecer quando o app está em foreground
     Notifications.setNotificationHandler({
       handleNotification: async () => ({
-        shouldShowAlert: true, // Mostrar alerta
+        shouldShowBanner: true, // Mostrar banner
+        shouldShowList: true, // Manter na central de notificações
         shouldPlaySound: true, // Reproduzir som
         shouldSetBadge: true, // Atualizar badge
       }),

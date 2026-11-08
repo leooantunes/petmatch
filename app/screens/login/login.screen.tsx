@@ -1,4 +1,3 @@
-import { AntDesign } from "@expo/vector-icons";
 import { FirebaseError } from "@firebase/util";
 import auth from "@react-native-firebase/auth";
 import {
@@ -28,15 +27,14 @@ import { useLoading } from "../../components/loading/loading.component";
 import { MODAL_BUTTON, MODAL_TITLE } from "../../components/modal/modalCopy";
 import { FormField } from "../../components/formField/formField.component";
 import ModernModal from "../../components/modal/modernModal";
-import { COLORS } from "../../styles/colors";
 import { UserCredentials } from "../../types/user";
 import { useTheme } from "../../hooks/useTheme";
+import { Icon } from "../../components/icon/Icon";
 import { createLoginStyles } from "./_login.styles.dynamic";
 import {
   createFadeInAnimation,
   createScaleAnimation,
 } from "../../components/animations/animationUtils";
-import { styles as staticStyles } from "./_login.styles";
 
 type ModalState = {
   visible: boolean;
@@ -72,7 +70,8 @@ export default function LoginScreen() {
 
   // Animation refs
   const logoFade = useRef(createFadeInAnimation(0, 1, 500)).current;
-  const logoScale = useRef(createScaleAnimation()).current;
+  // Grows 0.8 -> 1 on mount (scaleDown animates toward the second argument).
+  const logoScale = useRef(createScaleAnimation(0.8, 1, 500)).current;
   const contentFade = useRef(createFadeInAnimation(0, 1, 600)).current;
   const primaryButtonScale = useRef(createScaleAnimation()).current;
   const secondaryButtonScale = useRef(createScaleAnimation()).current;
@@ -81,7 +80,7 @@ export default function LoginScreen() {
     configureGoogleSignIn();
     // Start animations on mount
     logoFade.startAnimation();
-    logoScale.startAnimation();
+    logoScale.scaleDown();
     const contentTimer = setTimeout(() => contentFade.startAnimation(), 100);
     return () => clearTimeout(contentTimer);
   }, []);
@@ -392,7 +391,7 @@ export default function LoginScreen() {
               ]}
               onPress={() => onSocialLogin("google")}
             >
-              <AntDesign name="google" size={18} color={theme.colors.text} />
+              <Icon family="antdesign" name="google" size={18} color="text" />
               <Text style={dynamicStyles.googleButtonText}>
                 Continuar com Google
               </Text>
