@@ -1,43 +1,39 @@
 import { StyleSheet } from "react-native";
-import { COLORS, FONT_SIZE, SPACING } from "../../styles/colors";
+import { Theme } from "../../hooks/useTheme";
+import { FONT_SIZE, SPACING } from "../../styles/colors";
 
-export const styles = StyleSheet.create({
-  screen: {
-    flex: 1,
-    backgroundColor: COLORS.white,
-  },
-  container: {
-    paddingHorizontal: SPACING.lg,
-    paddingBottom: SPACING.xxl * 2,
-  },
-  subtitle: {
-    fontSize: FONT_SIZE.md,
-    color: COLORS.textSecondary,
-    marginBottom: SPACING.xxl,
-  },
-  primaryButton: {
-    height: 52,
-    backgroundColor: COLORS.primary,
-    borderRadius: 14,
-    alignItems: "center",
-    justifyContent: "center",
-    marginTop: SPACING.sm,
-  },
-  primaryButtonText: {
-    color: COLORS.white,
-    fontFamily: "Inter_700Bold",
-    fontSize: FONT_SIZE.md + 1,
-  },
-  pressed: {
-    opacity: 0.7,
-  },
-  helperText: {
-    color: COLORS.textSecondary,
-    fontSize: 13,
-    textAlign: "center",
-    marginTop: SPACING.lg,
-    lineHeight: 18,
-  },
-});
-
-export default { styles };
+export const createRegisterStyles = ({ colors }: Theme) =>
+  StyleSheet.create({
+    screen: {
+      flex: 1,
+      backgroundColor: colors.background,
+    },
+    container: {
+      paddingHorizontal: SPACING.lg,
+      paddingBottom: SPACING.xxl * 2,
+    },
+    logoWrapper: {
+      alignItems: "center",
+      marginBottom: SPACING.xl,
+    },
+    logo: {
+      width: 60,
+      height: 60,
+      resizeMode: "contain",
+    },
+    subtitle: {
+      fontSize: FONT_SIZE.md,
+      color: colors.textSecondary,
+      marginBottom: SPACING.xxl,
+    },
+    primaryButton: {
+      marginTop: SPACING.sm,
+    },
+    helperText: {
+      color: colors.textSecondary,
+      fontSize: 13,
+      textAlign: "center",
+      marginTop: SPACING.lg,
+      lineHeight: 18,
+    },
+  });

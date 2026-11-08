@@ -1,6 +1,5 @@
 import { db } from "@/firebase";
 import { notificationService } from "@/app/services/notificationService";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useFocusEffect, useRouter } from "expo-router";
 import React, { useCallback, useState } from "react";
 import {
@@ -15,10 +14,13 @@ import {
   View,
 } from "react-native";
 import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
+import { AnimatedButton } from "../../components/buttons/AnimatedButton";
+import { AnimatedCard } from "../../components/cards/AnimatedCard";
 import { MODAL_BUTTON, MODAL_TITLE } from "../../components/modal/modalCopy";
 import ModernModal from "../../components/modal/modernModal";
-import { COLORS } from "../../styles/colors";
-import { styles } from "./_pendingPetsApproval.styles";
+import { useTheme, useThemedStyles } from "../../hooks/useTheme";
+import { createPendingPetsApprovalStyles } from "./_pendingPetsApproval.styles";
+import { Icon } from "../../components/icon/Icon";
 
 interface PendingPet {
   id: string;
@@ -57,6 +59,9 @@ export default function PendingPetsApprovalScreen() {
   });
   const insets = useSafeAreaInsets();
   const router = useRouter();
+  const theme = useTheme();
+  const { colors } = theme;
+  const styles = useThemedStyles(createPendingPetsApprovalStyles);
 
   const showModal = (next: Omit<ModalState, "visible">) => {
     setModal({ ...next, visible: true });
@@ -235,31 +240,40 @@ export default function PendingPetsApprovalScreen() {
   if (!selectedPet) {
     return (
       <SafeAreaView style={styles.container} edges={['top', 'bottom']}>
-        <StatusBar barStyle="dark-content" backgroundColor="transparent" translucent />
+        <StatusBar barStyle={theme.statusBarStyle} backgroundColor="transparent" translucent />
         <View style={styles.header}>
-          <TouchableOpacity onPress={() => router.back()}>
-            <MaterialCommunityIcons
+          <TouchableOpacity
+            onPress={() => router.back()}
+            hitSlop={8}
+            accessibilityRole="button"
+            accessibilityLabel="Voltar"
+          >
+            <Icon family="material"
               name="arrow-left"
               size={24}
-              color={COLORS.primary}
+              color="primary"
             />
           </TouchableOpacity>
-          <Text style={styles.headerTitle}>Aprovar Pets</Text>
-          <View style={styles.badge}>
+          <Text style={styles.headerTitle} accessibilityRole="header">Aprovar Pets</Text>
+          <View
+            style={styles.badge}
+            accessible
+            accessibilityLabel={`${pendingPets.length} pets pendentes`}
+          >
             <Text style={styles.badgeText}>{pendingPets.length}</Text>
           </View>
         </View>
 
         {isLoading ? (
           <View style={styles.centerContainer}>
-            <ActivityIndicator size="large" color={COLORS.primary} />
+            <ActivityIndicator size="large" color={colors.primary} />
           </View>
         ) : pendingPets.length === 0 ? (
           <View style={styles.centerContainer}>
-            <MaterialCommunityIcons
+            <Icon family="material"
               name="check-all"
               size={64}
-              color={COLORS.primaryLight}
+              color="primaryLight"
             />
             <Text style={styles.emptyText}>
               Todos os pets foram aprovados!
@@ -273,28 +287,32 @@ export default function PendingPetsApprovalScreen() {
               styles.listContent,
               { paddingBottom: insets.bottom },
             ]}
-            renderItem={({ item }) => (
-              <TouchableOpacity
-                style={styles.petCard}
-                onPress={() => setSelectedPet(item)}
-              >
-                <Image source={{ uri: item.image }} style={styles.petImage} />
-                <View style={styles.petInfo}>
-                  <Text style={styles.petName}>{item.name}</Text>
-                  <Text style={styles.petDetails}>
-                    {item.breed} • {item.age}
-                  </Text>
-                  <Text style={styles.petLocation}>{item.location}</Text>
-                  <Text style={styles.petDescription} numberOfLines={2}>
-                    {item.description}
-                  </Text>
-                </View>
-                <MaterialCommunityIcons
-                  name="chevron-right"
-                  size={24}
-                  color={COLORS.primaryMedium}
-                />
-              </TouchableOpacity>
+            renderItem={({ item, index }) => (
+              <AnimatedCard index={index}>
+                <TouchableOpacity
+                  style={styles.petCard}
+                  onPress={() => setSelectedPet(item)}
+                  accessibilityRole="button"
+                  accessibilityLabel={`Revisar ${item.name}`}
+                >
+                  <Image source={{ uri: item.image }} style={styles.petImage} />
+                  <View style={styles.petInfo}>
+                    <Text style={styles.petName}>{item.name}</Text>
+                    <Text style={styles.petDetails}>
+                      {item.breed} • {item.age}
+                    </Text>
+                    <Text style={styles.petLocation}>{item.location}</Text>
+                    <Text style={styles.petDescription} numberOfLines={2}>
+                      {item.description}
+                    </Text>
+                  </View>
+                  <Icon family="material"
+                    name="chevron-right"
+                    size={24}
+                    color="textBrandMuted"
+                  />
+                </TouchableOpacity>
+              </AnimatedCard>
             )}
           />
         )}
@@ -316,16 +334,21 @@ export default function PendingPetsApprovalScreen() {
 
   return (
     <SafeAreaView style={styles.container} edges={['top', 'bottom']}>
-      <StatusBar barStyle="dark-content" backgroundColor="transparent" translucent />
+      <StatusBar barStyle={theme.statusBarStyle} backgroundColor="transparent" translucent />
       <View style={styles.detailHeader}>
-        <TouchableOpacity onPress={() => setSelectedPet(null)}>
-          <MaterialCommunityIcons
+        <TouchableOpacity
+          onPress={() => setSelectedPet(null)}
+          hitSlop={8}
+          accessibilityRole="button"
+          accessibilityLabel="Voltar para a lista"
+        >
+          <Icon family="material"
             name="arrow-left"
             size={24}
-            color={COLORS.primary}
+            color="primary"
           />
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>Revisar Pet</Text>
+        <Text style={styles.headerTitle} accessibilityRole="header">Revisar Pet</Text>
         <View style={{ width: 24 }} />
       </View>
 
@@ -360,7 +383,9 @@ export default function PendingPetsApprovalScreen() {
           <TextInput
             style={styles.reasonInput}
             placeholder="Descreva o motivo da rejeição..."
-            placeholderTextColor="#b8d9bd"
+            placeholderTextColor={colors.placeholder}
+            keyboardAppearance={theme.isDark ? "dark" : "light"}
+            accessibilityLabel="Motivo da rejeição"
             value={rejectionReason}
             onChangeText={setRejectionReason}
             multiline
@@ -368,43 +393,25 @@ export default function PendingPetsApprovalScreen() {
           />
 
           <View style={styles.actions}>
-            <TouchableOpacity
-              style={[styles.button, styles.rejectButton]}
-              onPress={() => handleRejectPet(selectedPet.id)}
-              disabled={isProcessing}
-            >
-              {isProcessing ? (
-                <ActivityIndicator color="white" />
-              ) : (
-                <>
-                  <MaterialCommunityIcons
-                    name="close"
-                    size={20}
-                    color="white"
-                  />
-                  <Text style={styles.buttonText}>Rejeitar</Text>
-                </>
-              )}
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              style={[styles.button, styles.approveButton]}
-              onPress={() => handleApprovePet(selectedPet.id)}
-              disabled={isProcessing}
-            >
-              {isProcessing ? (
-                <ActivityIndicator color="white" />
-              ) : (
-                <>
-                  <MaterialCommunityIcons
-                    name="check"
-                    size={20}
-                    color="white"
-                  />
-                  <Text style={styles.buttonText}>Aprovar</Text>
-                </>
-              )}
-            </TouchableOpacity>
+            <View style={styles.actionItem}>
+              <AnimatedButton
+                title="Rejeitar"
+                variant="danger"
+                size="md"
+                loading={isProcessing}
+                icon={<Icon family="material" name="close" size={20} color="onPrimary" />}
+                onPress={() => handleRejectPet(selectedPet.id)}
+              />
+            </View>
+            <View style={styles.actionItem}>
+              <AnimatedButton
+                title="Aprovar"
+                size="md"
+                loading={isProcessing}
+                icon={<Icon family="material" name="check" size={20} color="onPrimary" />}
+                onPress={() => handleApprovePet(selectedPet.id)}
+              />
+            </View>
           </View>
         </View>
       </ScrollView>

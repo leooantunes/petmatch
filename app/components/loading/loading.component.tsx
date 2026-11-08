@@ -1,4 +1,3 @@
-import { FontAwesome } from "@expo/vector-icons";
 import React, {
   createContext,
   ReactNode,
@@ -10,8 +9,9 @@ import React, {
   useState,
 } from "react";
 import { Animated, Modal, Text, View } from "react-native";
-import { COLORS } from "../../styles/colors";
-import { loadingStyles as styles } from "./loading.styles";
+import { useThemedStyles } from "../../hooks/useTheme";
+import { createLoadingStyles } from "./loading.styles";
+import { Icon } from "../icon/Icon";
 
 type LoadingContextData = {
   showLoading: () => void;
@@ -52,24 +52,37 @@ export function useLoading() {
 }
 
 function Loading({ visible }: Readonly<{ visible: boolean }>) {
+  const styles = useThemedStyles(createLoadingStyles);
   const rotation = useRef(new Animated.Value(0)).current;
+  const cardIn = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
     if (visible) {
-      const animation = Animated.loop(
+      const spinLoop = Animated.loop(
         Animated.timing(rotation, {
           toValue: 1,
           duration: 900,
           useNativeDriver: true,
         }),
       );
-      animation.start();
-      return () => animation.stop();
+      const entrance = Animated.spring(cardIn, {
+        toValue: 1,
+        friction: 7,
+        tension: 80,
+        useNativeDriver: true,
+      });
+      spinLoop.start();
+      entrance.start();
+      return () => {
+        spinLoop.stop();
+        entrance.stop();
+      };
     }
 
     rotation.setValue(0);
+    cardIn.setValue(0);
     return undefined;
-  }, [visible, rotation]);
+  }, [visible, rotation, cardIn]);
 
   const spin = rotation.interpolate({
     inputRange: [0, 1],
@@ -77,16 +90,34 @@ function Loading({ visible }: Readonly<{ visible: boolean }>) {
   });
 
   return (
-    <Modal visible={visible} transparent statusBarTranslucent>
+    <Modal visible={visible} transparent statusBarTranslucent animationType="fade">
       <View style={styles.overlay} pointerEvents="auto">
-        <View style={styles.loaderCard}>
+        <Animated.View
+          style={[
+            styles.loaderCard,
+            {
+              opacity: cardIn,
+              transform: [
+                {
+                  scale: cardIn.interpolate({
+                    inputRange: [0, 1],
+                    outputRange: [0.85, 1],
+                  }),
+                },
+              ],
+            },
+          ]}
+          accessible
+          accessibilityRole="progressbar"
+          accessibilityLabel="Carregando"
+        >
           <Animated.View
             style={[styles.pawWrapper, { transform: [{ rotate: spin }] }]}
           >
-            <FontAwesome name="paw" size={48} color={COLORS.primary} />
+            <Icon name="paw" size={48} color="primary" />
           </Animated.View>
           <Text style={styles.loaderText}>Carregando...</Text>
-        </View>
+        </Animated.View>
       </View>
     </Modal>
   );

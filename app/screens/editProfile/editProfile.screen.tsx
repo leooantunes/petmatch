@@ -4,7 +4,6 @@ import {
   isValidBrazilianMobile,
   PHONE_ERROR_MESSAGE,
 } from "@/utils/phone";
-import { AntDesign } from "@expo/vector-icons";
 import auth from "@react-native-firebase/auth";
 import storage from "@react-native-firebase/storage";
 import * as ImagePicker from "expo-image-picker";
@@ -16,6 +15,7 @@ import {
   KeyboardAvoidingView,
   Platform,
   ScrollView,
+  StatusBar,
   Text,
   TextInput,
   TouchableOpacity,
@@ -29,9 +29,11 @@ import {
   MODAL_TITLE,
 } from "../../components/modal/modalCopy";
 import ModernModal from "../../components/modal/modernModal";
-import { COLORS } from "../../styles/colors";
-import { UserProfile } from "../../types/user";
-import { styles } from "./_editProfile.styles";
+import { UserProfileUpdate } from "../../types/user";
+import { AnimatedButton } from "../../components/buttons/AnimatedButton";
+import { useTheme, useThemedStyles } from "../../hooks/useTheme";
+import { createEditProfileStyles } from "./_editProfile.styles";
+import { Icon } from "../../components/icon/Icon";
 
 const defaultProfileImage =
   "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=400&q=80";
@@ -54,8 +56,11 @@ type ModalState = {
 
 export default function EditProfileScreen() {
   const router = useRouter();
+  const theme = useTheme();
+  const { colors } = theme;
+  const styles = useThemedStyles(createEditProfileStyles);
   const { showLoading, hideLoading } = useLoading();
-  const [profile, setProfile] = useState<UserProfile>({
+  const [profile, setProfile] = useState<UserProfileUpdate>({
     name: "",
     email: "",
     phone: "",
@@ -307,13 +312,14 @@ export default function EditProfileScreen() {
       style={styles.container}
       behavior={Platform.OS === "ios" ? "padding" : "height"}
     >
+      <StatusBar barStyle={theme.statusBarStyle} backgroundColor="transparent" translucent />
       <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
         <ScrollView
           contentContainerStyle={styles.scrollContent}
           keyboardShouldPersistTaps="handled"
           showsVerticalScrollIndicator={false}
         >
-          <Text style={styles.header}>Editar perfil</Text>
+          <Text style={styles.header} accessibilityRole="header">Editar perfil</Text>
           <Text style={styles.subtitle}>
             Atualize suas informações de usuário para manter seu perfil sempre
             correto.
@@ -322,6 +328,8 @@ export default function EditProfileScreen() {
           <TouchableOpacity
             style={styles.photoSection}
             onPress={pickProfileImage}
+            accessibilityRole="button"
+            accessibilityLabel="Alterar foto de perfil"
           >
             <Image
               source={{ uri: profileImage }}
@@ -329,7 +337,7 @@ export default function EditProfileScreen() {
               onError={() => setProfileImage(defaultProfileImage)}
             />
             <View style={styles.photoOverlay}>
-              <AntDesign name="camera" size={18} color={COLORS.white} />
+              <Icon family="antdesign" name="camera" size={18} color="onPrimary" />
             </View>
           </TouchableOpacity>
           <Text style={styles.photoHint}>
@@ -340,7 +348,8 @@ export default function EditProfileScreen() {
           <TextInput
             style={styles.input}
             placeholder="Nome completo"
-            placeholderTextColor="#b8d9bd"
+            placeholderTextColor={colors.placeholder}
+            keyboardAppearance={theme.isDark ? "dark" : "light"}
             value={profile.name}
             onChangeText={(name) => setProfile({ ...profile, name })}
             editable={!loading}
@@ -350,7 +359,8 @@ export default function EditProfileScreen() {
           <TextInput
             style={styles.input}
             placeholder="Email"
-            placeholderTextColor="#b8d9bd"
+            placeholderTextColor={colors.placeholder}
+            keyboardAppearance={theme.isDark ? "dark" : "light"}
             value={profile.email}
             onChangeText={(email) => setProfile({ ...profile, email })}
             keyboardType="email-address"
@@ -362,7 +372,8 @@ export default function EditProfileScreen() {
           <TextInput
             style={styles.input}
             placeholder="(31) 99999-9999"
-            placeholderTextColor="#b8d9bd"
+            placeholderTextColor={colors.placeholder}
+            keyboardAppearance={theme.isDark ? "dark" : "light"}
             value={profile.phone}
             onChangeText={(phone) =>
               setProfile({ ...profile, phone: formatBrazilianMobile(phone) })
@@ -377,7 +388,8 @@ export default function EditProfileScreen() {
           <TextInput
             style={styles.input}
             placeholder="Idade"
-            placeholderTextColor="#b8d9bd"
+            placeholderTextColor={colors.placeholder}
+            keyboardAppearance={theme.isDark ? "dark" : "light"}
             value={profile.age}
             onChangeText={(age) => setProfile({ ...profile, age })}
             keyboardType="numeric"
@@ -388,7 +400,8 @@ export default function EditProfileScreen() {
           <TextInput
             style={styles.input}
             placeholder="Cidade"
-            placeholderTextColor="#b8d9bd"
+            placeholderTextColor={colors.placeholder}
+            keyboardAppearance={theme.isDark ? "dark" : "light"}
             value={profile.city}
             onChangeText={(city) => setProfile({ ...profile, city })}
             editable={!loading}
@@ -398,27 +411,32 @@ export default function EditProfileScreen() {
           <TextInput
             style={styles.input}
             placeholder="Senha"
-            placeholderTextColor="#b8d9bd"
+            placeholderTextColor={colors.placeholder}
+            keyboardAppearance={theme.isDark ? "dark" : "light"}
             secureTextEntry
             value={profile.password}
             onChangeText={(password) => setProfile({ ...profile, password })}
             editable={!loading}
           />
 
-          <TouchableOpacity style={styles.button} onPress={handleSave}>
-            <Text style={styles.buttonText}>Salvar</Text>
-          </TouchableOpacity>
+          <AnimatedButton
+            title="Salvar"
+            style={styles.button}
+            onPress={handleSave}
+          />
 
-          <TouchableOpacity
+          <AnimatedButton
+            title="Cancelar"
+            variant="ghost"
+            size="md"
             style={styles.cancelButton}
             onPress={() => router.back()}
-          >
-            <Text style={styles.cancelText}>Cancelar</Text>
-          </TouchableOpacity>
+          />
 
           <TouchableOpacity
             style={styles.deleteAccountButton}
             onPress={confirmDeleteAccount}
+            accessibilityRole="button"
           >
             <Text style={styles.deleteAccountText}>Excluir conta</Text>
           </TouchableOpacity>

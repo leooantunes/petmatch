@@ -1,16 +1,20 @@
-import { FontAwesome } from "@expo/vector-icons";
-import { useRouter } from "expo-router";
 import React from "react";
 import {
   Alert,
   FlatList,
   Image,
   Linking,
+  StatusBar,
   Text,
-  TouchableOpacity,
   View,
 } from "react-native";
-import { styles } from "./_ongs.styles";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { BackButton } from "../../components/backButton/backButton.component";
+import { AnimatedButton } from "../../components/buttons/AnimatedButton";
+import { AnimatedCard } from "../../components/cards/AnimatedCard";
+import { useTheme, useThemedStyles } from "../../hooks/useTheme";
+import { Icon } from "../../components/icon/Icon";
+import { createOngsStyles } from "./_ongs.styles";
 
 type PartnerOng = {
   id: string;
@@ -62,10 +66,12 @@ const openWhatsApp = async (phone: string, ongName: string) => {
 };
 
 export default function OngsScreen() {
-  const router = useRouter();
+  const theme = useTheme();
+  const styles = useThemedStyles(createOngsStyles);
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container} edges={["top"]}>
+      <StatusBar barStyle={theme.statusBarStyle} backgroundColor="transparent" translucent />
       <FlatList
         data={partnerOngs}
         keyExtractor={(item) => item.id}
@@ -73,39 +79,42 @@ export default function OngsScreen() {
         contentContainerStyle={styles.listContent}
         ListHeaderComponent={
           <View style={styles.header}>
-            <TouchableOpacity
-              style={styles.backButton}
-              onPress={() => router.back()}
-              accessibilityLabel="Voltar"
-            >
-              <FontAwesome name="arrow-left" size={16} color="#ffffff" />
-            </TouchableOpacity>
-            <Text style={styles.title}>ONGs amigas</Text>
+            <BackButton />
+            <Text style={styles.title} accessibilityRole="header">ONGs amigas</Text>
             <Text style={styles.subtitle}>
               Conheça as organizações que ajudam a transformar a vida de muitos
               pets.
             </Text>
           </View>
         }
-        renderItem={({ item }) => (
-          <View style={styles.card}>
-            <Image source={petPixelArt} style={styles.image} resizeMode="contain" />
+        renderItem={({ item, index }) => (
+          <AnimatedCard index={index} style={styles.card}>
+            <Image
+              source={petPixelArt}
+              style={styles.image}
+              resizeMode="contain"
+              accessibilityElementsHidden
+              importantForAccessibility="no"
+            />
             <View style={styles.cardContent}>
               <Text style={styles.ongName}>{item.name}</Text>
               <Text style={styles.pixLabel}>Pix para doações</Text>
-              <Text style={styles.pixValue}>{item.pix}</Text>
-              <TouchableOpacity
+              <Text style={styles.pixValue} selectable>
+                {item.pix}
+              </Text>
+              <AnimatedButton
+                title="Falar pelo WhatsApp"
+                size="sm"
                 style={styles.whatsappButton}
+                textStyle={styles.whatsappButtonText}
+                icon={<Icon name="whatsapp" size={18} color="onPrimary" />}
+                accessibilityLabel={`Falar com ${item.name} pelo WhatsApp`}
                 onPress={() => void openWhatsApp(item.whatsapp, item.name)}
-                activeOpacity={0.85}
-              >
-                <FontAwesome name="whatsapp" size={18} color="#ffffff" />
-                <Text style={styles.whatsappButtonText}>Falar pelo WhatsApp</Text>
-              </TouchableOpacity>
+              />
             </View>
-          </View>
+          </AnimatedCard>
         )}
       />
-    </View>
+    </SafeAreaView>
   );
 }

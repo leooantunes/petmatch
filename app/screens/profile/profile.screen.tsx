@@ -1,5 +1,4 @@
 import { db } from "@/firebase";
-import { AntDesign, FontAwesome } from "@expo/vector-icons";
 import auth from "@react-native-firebase/auth";
 import storage from "@react-native-firebase/storage";
 import * as ImagePicker from "expo-image-picker";
@@ -23,10 +22,13 @@ import {
   MODAL_TITLE,
 } from "../../components/modal/modalCopy";
 import ModernModal from "../../components/modal/modernModal";
+import { AnimatedButton } from "../../components/buttons/AnimatedButton";
+import { AnimatedCard } from "../../components/cards/AnimatedCard";
 import { useImageFallback } from "../../hooks/useImageFallback";
-import { COLORS } from "../../styles/colors";
+import { useTheme, useThemedStyles } from "../../hooks/useTheme";
+import { Icon } from "../../components/icon/Icon";
 import { Pet } from "../../types/pets";
-import { styles } from "./_profile.styles";
+import { createProfileStyles } from "./_profile.styles";
 
 const defaultProfileImage =
   "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=400&q=80";
@@ -68,6 +70,8 @@ type ModalState = {
 export default function ProfileScreen() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
+  const theme = useTheme();
+  const styles = useThemedStyles(createProfileStyles);
   const { showLoading, hideLoading } = useLoading();
   const [pets, setPets] = useState<Pet[]>([]);
   const [loadingPets, setLoadingPets] = useState(true);
@@ -344,29 +348,31 @@ export default function ProfileScreen() {
   };
 
   return (
-<<<<<<< HEAD
     <SafeAreaView style={styles.container} edges={['top', 'bottom']}>
-      <StatusBar barStyle="dark-content" backgroundColor="transparent" translucent />
-=======
-    <View style={[styles.container, { paddingTop: insets.top }]}>
->>>>>>> 6bbc8d1ffd5f8ae686e3cbd217ba93160b8932f8
+      <StatusBar barStyle={theme.statusBarStyle} backgroundColor="transparent" translucent />
       <View style={styles.content}>
-        <View style={{ alignItems: 'center', paddingVertical: 12 }}>
+        <View style={styles.logoWrapper}>
           <Image
             source={require('../../../assets/images/gato-cachorro-pixel-v3.png')}
-            style={{ width: 48, height: 48, resizeMode: 'contain' }}
+            style={styles.logo}
+            accessibilityLabel="PetMatch"
           />
         </View>
 
-        <View style={styles.userSection}>
-          <TouchableOpacity onPress={pickProfileImage} activeOpacity={0.85}>
+        <AnimatedCard style={styles.userSection}>
+          <TouchableOpacity
+            onPress={pickProfileImage}
+            activeOpacity={0.85}
+            accessibilityRole="button"
+            accessibilityLabel="Alterar foto de perfil"
+          >
             <Image
               source={{ uri: profileImage }}
               style={styles.userAvatar}
               onError={() => setProfileImage(defaultProfileImage)}
             />
             <View style={styles.avatarOverlay}>
-              <AntDesign name="camera" size={14} color={COLORS.white} />
+              <Icon family="antdesign" name="camera" size={14} color="onPrimary" />
             </View>
           </TouchableOpacity>
           <View style={styles.userInfo}>
@@ -379,27 +385,30 @@ export default function ProfileScreen() {
               style={styles.iconButton}
               onPress={handleEditProfile}
               activeOpacity={0.8}
+              accessibilityRole="button"
+              accessibilityLabel="Editar perfil"
             >
-              <FontAwesome name="edit" size={16} color={COLORS.white} />
+              <Icon name="edit" size={16} color="onPrimary" />
             </TouchableOpacity>
             <TouchableOpacity
               style={styles.iconButtonLogout}
               onPress={handleLogout}
               activeOpacity={0.8}
+              accessibilityRole="button"
+              accessibilityLabel="Sair da conta"
             >
-              <FontAwesome name="sign-out" size={16} color={COLORS.white} />
+              <Icon name="sign-out" size={16} color="onPrimary" />
             </TouchableOpacity>
           </View>
-        </View>
+        </AnimatedCard>
 
-        <TouchableOpacity
+        <AnimatedButton
+          title="Conheça nossas ONGs amigas"
+          size="md"
           style={styles.ongsButton}
+          icon={<Icon name="heart" size={16} color="onPrimary" />}
           onPress={() => router.push("../ongs/ongs.screen")}
-          activeOpacity={0.85}
-        >
-          <FontAwesome name="heart" size={16} color={COLORS.white} />
-          <Text style={styles.ongsButtonText}>Conheça nossas ONGs amigas</Text>
-        </TouchableOpacity>
+        />
 
         <FlatList
           data={pets}
@@ -407,44 +416,55 @@ export default function ProfileScreen() {
           showsVerticalScrollIndicator={false}
           contentContainerStyle={[
             styles.listContent,
-            { paddingBottom: insets.bottom + 16 },
+            { paddingBottom: insets.bottom + 120 },
           ]}
           ListEmptyComponent={
             loadingPets ? (
               <Text style={styles.description}>Carregando seus pets...</Text>
             ) : (
-              <EmptyList icon="paw" message="Nenhum pet cadastrado ainda." />
+              <EmptyList
+                illustration
+                icon="heart"
+                message="Nenhum pet cadastrado ainda."
+                hint="Toque em New Pet na barra abaixo para anunciar um amigo."
+              />
             )
           }
-          renderItem={({ item }) => (
-            <TouchableOpacity
-              activeOpacity={0.85}
-              style={styles.card}
-              onPress={() => handlePetPress(item)}
-            >
-              <View style={styles.cardHeader}>
-                <Text style={styles.cardName}>{item.name}</Text>
-                <TouchableOpacity
-                  style={styles.removeButton}
-                  onPress={() => handleDeletePet(item.id)}
-                >
-                  <FontAwesome name="trash" size={18} color="#ffffff" />
-                </TouchableOpacity>
-              </View>
-              <PetCardImage uri={item.image} style={styles.cardImage} />
-              <View style={styles.cardInfoRow}>
-                <View style={styles.tag}>
-                  <Text style={styles.tagText}>{item.age}</Text>
+          renderItem={({ item, index }) => (
+            <AnimatedCard index={index}>
+              <TouchableOpacity
+                activeOpacity={0.85}
+                style={styles.card}
+                onPress={() => handlePetPress(item)}
+                accessibilityRole="button"
+                accessibilityLabel={item.name}
+                accessibilityHint="Abre os detalhes do pet"
+              >
+                <View style={styles.cardHeader}>
+                  <Text style={styles.cardName}>{item.name}</Text>
+                  <TouchableOpacity
+                    style={styles.removeButton}
+                    onPress={() => handleDeletePet(item.id)}
+                    hitSlop={6}
+                    accessibilityRole="button"
+                    accessibilityLabel={`Remover ${item.name}`}
+                  >
+                    <Icon name="trash" size={18} color="onPrimary" />
+                  </TouchableOpacity>
                 </View>
-                <View style={styles.tag}>
-                  <Text style={styles.tagText}>{item.breed}</Text>
+                <PetCardImage uri={item.image} style={styles.cardImage} />
+                <View style={styles.cardInfoRow}>
+                  {[item.age, item.breed, item.location].filter(Boolean).map((tag) => (
+                    <View key={tag} style={styles.tag}>
+                      <Text style={styles.tagText}>{tag}</Text>
+                    </View>
+                  ))}
                 </View>
-                <View style={styles.tag}>
-                  <Text style={styles.tagText}>{item.location}</Text>
-                </View>
-              </View>
-              <Text style={styles.cardDescription}>{item.description}</Text>
-            </TouchableOpacity>
+                <Text style={styles.cardDescription} numberOfLines={3}>
+                  {item.description}
+                </Text>
+              </TouchableOpacity>
+            </AnimatedCard>
           )}
         />
       </View>

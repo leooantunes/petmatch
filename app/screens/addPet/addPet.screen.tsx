@@ -1,5 +1,4 @@
 import { db } from "@/firebase";
-import { AntDesign } from "@expo/vector-icons";
 import { FirebaseError } from "@firebase/util";
 import auth from "@react-native-firebase/auth";
 import storage from "@react-native-firebase/storage";
@@ -14,6 +13,7 @@ import {
   KeyboardAvoidingView,
   Platform,
   ScrollView,
+  StatusBar,
   Text,
   TextInput,
   TouchableOpacity,
@@ -25,9 +25,11 @@ import { BackButton } from "../../components/backButton/backButton.component";
 import { useLoading } from "../../components/loading/loading.component";
 import { MODAL_BUTTON, MODAL_TITLE } from "../../components/modal/modalCopy";
 import ModernModal from "../../components/modal/modernModal";
-import { COLORS } from "../../styles/colors";
 import { API_ENDPOINTS, AGE_RANGES, PETS_CONFIG } from "../../constants/config";
-import { styles } from "./_addPet.styles";
+import { AnimatedButton } from "../../components/buttons/AnimatedButton";
+import { useTheme, useThemedStyles } from "../../hooks/useTheme";
+import { createAddPetStyles } from "./_addPet.styles";
+import { Icon } from "../../components/icon/Icon";
 
 type ModalState = {
   visible: boolean;
@@ -88,6 +90,9 @@ const parseCatBreeds = (data: unknown): string[] => {
 
 export default function AddPetScreen() {
   const router = useRouter();
+  const theme = useTheme();
+  const { colors } = theme;
+  const styles = useThemedStyles(createAddPetStyles);
   const insets = useSafeAreaInsets();
   const [name, setName] = useState("");
   const [age, setAge] = useState("");
@@ -391,7 +396,7 @@ export default function AddPetScreen() {
   const renderDropdown = (
     label: string,
     value: string,
-    options: string[],
+    options: readonly string[],
     onSelect: (selectedValue: string) => void,
     selectType: "age" | "breed",
     disabled?: boolean,
@@ -399,13 +404,35 @@ export default function AddPetScreen() {
   ) => {
     const isOpen = openSelect === selectType;
 
+    const renderOption = (option: string) => (
+      <TouchableOpacity
+        key={option}
+        style={[
+          styles.dropdownItem,
+          option === value && styles.dropdownItemSelected,
+        ]}
+        onPress={() => {
+          onSelect(option);
+          setOpenSelect(null);
+        }}
+        activeOpacity={0.85}
+        accessibilityRole="menuitem"
+        accessibilityState={{ selected: option === value }}
+      >
+        <Text style={styles.dropdownItemText}>{option}</Text>
+      </TouchableOpacity>
+    );
+
     return (
       <View style={styles.dropdownContainer}>
         <TouchableOpacity
-          style={styles.dropdownButton}
+          style={[styles.dropdownButton, isOpen && styles.dropdownButtonOpen]}
           onPress={() => setOpenSelect(isOpen ? null : selectType)}
           activeOpacity={0.9}
           disabled={disabled}
+          accessibilityRole="button"
+          accessibilityLabel={value ? `${label}: ${value}` : label}
+          accessibilityState={{ expanded: isOpen, disabled: !!disabled }}
         >
           <Text
             style={[
@@ -415,10 +442,10 @@ export default function AddPetScreen() {
           >
             {value || label}
           </Text>
-          <AntDesign
+          <Icon family="antdesign"
             name={isOpen ? "up" : "down"}
             size={14}
-            color={COLORS.primaryMedium}
+            color="textBrandMuted"
           />
         </TouchableOpacity>
 
@@ -426,34 +453,10 @@ export default function AddPetScreen() {
           <View style={styles.dropdownMenu}>
             {scrollable ? (
               <ScrollView nestedScrollEnabled style={styles.dropdownScroll}>
-                {options.map((option) => (
-                  <TouchableOpacity
-                    key={option}
-                    style={styles.dropdownItem}
-                    onPress={() => {
-                      onSelect(option);
-                      setOpenSelect(null);
-                    }}
-                    activeOpacity={0.85}
-                  >
-                    <Text style={styles.dropdownItemText}>{option}</Text>
-                  </TouchableOpacity>
-                ))}
+                {options.map(renderOption)}
               </ScrollView>
             ) : (
-              options.map((option) => (
-                <TouchableOpacity
-                  key={option}
-                  style={styles.dropdownItem}
-                  onPress={() => {
-                    onSelect(option);
-                    setOpenSelect(null);
-                  }}
-                  activeOpacity={0.85}
-                >
-                  <Text style={styles.dropdownItemText}>{option}</Text>
-                </TouchableOpacity>
-              ))
+              options.map(renderOption)
             )}
           </View>
         )}
@@ -466,6 +469,7 @@ export default function AddPetScreen() {
       style={[styles.container, { paddingTop: insets.top }]}
       behavior={Platform.OS === "ios" ? "padding" : "height"}
     >
+      <StatusBar barStyle={theme.statusBarStyle} backgroundColor="transparent" translucent />
       <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
         <ScrollView
           contentContainerStyle={styles.scrollContent}
@@ -474,15 +478,20 @@ export default function AddPetScreen() {
         >
           <BackButton />
 
-          <Text style={styles.header}>Cadastrar novo pet</Text>
+          <Text style={styles.header} accessibilityRole="header">Cadastrar novo pet</Text>
           <Text style={styles.subtitle}>
             Preencha os detalhes abaixo para anunciar um novo amigo.
           </Text>
 
           <Text style={styles.label}>Fotos do pet</Text>
-          <TouchableOpacity style={styles.photoUploadCard} onPress={pickImages}>
+          <TouchableOpacity
+            style={styles.photoUploadCard}
+            onPress={pickImages}
+            accessibilityRole="button"
+            accessibilityHint="Abre a galeria para escolher fotos"
+          >
             <View style={styles.photoUploadIconBox}>
-              <AntDesign name="picture" size={24} color={COLORS.primary} />
+              <Icon family="antdesign" name="picture" size={24} color="primary" />
             </View>
             <View style={styles.photoUploadTextBox}>
               <Text style={styles.photoUploadTitle}>
@@ -538,6 +547,9 @@ export default function AddPetScreen() {
                 ]}
                 onPress={handleStreetAnimalToggle}
                 activeOpacity={0.9}
+                accessibilityRole="switch"
+                accessibilityLabel="Animal de rua"
+                accessibilityState={{ checked: isStreetAnimal }}
               >
                 <View style={styles.switchLabelBox}>
                   <Text style={styles.switchText}>Animal de rua</Text>
@@ -570,7 +582,8 @@ export default function AddPetScreen() {
               <TextInput
                 style={styles.input}
                 placeholder="Nome do pet"
-                placeholderTextColor="#b8d9bd"
+                placeholderTextColor={colors.placeholder}
+                keyboardAppearance={theme.isDark ? "dark" : "light"}
                 value={name}
                 onChangeText={setName}
               />
@@ -601,6 +614,9 @@ export default function AddPetScreen() {
                 style={[styles.switchRow, neutered && styles.switchRowActive]}
                 onPress={() => setNeutered((value) => !value)}
                 activeOpacity={0.9}
+                accessibilityRole="switch"
+                accessibilityLabel="Castrado"
+                accessibilityState={{ checked: neutered }}
               >
                 <View style={styles.switchLabelBox}>
                   <Text style={styles.switchText}>Castrado</Text>
@@ -627,27 +643,28 @@ export default function AddPetScreen() {
               <TextInput
                 style={styles.input}
                 placeholder="Cidade"
-                placeholderTextColor="#b8d9bd"
+                placeholderTextColor={colors.placeholder}
+                keyboardAppearance={theme.isDark ? "dark" : "light"}
                 value={city}
                 onChangeText={setCity}
               />
 
               <Text style={styles.label}>Descrição breve</Text>
               <TextInput
-                style={[
-                  styles.input,
-                  { height: 100, textAlignVertical: "top" },
-                ]}
+                style={[styles.input, styles.inputMultiline]}
                 placeholder="Conte um pouco sobre o pet"
-                placeholderTextColor="#b8d9bd"
+                placeholderTextColor={colors.placeholder}
+                keyboardAppearance={theme.isDark ? "dark" : "light"}
                 value={description}
                 onChangeText={setDescription}
                 multiline
               />
 
-              <TouchableOpacity style={styles.button} onPress={handleSubmit}>
-                <Text style={styles.buttonText}>Cadastrar pet</Text>
-              </TouchableOpacity>
+              <AnimatedButton
+                title="Cadastrar pet"
+                style={styles.button}
+                onPress={handleSubmit}
+              />
             </>
           )}
         </ScrollView>

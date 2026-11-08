@@ -3,37 +3,16 @@
  * Provides dynamic theme (light/dark) with color tokens based on system preference
  */
 
-import { useColorScheme } from 'react-native';
+import { useMemo } from 'react';
+import { StatusBarStyle, useColorScheme } from 'react-native';
 import { designTokens } from '../constants/designTokens';
 
 export type ThemeType = 'light' | 'dark';
 
-export interface ThemeColors {
-  background: string;
-  surface: string;
-  surfaceAlt: string;
-  text: string;
-  textSecondary: string;
-  textTertiary: string;
-  primary: string;
-  primaryDark: string;
-  primaryDarker: string;
-  primaryMedium: string;
-  primaryLight: string;
-  success: string;
-  error: string;
-  warning: string;
-  info: string;
-  google: string;
-  facebook: string;
-  apple: string;
-  border: string;
-  borderLight: string;
-  borderVeryLight: string;
-  divider: string;
-  field: string;
-  shadowColor: string;
-}
+/** Every color token, typed from the light palette (dark must define the same keys). */
+export type ThemeColors = {
+  [K in keyof typeof designTokens.colors.light]: string;
+};
 
 export interface ShadowStyle {
   shadowColor: string;
@@ -54,34 +33,53 @@ export interface Theme {
   type: ThemeType;
   isDark: boolean;
   shadows: ShadowTokens;
+  statusBarStyle: StatusBarStyle;
 }
+
+const themes: Record<ThemeType, Theme> = {
+  light: {
+    colors: designTokens.colors.light,
+    type: 'light',
+    isDark: false,
+    shadows: designTokens.shadows.light,
+    statusBarStyle: 'dark-content',
+  },
+  dark: {
+    colors: designTokens.colors.dark,
+    type: 'dark',
+    isDark: true,
+    shadows: designTokens.shadows.dark,
+    statusBarStyle: 'light-content',
+  },
+};
 
 /**
  * useTheme Hook
- * Returns current theme colors and type based on system preference
- * Automatically responds to system light/dark mode changes
+ * Returns current theme colors and type based on system preference.
+ * The returned object is stable per theme, so it is safe as a memo dependency.
  */
 export function useTheme(): Theme {
   const colorScheme = useColorScheme();
-  const isDark = colorScheme === 'dark';
-  const themeType: ThemeType = isDark ? 'dark' : 'light';
+  return themes[colorScheme === 'dark' ? 'dark' : 'light'];
+}
 
-  const colors = designTokens.colors[themeType] as ThemeColors;
-  const shadows = designTokens.shadows[themeType] as ShadowTokens;
-
-  return {
-    colors,
-    type: themeType,
-    isDark,
-    shadows,
-  };
+/**
+ * useThemedStyles
+ * Builds a StyleSheet from the current theme and rebuilds it only when the theme changes.
+ *
+ * @example
+ * const styles = useThemedStyles(createPetListStyles);
+ */
+export function useThemedStyles<T>(factory: (theme: Theme) => T): T {
+  const theme = useTheme();
+  return useMemo(() => factory(theme), [factory, theme]);
 }
 
 /**
  * Get colors for a specific theme (useful for static styles)
  */
 export function getThemeColors(theme: ThemeType = 'light'): ThemeColors {
-  return designTokens.colors[theme] as ThemeColors;
+  return designTokens.colors[theme];
 }
 
 export default useTheme;

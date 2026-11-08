@@ -1,12 +1,13 @@
-import { AntDesign } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import React from "react";
 import { Pressable } from "react-native";
-import { COLORS } from "../../styles/colors";
-import { styles } from "./_backButton.styles";
+import { useThemedStyles } from "../../hooks/useTheme";
+import { createBackButtonStyles } from "./_backButton.styles";
+import { Icon } from "../icon/Icon";
 
 export function BackButton() {
   const router = useRouter();
+  const styles = useThemedStyles(createBackButtonStyles);
 
   const handleBack = () => {
     if (router.canGoBack()) {
@@ -24,7 +25,7 @@ export function BackButton() {
       accessibilityRole="button"
       accessibilityLabel="Voltar"
     >
-      <AntDesign name="left" size={18} color={COLORS.primaryDark} />
+      <Icon family="antdesign" name="left" size={18} color="textBrand" />
     </Pressable>
   );
 }

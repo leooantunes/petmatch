@@ -1,95 +1,86 @@
 import { StyleSheet } from "react-native";
+import { Theme } from "../../hooks/useTheme";
 import {
   BORDER_RADIUS,
-  COLORS,
   FONT_SIZE,
   FONT_WEIGHT,
   SPACING,
 } from "../../styles/colors";
 
-export const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: COLORS.backgroundLight,
-  },
-  listContent: {
-    flexGrow: 1,
-    padding: SPACING.xl,
-    paddingBottom: SPACING.xl + 120,
-  },
-  emptyState: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  header: {
-    fontSize: FONT_SIZE.xl,
-    fontWeight: FONT_WEIGHT.extraBold,
-    color: COLORS.primaryDark,
-    marginBottom: SPACING.lg,
-    paddingHorizontal: SPACING.xl,
-  },
-  card: {
-    backgroundColor: COLORS.white,
-    borderRadius: BORDER_RADIUS.xl,
-    overflow: "hidden",
-    marginBottom: SPACING.lg,
-    shadowColor: COLORS.shadowColor,
-    shadowOffset: { width: 0, height: 6 },
-    shadowOpacity: 0.12,
-    shadowRadius: 12,
-    elevation: 6,
-  },
-  cardImage: {
-    width: "100%",
-    height: 180,
-  },
-  cardBody: {
-    padding: SPACING.lg,
-  },
-  petName: {
-    fontSize: FONT_SIZE.lg,
-    fontWeight: FONT_WEIGHT.extraBold,
-    color: COLORS.primaryDark,
-    marginBottom: SPACING.xs,
-  },
-  petDetails: {
-    fontSize: FONT_SIZE.sm,
-    color: COLORS.primaryDarker,
-    marginBottom: SPACING.sm,
-  },
-  petInfoRow: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    alignItems: "flex-start",
-    marginBottom: SPACING.sm,
-  },
-  petInfoTag: {
-    backgroundColor: COLORS.primary,
-    borderRadius: BORDER_RADIUS.full,
-    paddingHorizontal: SPACING.sm,
-    paddingVertical: SPACING.sm,
-    marginRight: SPACING.sm,
-    marginBottom: SPACING.xs,
-    color: COLORS.white,
-    alignSelf: "flex-start",
-    flexShrink: 0,
-  },
-  petInfoLabel: {
-    fontSize: FONT_SIZE.xs,
-    color: COLORS.white,
-  },
-  emptyText: {
-    fontSize: FONT_SIZE.md,
-    color: COLORS.primaryDark,
-    textAlign: "center",
-    marginTop: SPACING.xl,
-  },
-  petDescription: {
-    fontSize: FONT_SIZE.sm,
-    color: COLORS.primaryLight,
-    lineHeight: 20,
-  },
-});
-
-export default { styles };
+export const createPetListStyles = ({ colors, shadows }: Theme) =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: colors.screen,
+    },
+    listContent: {
+      flexGrow: 1,
+      padding: SPACING.xl,
+      paddingBottom: SPACING.xl + 120,
+    },
+    listHeader: {
+      alignItems: "center",
+      marginBottom: SPACING.lg,
+      marginTop: SPACING.sm,
+    },
+    headerLogo: {
+      width: 56,
+      height: 56,
+      resizeMode: "contain",
+    },
+    emptyState: {
+      flex: 1,
+      alignItems: "center",
+      justifyContent: "center",
+    },
+    header: {
+      fontSize: FONT_SIZE.xl,
+      fontWeight: FONT_WEIGHT.extraBold,
+      color: colors.textBrand,
+      marginBottom: SPACING.lg,
+      paddingHorizontal: SPACING.xl,
+    },
+    card: {
+      backgroundColor: colors.card,
+      borderRadius: BORDER_RADIUS.xl,
+      overflow: "hidden",
+      marginBottom: SPACING.lg,
+      ...shadows.md,
+    },
+    cardImage: {
+      width: "100%",
+      height: 180,
+      backgroundColor: colors.surfaceTint,
+    },
+    cardBody: {
+      padding: SPACING.xl,
+    },
+    petName: {
+      fontSize: FONT_SIZE.lg,
+      fontWeight: FONT_WEIGHT.extraBold,
+      color: colors.textBrand,
+      marginBottom: SPACING.sm,
+    },
+    petInfoRow: {
+      flexDirection: "row",
+      flexWrap: "wrap",
+      alignItems: "flex-start",
+      gap: SPACING.sm,
+      marginBottom: SPACING.sm,
+    },
+    petInfoTag: {
+      backgroundColor: colors.primary,
+      borderRadius: BORDER_RADIUS.full,
+      paddingHorizontal: SPACING.md,
+      paddingVertical: SPACING.xs,
+      overflow: "hidden",
+      color: colors.onPrimary,
+      fontSize: FONT_SIZE.xs,
+      fontWeight: FONT_WEIGHT.medium,
+    },
+    petDescription: {
+      fontSize: FONT_SIZE.sm,
+      color: colors.textBrandSoft,
+      lineHeight: 20,
+    },
+  });
