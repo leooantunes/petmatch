@@ -70,7 +70,7 @@ export default function PendingPetsApprovalScreen() {
     try {
       const querySnapshot = await db()
         .collection("pets")
-        .where("status", "==", "pending")
+        .where("isApproved", "==", false)
         .orderBy("createdAt", "desc")
         .get();
 
@@ -115,7 +115,7 @@ export default function PendingPetsApprovalScreen() {
         .collection("pets")
         .doc(petId)
         .update({
-          status: "approved",
+          isApproved: true,
           approvedAt: new Date(),
         });
 
@@ -156,7 +156,7 @@ export default function PendingPetsApprovalScreen() {
         .collection("pets")
         .doc(petId)
         .update({
-          status: "rejected",
+          isApproved: false,
           rejectionReason: rejectionReason,
           rejectedAt: new Date(),
         });

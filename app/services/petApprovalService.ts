@@ -1,22 +1,12 @@
 import { db } from "@/firebase";
 
-export type PetStatus = "pending" | "approved" | "rejected";
-
-export interface PetApproval {
-  petId: string;
-  status: PetStatus;
-  createdAt: Date;
-  approvedAt?: Date;
-  rejectionReason?: string;
-}
-
 export const petApprovalService = {
   async approvePet(petId: string): Promise<void> {
     await db()
       .collection("pets")
       .doc(petId)
       .update({
-        status: "approved",
+        isApproved: true,
         approvedAt: new Date(),
       });
   },
@@ -26,7 +16,7 @@ export const petApprovalService = {
       .collection("pets")
       .doc(petId)
       .update({
-        status: "rejected",
+        isApproved: false,
         rejectionReason: reason,
         rejectedAt: new Date(),
       });
@@ -35,7 +25,7 @@ export const petApprovalService = {
   async getPendingPets() {
     const querySnapshot = await db()
       .collection("pets")
-      .where("status", "==", "pending")
+      .where("isApproved", "==", false)
       .get();
 
     return querySnapshot.docs.map((doc) => ({
@@ -47,7 +37,7 @@ export const petApprovalService = {
   async getApprovedPets() {
     const querySnapshot = await db()
       .collection("pets")
-      .where("status", "==", "approved")
+      .where("isApproved", "==", true)
       .get();
 
     return querySnapshot.docs.map((doc) => ({
@@ -56,7 +46,7 @@ export const petApprovalService = {
     }));
   },
 
-  async getAllPetsWithStatus() {
+  async getAllPetsWithApprovalStatus() {
     const querySnapshot = await db().collection("pets").get();
 
     return querySnapshot.docs.map((doc) => ({

@@ -356,7 +356,7 @@ export default function AddPetScreen() {
           image: uploadedPhotoUrls[0],
           images: uploadedPhotoUrls,
           ownerId: auth().currentUser?.uid ?? null,
-          status: "pending",
+          isApproved: false,
           createdAt: new Date(),
         });
 

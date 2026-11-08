@@ -50,7 +50,7 @@ export default function PetListScreen() {
       try {
         const querySnapshot = await db()
           .collection("pets")
-          .where("status", "==", "approved")
+          .where("isApproved", "==", true)
           .get();
         const loadedPets: Pet[] = querySnapshot.docs.map((doc) => {
           const data = doc.data() as Record<string, any>;
