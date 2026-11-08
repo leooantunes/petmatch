@@ -344,8 +344,12 @@ export default function ProfileScreen() {
   };
 
   return (
+<<<<<<< HEAD
     <SafeAreaView style={styles.container} edges={['top', 'bottom']}>
       <StatusBar barStyle="dark-content" backgroundColor="transparent" translucent />
+=======
+    <View style={[styles.container, { paddingTop: insets.top }]}>
+>>>>>>> 6bbc8d1ffd5f8ae686e3cbd217ba93160b8932f8
       <View style={styles.content}>
         <View style={{ alignItems: 'center', paddingVertical: 12 }}>
           <Image

@@ -14,18 +14,8 @@ export const styles = StyleSheet.create({
   },
   scrollContent: {
     padding: SPACING.xl,
+    paddingTop: SPACING.sm,
     paddingBottom: SPACING.xl + 120,
-  },
-  backButton: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: SPACING.sm,
-    marginBottom: SPACING.md,
-  },
-  backButtonText: {
-    color: COLORS.primary,
-    fontSize: FONT_SIZE.md,
-    fontWeight: FONT_WEIGHT.bold,
   },
   imageCarouselContainer: {
     marginBottom: SPACING.lg,

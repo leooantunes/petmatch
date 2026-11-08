@@ -14,9 +14,11 @@ export const styles = StyleSheet.create({
   },
   scrollContent: {
     padding: SPACING.xl,
-    paddingBottom: SPACING.xl,
-    marginTop: SPACING.lg,
+    paddingTop: SPACING.sm,
+    // Espaço para a tab bar flutuante.
+    paddingBottom: SPACING.xl + 120,
   },
+
   header: {
     fontSize: FONT_SIZE.xxl,
     fontWeight: FONT_WEIGHT.extraBold,
@@ -233,15 +235,6 @@ export const styles = StyleSheet.create({
     color: COLORS.white,
     fontWeight: FONT_WEIGHT.bold,
     fontSize: FONT_SIZE.md,
-  },
-  textButton: {
-    marginTop: SPACING.md,
-    alignSelf: "center",
-  },
-  textButtonText: {
-    color: COLORS.primary,
-    fontSize: FONT_SIZE.sm,
-    fontWeight: FONT_WEIGHT.bold,
   },
 });
 
