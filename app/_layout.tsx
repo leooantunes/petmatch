@@ -17,6 +17,8 @@ import {
 } from "react-native";
 import { ErrorBoundary } from "./components/errorBoundary/errorBoundary.component";
 import { LoadingProvider } from "./components/loading/loading.component";
+import { NotificationProvider } from "./contexts/NotificationContext";
+import { useNotificationSetup } from "./hooks/useNotificationSetup";
 import { COLORS } from "./styles/colors";
 
 type DefaultStyledComponent = {
@@ -36,12 +38,19 @@ function setDefaultFont(component: DefaultStyledComponent) {
 setDefaultFont(Text as typeof Text & DefaultStyledComponent);
 setDefaultFont(TextInput as typeof TextInput & DefaultStyledComponent);
 
-export default function RootLayout() {
+/**
+ * Componente interno que usa o hook de notificações
+ * Precisa estar dentro do NotificationProvider
+ */
+function RootLayoutContent() {
   const [fontsLoaded, fontError] = useFonts({
     Inter_400Regular,
     Inter_700Bold,
     Inter_800ExtraBold,
   });
+
+  // Setup de notificações
+  useNotificationSetup();
   const segments = useSegments() as string[];
   const router = useRouter();
   const currentRoute = segments.at(-1) ?? "";
@@ -235,3 +244,15 @@ const styles = StyleSheet.create({
     fontFamily: "Inter_800ExtraBold",
   },
 });
+
+/**
+ * Layout raiz da aplicação
+ * Envolve tudo com NotificationProvider para gerenciar push notifications
+ */
+export default function RootLayout() {
+  return (
+    <NotificationProvider>
+      <RootLayoutContent />
+    </NotificationProvider>
+  );
+}

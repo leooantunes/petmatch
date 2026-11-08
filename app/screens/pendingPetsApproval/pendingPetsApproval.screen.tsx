@@ -1,4 +1,5 @@
 import { db } from "@/firebase";
+import { notificationService } from "@/app/services/notificationService";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useFocusEffect, useRouter } from "expo-router";
 import React, { useCallback, useState } from "react";
@@ -111,6 +112,9 @@ export default function PendingPetsApprovalScreen() {
   const handleApprovePet = async (petId: string) => {
     setIsProcessing(true);
     try {
+      // Encontrar o pet para obter ownerId e name
+      const pet = pendingPets.find(p => p.id === petId);
+
       await db()
         .collection("pets")
         .doc(petId)
@@ -119,7 +123,28 @@ export default function PendingPetsApprovalScreen() {
           approvedAt: new Date(),
         });
 
-      setPendingPets((prev) => prev.filter((pet) => pet.id !== petId));
+      // Enviar notificação para o proprietário do pet
+      if (pet && pet.ownerId) {
+        try {
+          await notificationService.sendNotificationToOwner(
+            pet.ownerId,
+            "Pet Aprovado!",
+            `Parabéns! Seu pet ${pet.name} foi aprovado no PetMatch!`,
+            pet.name,
+            {
+              petId: pet.id,
+              petName: pet.name,
+              status: "approved",
+            }
+          );
+          console.log(`[pendingPetsApproval] Notificação de aprovação enviada para ${pet.ownerId}`);
+        } catch (notificationError) {
+          console.error("[pendingPetsApproval] Erro ao enviar notificação:", notificationError);
+          // Não interromper o fluxo se a notificação falhar
+        }
+      }
+
+      setPendingPets((prev) => prev.filter((p) => p.id !== petId));
       setSelectedPet(null);
       showModal({
         title: MODAL_TITLE.success,
@@ -152,6 +177,9 @@ export default function PendingPetsApprovalScreen() {
 
     setIsProcessing(true);
     try {
+      // Encontrar o pet para obter ownerId e name
+      const pet = pendingPets.find(p => p.id === petId);
+
       await db()
         .collection("pets")
         .doc(petId)
@@ -160,6 +188,28 @@ export default function PendingPetsApprovalScreen() {
           rejectionReason: rejectionReason,
           rejectedAt: new Date(),
         });
+
+      // Enviar notificação para o proprietário do pet
+      if (pet && pet.ownerId) {
+        try {
+          await notificationService.sendNotificationToOwner(
+            pet.ownerId,
+            "Pet Rejeitado",
+            `Sua solicitação para ${pet.name} foi rejeitada. Motivo: ${rejectionReason}`,
+            pet.name,
+            {
+              petId: pet.id,
+              petName: pet.name,
+              status: "rejected",
+              rejectionReason: rejectionReason,
+            }
+          );
+          console.log(`[pendingPetsApproval] Notificação de rejeição enviada para ${pet.ownerId}`);
+        } catch (notificationError) {
+          console.error("[pendingPetsApproval] Erro ao enviar notificação:", notificationError);
+          // Não interromper o fluxo se a notificação falhar
+        }
+      }
 
       setPendingPets((prev) => prev.filter((pet) => pet.id !== petId));
       setSelectedPet(null);
