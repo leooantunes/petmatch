@@ -3,7 +3,7 @@ import { AntDesign, FontAwesome } from "@expo/vector-icons";
 import auth from "@react-native-firebase/auth";
 import storage from "@react-native-firebase/storage";
 import * as ImagePicker from "expo-image-picker";
-import { useRouter } from "expo-router";
+import { useRouter, useFocusEffect } from "expo-router";
 import React, { useEffect, useState } from "react";
 import {
   FlatList,
@@ -155,6 +155,63 @@ export default function ProfileScreen() {
 
     loadProfileData();
   }, [hideLoading, showLoading]);
+
+  useFocusEffect(
+    React.useCallback(() => {
+      setLoadingPets(true);
+      const loadProfileData = async () => {
+        const currentUser = auth().currentUser;
+        if (!currentUser) {
+          setLoadingPets(false);
+          return;
+        }
+
+        try {
+          const profileSnapshot = await db()
+            .collection("users")
+            .doc(currentUser.uid)
+            .get();
+          if (profileSnapshot.exists()) {
+            const data = profileSnapshot.data() as Record<string, any>;
+            setUserName(data.name ?? currentUser.displayName ?? "Usuário");
+            setUserEmail(data.email ?? currentUser.email ?? "");
+            setUserCity(data.city ?? "");
+            setProfileImage(
+              data.photoUrl ?? currentUser.photoURL ?? defaultProfileImage,
+            );
+          }
+
+          const snapshot = await db()
+            .collection("pets")
+            .where("ownerId", "==", currentUser.uid)
+            .get();
+          const loadedPets: Pet[] = snapshot.docs.map((docSnap) => {
+            const data = docSnap.data() as Record<string, any>;
+            const rawImages = data.images ?? data.photoUrls ?? data.photos ?? [];
+            const mappedImages = mapPetImages(rawImages);
+            return {
+              id: docSnap.id,
+              name: data.name ?? "",
+              age: data.age ?? "",
+              breed: data.breed ?? "",
+              location: data.location ?? data.city ?? "",
+              description: data.description ?? "",
+              image: data.image ?? data.photoUrl ?? "",
+              images: mappedImages,
+              neutered: data.neutered ?? false,
+            };
+          });
+          setPets(loadedPets);
+        } catch (error) {
+          console.error("Erro ao carregar perfil e pets:", error);
+        } finally {
+          setLoadingPets(false);
+        }
+      };
+
+      loadProfileData();
+    }, [])
+  );
 
   const uploadProfileImage = async (localUri: string) => {
     const currentUser = auth().currentUser;
