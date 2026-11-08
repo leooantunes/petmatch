@@ -113,16 +113,6 @@ export default function PetListScreen() {
           styles.listContent,
           { paddingBottom: insets.bottom + 120 },
         ]}
-        ListHeaderComponent={
-          <View style={styles.listHeader}>
-            <Image
-              source={require('../../../assets/images/gato-cachorro-pixel-v3.png')}
-              style={styles.headerLogo}
-              accessibilityIgnoresInvertColors
-              accessibilityLabel="PetMatch"
-            />
-          </View>
-        }
         ListEmptyComponent={
           isLoadingList ? (
             <View>

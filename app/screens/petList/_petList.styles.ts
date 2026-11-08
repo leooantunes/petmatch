@@ -18,16 +18,6 @@ export const createPetListStyles = ({ colors, shadows }: Theme) =>
       padding: SPACING.xl,
       paddingBottom: SPACING.xl + 120,
     },
-    listHeader: {
-      alignItems: "center",
-      marginBottom: SPACING.lg,
-      marginTop: SPACING.sm,
-    },
-    headerLogo: {
-      width: 56,
-      height: 56,
-      resizeMode: "contain",
-    },
     emptyState: {
       flex: 1,
       alignItems: "center",
