@@ -1,6 +1,5 @@
 import * as Notifications from "expo-notifications";
 import { db } from "@/firebase";
-import auth from "@react-native-firebase/auth";
 
 interface NotificationPayload {
   petId?: string;
@@ -85,6 +84,7 @@ export const notificationService = {
       }
 
       const pushToken = userDoc.get("pushToken");
+      if (typeof pushToken !== "string") return null;
       return pushToken || null;
     } catch (error) {
       console.error(
@@ -194,12 +194,15 @@ export const notificationService = {
         content: {
           title,
           body,
-          data: data || {},
+          data: { ...data },
           sound: true,
           badge: 1,
           vibrate: [0, 250, 250, 250],
         },
-        trigger: { seconds: 2 }, // Enviar após 2 segundos
+        trigger: {
+          type: Notifications.SchedulableTriggerInputTypes.TIME_INTERVAL,
+          seconds: 2, // Enviar após 2 segundos
+        },
       });
 
       console.log("[Notifications] Notificação local agendada");
@@ -243,8 +246,8 @@ export const notificationService = {
     console.log("[Notifications] Configurando listener para refresh de token...");
 
     const subscription = Notifications.addPushTokenListener((event) => {
-      console.log("[Notifications] Token atualizado:", event.pushToken);
-      callback(event.pushToken);
+      console.log("[Notifications] Token atualizado:", String(event.data));
+      callback(String(event.data));
     });
 
     return () => {
