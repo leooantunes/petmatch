@@ -16,7 +16,7 @@ export function Logo({ size = 'md', style }: Readonly<LogoProps>) {
   return (
     <View style={[{ alignItems: 'center' }, style]}>
       <Image
-        source={require('../../assets/images/gato-cachorro-pixel-v3.png')}
+        source={require('../../../assets/images/gato-cachorro-pixel-v3.png')}
         style={{
           width: sizes[size],
           height: sizes[size],
