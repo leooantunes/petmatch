@@ -131,6 +131,13 @@ export default function PdpPetScreen() {
   const getString = (value: string | string[] | undefined) =>
     Array.isArray(value) ? value[0] : value;
 
+  const showModal = (title: string, message: string, variant: "success" | "error" | "info" | "warning" = "info") => {
+    setModalTitle(title);
+    setModalMessage(message);
+    setModalVariant(variant);
+    setModalVisible(true);
+  };
+
   const pet = {
     id: getString(params.id) ?? "",
     name: getString(params.name) ?? "Pet",
@@ -148,6 +155,7 @@ export default function PdpPetScreen() {
   useEffect(() => {
     const loadPetImages = async () => {
       if (!pet.id) {
+        console.log("PDPet: No pet ID, using params images");
         setImages([]);
         return;
       }
@@ -158,20 +166,25 @@ export default function PdpPetScreen() {
         if (snapshot.exists()) {
           const data = snapshot.data() as Record<string, any>;
           const loadedImages = extractPetImages(data);
+          console.log("PDPet: Loaded images from Firebase:", loadedImages);
           setImages(loadedImages);
           setActiveImageIndex(0);
           const phone = await getOwnerPhoneFromPetData(data);
           setOwnerPhone(phone);
         } else {
+          console.log("PDPet: Pet document not found");
           setImages([]);
           setOwnerPhone("");
         }
       } catch (error) {
-        console.error("Erro ao carregar imagens do pet:", error);
-        setModalTitle(MODAL_TITLE.error);
-        setModalMessage("Nao foi possivel carregar as fotos deste pet.");
-        setModalVariant("error");
-        setModalVisible(true);
+        console.error("PDPet: Error loading images:", error);
+        setImages([]);
+        setOwnerPhone("");
+        showModal({
+          title: MODAL_TITLE.error,
+          message: "Nao foi possivel carregar todas as fotos deste pet.",
+          variant: "error",
+        });
       } finally {
         hideLoading();
       }
@@ -196,10 +209,11 @@ export default function PdpPetScreen() {
     const sanitizedPhone = normalizeWhatsAppNumber(ownerPhone);
 
     if (!sanitizedPhone) {
-      setModalTitle(MODAL_TITLE.warning);
-      setModalMessage("Este anunciante ainda nao possui telefone cadastrado.");
-      setModalVariant("warning");
-      setModalVisible(true);
+      showModal(
+        MODAL_TITLE.warning,
+        "Este anunciante ainda nao possui telefone cadastrado.",
+        "warning"
+      );
       return;
     }
 
@@ -208,20 +222,22 @@ export default function PdpPetScreen() {
       const canOpen = await Linking.canOpenURL(url);
 
       if (!canOpen) {
-        setModalTitle(MODAL_TITLE.error);
-        setModalMessage("Nao foi possivel abrir o WhatsApp neste dispositivo.");
-        setModalVariant("error");
-        setModalVisible(true);
+        showModal(
+          MODAL_TITLE.error,
+          "Nao foi possivel abrir o WhatsApp neste dispositivo.",
+          "error"
+        );
         return;
       }
 
       await Linking.openURL(url);
     } catch (error) {
       console.error("Erro ao abrir WhatsApp:", error);
-      setModalTitle(MODAL_TITLE.error);
-      setModalMessage("Nao foi possivel iniciar a conversa no WhatsApp.");
-      setModalVariant("error");
-      setModalVisible(true);
+      showModal(
+        MODAL_TITLE.error,
+        "Nao foi possivel iniciar a conversa no WhatsApp.",
+        "error"
+      );
     }
   };
 
