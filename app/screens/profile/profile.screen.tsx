@@ -351,13 +351,6 @@ export default function ProfileScreen() {
     <SafeAreaView style={styles.container} edges={['top', 'bottom']}>
       <StatusBar barStyle={theme.statusBarStyle} backgroundColor="transparent" translucent />
       <View style={styles.content}>
-        <View style={styles.logoWrapper}>
-          <Image
-            source={require('../../../assets/images/gato-cachorro-pixel-v3.png')}
-            style={styles.logo}
-            accessibilityLabel="PetMatch"
-          />
-        </View>
 
         <AnimatedCard style={styles.userSection}>
           <TouchableOpacity

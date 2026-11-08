@@ -18,15 +18,6 @@ export const createProfileStyles = ({ colors, shadows }: Theme) =>
       padding: SPACING.xl,
       paddingBottom: SPACING.xl,
     },
-    logoWrapper: {
-      alignItems: "center",
-      paddingVertical: SPACING.md,
-    },
-    logo: {
-      width: 48,
-      height: 48,
-      resizeMode: "contain",
-    },
     description: {
       fontSize: FONT_SIZE.sm,
       color: colors.textBrandMuted,
