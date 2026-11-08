@@ -114,7 +114,7 @@ export default function PetListScreen() {
         ListHeaderComponent={
           <View style={{ alignItems: 'center', marginBottom: 16, marginTop: 8 }}>
             <Image
-              source={require('../../assets/images/gato-cachorro-pixel-v3.png')}
+              source={require('../../../assets/images/gato-cachorro-pixel-v3.png')}
               style={{ width: 56, height: 56, resizeMode: 'contain' }}
             />
           </View>

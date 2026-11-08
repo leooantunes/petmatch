@@ -349,7 +349,7 @@ export default function ProfileScreen() {
       <View style={styles.content}>
         <View style={{ alignItems: 'center', paddingVertical: 12 }}>
           <Image
-            source={require('../../assets/images/gato-cachorro-pixel-v3.png')}
+            source={require('../../../assets/images/gato-cachorro-pixel-v3.png')}
             style={{ width: 48, height: 48, resizeMode: 'contain' }}
           />
         </View>

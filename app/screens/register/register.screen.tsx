@@ -193,7 +193,7 @@ export default function RegisterScreen() {
         >
         <View style={{ alignItems: 'center', marginBottom: 20 }}>
           <Image
-            source={require('../../../assets/images/gato-cachorro-pixel-v3.png')}
+            source={require('../../../../assets/images/gato-cachorro-pixel-v3.png')}
             style={{ width: 60, height: 60, resizeMode: 'contain' }}
           />
         </View>
