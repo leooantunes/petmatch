@@ -72,6 +72,7 @@ export default function LoginScreen() {
 
   // Animation refs
   const logoFade = useRef(createFadeInAnimation(0, 1, 500)).current;
+  const logoScale = useRef(createScaleAnimation()).current;
   const contentFade = useRef(createFadeInAnimation(0, 1, 600)).current;
   const primaryButtonScale = useRef(createScaleAnimation()).current;
   const secondaryButtonScale = useRef(createScaleAnimation()).current;
@@ -80,6 +81,7 @@ export default function LoginScreen() {
     configureGoogleSignIn();
     // Start animations on mount
     logoFade.startAnimation();
+    logoScale.startAnimation();
     const contentTimer = setTimeout(() => contentFade.startAnimation(), 100);
     return () => clearTimeout(contentTimer);
   }, []);
@@ -273,7 +275,7 @@ export default function LoginScreen() {
           automaticallyAdjustKeyboardInsets
           showsVerticalScrollIndicator={false}
         >
-          {/* Animated Logo with Fade-In */}
+          {/* Animated Logo with Fade-In + Scale */}
           <Animated.View
             style={[
               {
@@ -284,6 +286,7 @@ export default function LoginScreen() {
               },
               {
                 opacity: logoFade.animatedValue,
+                transform: [{ scale: logoScale.animatedValue }],
               },
             ]}
           >
