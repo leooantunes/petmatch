@@ -347,6 +347,13 @@ export default function ProfileScreen() {
     <SafeAreaView style={styles.container} edges={['top', 'bottom']}>
       <StatusBar barStyle="dark-content" backgroundColor="transparent" translucent />
       <View style={styles.content}>
+        <View style={{ alignItems: 'center', paddingVertical: 12 }}>
+          <Image
+            source={require('../../assets/images/gato-cachorro-pixel-v3.png')}
+            style={{ width: 48, height: 48, resizeMode: 'contain' }}
+          />
+        </View>
+
         <View style={styles.userSection}>
           <TouchableOpacity onPress={pickProfileImage} activeOpacity={0.85}>
             <Image

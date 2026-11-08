@@ -111,6 +111,14 @@ export default function PetListScreen() {
           styles.listContent,
           { paddingBottom: insets.bottom },
         ]}
+        ListHeaderComponent={
+          <View style={{ alignItems: 'center', marginBottom: 16, marginTop: 8 }}>
+            <Image
+              source={require('../../assets/images/gato-cachorro-pixel-v3.png')}
+              style={{ width: 56, height: 56, resizeMode: 'contain' }}
+            />
+          </View>
+        }
         ListEmptyComponent={
           <View style={styles.emptyState}>
             {isLoadingList ? (

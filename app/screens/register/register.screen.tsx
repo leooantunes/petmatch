@@ -5,6 +5,7 @@ import * as Haptics from "expo-haptics";
 import { Stack, useRouter } from "expo-router";
 import React, { useRef, useState } from "react";
 import {
+  Image,
   KeyboardAvoidingView,
   Platform,
   Pressable,
@@ -12,6 +13,7 @@ import {
   StatusBar,
   Text,
   TextInput,
+  View,
 } from "react-native";
 import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
 import { useLoading } from "../../components/loading/loading.component";
@@ -189,6 +191,13 @@ export default function RegisterScreen() {
           automaticallyAdjustKeyboardInsets
           showsVerticalScrollIndicator={false}
         >
+        <View style={{ alignItems: 'center', marginBottom: 20 }}>
+          <Image
+            source={require('../../../assets/images/gato-cachorro-pixel-v3.png')}
+            style={{ width: 60, height: 60, resizeMode: 'contain' }}
+          />
+        </View>
+
         <Text style={styles.subtitle}>
           Crie sua conta para encontrar um novo amigo.
         </Text>

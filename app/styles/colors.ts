@@ -1,3 +1,8 @@
+import { designTokens } from '../constants/designTokens';
+
+/**
+ * Backward compatible COLORS object (defaults to light theme)
+ */
 export const COLORS = {
   // Verdes - Paleta Primary
   primary: "#198a4d",
@@ -29,37 +34,21 @@ export const COLORS = {
   shadowColor: "#2b6f39",
 };
 
-export const SPACING = {
-  xs: 4,
-  sm: 8,
-  md: 12,
-  lg: 16,
-  xl: 20,
-  xxl: 24,
-};
+export const SPACING = designTokens.spacing;
 
-export const BORDER_RADIUS = {
-  sm: 8,
-  md: 10,
-  lg: 12,
-  xl: 20,
-  full: 999,
-};
+export const BORDER_RADIUS = designTokens.borderRadius;
 
-export const FONT_SIZE = {
-  xs: 12,
-  sm: 14,
-  md: 16,
-  lg: 18,
-  xl: 24,
-  xxl: 32,
-};
+export const FONT_SIZE = designTokens.typography.fontSize;
 
-export const FONT_WEIGHT = {
-  regular: "400" as const,
-  medium: "600" as const,
-  bold: "700" as const,
-  extraBold: "800" as const,
-};
+export const FONT_WEIGHT = designTokens.typography.fontWeight;
+
+/**
+ * Get theme-specific colors
+ * @param theme - 'light' or 'dark'
+ * @returns Colors object for the specified theme
+ */
+export function getColorsForTheme(theme: 'light' | 'dark') {
+  return designTokens.colors[theme];
+}
 
 export default { COLORS, SPACING, BORDER_RADIUS, FONT_SIZE, FONT_WEIGHT };
