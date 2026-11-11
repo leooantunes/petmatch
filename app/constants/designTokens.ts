@@ -4,6 +4,23 @@
  */
 
 export const designTokens = {
+  // Cores da dupla do símbolo (gato creme + cachorro caramelo).
+  // O verde continua sendo a cor da marca; estas cores são de apoio:
+  //   creme    -> pelagem do gato / tufo do cachorro
+  //   caramelo -> pelagem do cachorro (acento: selos, favoritos, destaques)
+  //   carvão   -> pontas das orelhas do gato / listras do cachorro
+  palette: {
+    green500: '#198A4D',
+    green700: '#006B2E',
+    green900: '#134A2D',
+    cream100: '#FBF4E6',
+    cream200: '#F6E7C8',
+    caramel300: '#F2A65A',
+    caramel400: '#E88A3C',
+    caramel700: '#9A4310',
+    coal900: '#2B211B',
+  },
+
   // Color Tokens
   colors: {
     light: {
@@ -29,6 +46,10 @@ export const designTokens = {
       error: '#D70015',
       warning: '#FF9500',
       info: '#007AFF',
+      accent: '#E88A3C',
+      onAccent: '#2B211B',
+      accentSoft: '#F6E7C8',
+      textAccent: '#9A4310',
 
       // Social
       google: '#DE5245',
@@ -82,6 +103,10 @@ export const designTokens = {
       error: '#FF6B6B',
       warning: '#FFB84D',
       info: '#52B0FF',
+      accent: '#F2A65A',
+      onAccent: '#2B211B',
+      accentSoft: '#3A2D24',
+      textAccent: '#F5A962',
 
       // Social
       google: '#FF8C82',

@@ -1,12 +1,12 @@
 import React, { useEffect, useRef } from 'react';
-import { Animated, Image, View, StyleSheet } from 'react-native';
+import { Animated, Image, Text, View, StyleSheet } from 'react-native';
 import { useRouter } from 'expo-router';
 import auth from '@react-native-firebase/auth';
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#8BC34A',
+    backgroundColor: '#198A4D',
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -25,7 +25,7 @@ const styles = StyleSheet.create({
   brandText: {
     fontSize: 24,
     fontWeight: '800',
-    color: '#FFFFFF',
+    color: '#FBF4E6',
     fontFamily: 'Inter_800ExtraBold',
     textAlign: 'center',
   },
@@ -95,7 +95,7 @@ export default function SplashScreen() {
         ]}
       >
         <Image
-          source={require('../../../assets/images/gato-cachorro-pixel-v3.png')}
+          source={require('../../../assets/images/petmatch-splash.png')}
           style={styles.logo}
         />
       </Animated.View>
@@ -108,10 +108,7 @@ export default function SplashScreen() {
           },
         ]}
       >
-        <Image
-          source={require('../../../assets/images/gato-cachorro-pixel-v3.png')}
-          style={{ width: 80, height: 80, resizeMode: 'contain' }}
-        />
+        <Text style={styles.brandText}>PetMatch</Text>
       </Animated.View>
     </View>
   );

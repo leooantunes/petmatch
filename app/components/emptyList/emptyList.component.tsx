@@ -5,7 +5,7 @@ import { useThemedStyles } from "../../hooks/useTheme";
 import { Icon } from "../icon/Icon";
 import { createEmptyListStyles } from "./emptyList.styles";
 
-const brandIllustration = require("../../../assets/images/gato-cachorro-pixel-v3.png");
+const brandIllustration = require("../../../assets/images/petmatch-logo.png");
 
 type EmptyListProps = {
   icon: ComponentProps<typeof FontAwesome>["name"];

@@ -290,7 +290,7 @@ export default function LoginScreen() {
             ]}
           >
             <Image
-              source={require("../../../assets/images/gato-cachorro-pixel-v3.png")}
+              source={require("../../../assets/images/petmatch-logo.png")}
               style={{
                 width: 72,
                 height: 72,

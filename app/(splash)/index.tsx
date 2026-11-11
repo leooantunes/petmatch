@@ -6,7 +6,7 @@ import auth from '@react-native-firebase/auth';
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#8BC34A',
+    backgroundColor: '#198A4D',
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -75,7 +75,7 @@ export default function SplashScreen() {
         ]}
       >
         <Image
-          source={require('../../assets/images/gato-cachorro-pixel-v3.png')}
+          source={require('../../assets/images/petmatch-splash.png')}
           style={styles.logo}
         />
       </Animated.View>

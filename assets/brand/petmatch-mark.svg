@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!-- PetMatch "Duo" mark: a cream cat with coal ear tips and a caramel dog with a cream tuft
+       and coal cheek stripes, side by side, sharing one heart-shaped nose. -->
+  <defs>
+    <clipPath id="catEarL"><path d="M94 222 L106 92 L184 170 Z"/></clipPath>
+    <clipPath id="catEarR"><path d="M196 170 L272 92 L284 222 Z"/></clipPath>
+    <clipPath id="dogHead"><circle cx="350" cy="292" r="112"/></clipPath>
+  </defs>
+  <g transform="translate(-20 4)">
+    <!-- cat -->
+    <path d="M94 222 L106 92 L184 170 Z" fill="#F6E7C8" stroke="#F6E7C8" stroke-width="16" stroke-linejoin="round"/>
+    <path d="M196 170 L272 92 L284 222 Z" fill="#F6E7C8" stroke="#F6E7C8" stroke-width="16" stroke-linejoin="round"/>
+    <g clip-path="url(#catEarL)"><rect x="60" y="60" width="160" height="78" fill="#2B211B"/></g>
+    <g clip-path="url(#catEarR)"><rect x="180" y="60" width="160" height="78" fill="#2B211B"/></g>
+    <circle cx="188" cy="282" r="116" fill="#F6E7C8"/>
+    <!-- dog ears (cream outline, caramel fill) -->
+    <path d="M272 226 L292 108 L362 182 Z" fill="#E88A3C" stroke="#F6E7C8" stroke-width="10" stroke-linejoin="round"/>
+    <path d="M372 182 L436 110 L446 238 Z" fill="#E88A3C" stroke="#F6E7C8" stroke-width="10" stroke-linejoin="round"/>
+    <path d="M296 186 L304 138 L336 176 Z" fill="#C9601E"/>
+    <path d="M394 176 L428 140 L432 196 Z" fill="#C9601E"/>
+    <!-- dog head -->
+    <circle cx="350" cy="292" r="112" fill="#E88A3C" stroke="#F6E7C8" stroke-width="10"/>
+    <g clip-path="url(#dogHead)">
+      <path d="M470 262 L424 284 L470 306 Z" fill="#2B211B"/>
+      <path d="M470 314 L430 334 L470 354 Z" fill="#2B211B"/>
+      <ellipse cx="326" cy="376" rx="96" ry="64" fill="#F6E7C8"/>
+    </g>
+    <!-- cream tuft -->
+    <path d="M292 206 Q300 150 326 176 Q336 118 360 166 Q384 132 398 200 Q346 186 292 206 Z" fill="#F6E7C8"/>
+    <!-- eyes -->
+    <ellipse cx="150" cy="276" rx="13" ry="20" fill="#2B211B"/>
+    <ellipse cx="226" cy="276" rx="13" ry="20" fill="#2B211B"/>
+    <circle cx="312" cy="282" r="14" fill="#2B211B"/>
+    <circle cx="386" cy="282" r="14" fill="#2B211B"/>
+    <circle cx="155" cy="268" r="4" fill="#FFFFFF"/>
+    <circle cx="231" cy="268" r="4" fill="#FFFFFF"/>
+    <circle cx="317" cy="276" r="4.5" fill="#FFFFFF"/>
+    <circle cx="391" cy="276" r="4.5" fill="#FFFFFF"/>
+    <!-- shared heart nose -->
+    <path d="M269 392 C 236 366, 226 330, 250 322 C 260 319, 267 326, 269 333 C 271 326, 278 319, 288 322 C 312 330, 302 366, 269 392 Z" fill="#2B211B" stroke="#F6E7C8" stroke-width="8" stroke-linejoin="round"/>
+  </g>
+</svg>

@@ -208,7 +208,7 @@ export default function RegisterScreen() {
         >
         <View style={styles.logoWrapper}>
           <Image
-            source={require('../../../assets/images/gato-cachorro-pixel-v3.png')}
+            source={require('../../../assets/images/petmatch-logo.png')}
             style={styles.logo}
             accessibilityLabel="PetMatch"
           />

@@ -44,7 +44,7 @@ const partnerOngs: PartnerOng[] = [
   },
 ];
 
-const petPixelArt = require("../../../assets/images/gato-cachorro-pixel-v3.png");
+const petPixelArt = require("../../../assets/images/petmatch-logo.png");
 
 const openWhatsApp = async (phone: string, ongName: string) => {
   const url = `https://wa.me/${phone}`;
