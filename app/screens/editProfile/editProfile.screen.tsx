@@ -158,7 +158,7 @@ export default function EditProfileScreen() {
     const normalizedUri =
       Platform.OS === "android" ? localUri : localUri.replace("file://", "");
 
-    await storageRef.putFile(normalizedUri);
+    await storageRef.putFile(normalizedUri, { contentType: "image/jpeg" });
     return storageRef.getDownloadURL();
   };
 

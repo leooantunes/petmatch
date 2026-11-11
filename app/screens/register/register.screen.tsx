@@ -25,6 +25,7 @@ import {
 import { FormField } from "../../components/formField/formField.component";
 import ModernModal from "../../components/modal/modernModal";
 import { UserRegistration } from "../../types/user";
+import { PASSWORD_RULES, validatePassword } from "../../constants/config";
 import { AnimatedButton } from "../../components/buttons/AnimatedButton";
 import { useTheme, useThemedStyles } from "../../hooks/useTheme";
 import { createRegisterStyles } from "./_register.styles";
@@ -100,6 +101,17 @@ export default function RegisterScreen() {
       showModal({
         title: MODAL_TITLE.warning,
         message: PHONE_ERROR_MESSAGE,
+        variant: "warning",
+      });
+      return;
+    }
+
+    const passwordError = validatePassword(form.password);
+    if (passwordError) {
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning);
+      showModal({
+        title: MODAL_TITLE.warning,
+        message: passwordError,
         variant: "warning",
       });
       return;
@@ -270,11 +282,11 @@ export default function RegisterScreen() {
         <FormField
           ref={passwordRef}
           label="Senha"
-          placeholder="Mínimo de 6 caracteres"
+          placeholder={`Mínimo de ${PASSWORD_RULES.MIN_LENGTH} caracteres, com letras e números`}
           secureTextEntry
           autoComplete="new-password"
           textContentType="newPassword"
-          passwordRules="minlength: 6;"
+          passwordRules={`minlength: ${PASSWORD_RULES.MIN_LENGTH}; required: lower, upper; required: digit;`}
           returnKeyType="done"
           onSubmitEditing={handleRegister}
           value={form.password}

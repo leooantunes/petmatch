@@ -256,9 +256,9 @@ export const db = () => {
 
 ### 🔴 Críticas (Fazer Hoje)
 
-- [ ] Implementar autenticação de admin para `pendingPetsApproval`
-- [ ] Mover Google Client ID para `.env.local`
-- [ ] Remover `password` de `UserProfile`
+- [x] Implementar autenticação de admin para `pendingPetsApproval`
+- [x] Mover Google Client ID para `.env` (EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID)
+- [x] Remover `password` de `UserProfile`
 - [ ] Corrigir tipos em `PetRouteParams`
 
 ### 🟠 Altas (Esta Sprint)
@@ -273,7 +273,7 @@ export const db = () => {
 - [ ] Extrair hook `useImageFallback`
 - [ ] Criar `ModalContext` global
 - [ ] Usar singleton de Firestore
-- [ ] Adicionar validação de força de senha
+- [x] Adicionar validação de força de senha
 
 ### 🟢 Baixas (Backlog)
 

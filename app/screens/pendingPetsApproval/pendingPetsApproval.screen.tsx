@@ -1,5 +1,6 @@
 import { db } from "@/firebase";
 import { notificationService } from "@/app/services/notificationService";
+import { isCurrentUserAdmin } from "@/app/services/adminService";
 import { useFocusEffect, useRouter } from "expo-router";
 import React, { useCallback, useState } from "react";
 import {
@@ -51,6 +52,9 @@ export default function PendingPetsApprovalScreen() {
   const [selectedPet, setSelectedPet] = useState<PendingPet | null>(null);
   const [rejectionReason, setRejectionReason] = useState("");
   const [isProcessing, setIsProcessing] = useState(false);
+  const [accessStatus, setAccessStatus] = useState<
+    "checking" | "granted" | "denied"
+  >("checking");
   const [modal, setModal] = useState<ModalState>({
     visible: false,
     title: "",
@@ -108,13 +112,52 @@ export default function PendingPetsApprovalScreen() {
     }
   }, []);
 
+  const leaveScreen = useCallback(() => {
+    router.replace("/screens/petList/petList.screen");
+  }, [router]);
+
+  // Fechar o aviso de acesso negado (botão, toque fora ou voltar) sempre
+  // tira o usuário desta tela.
+  const closeModal = () => {
+    hideModal();
+    if (accessStatus === "denied") {
+      leaveScreen();
+    }
+  };
+
   useFocusEffect(
     useCallback(() => {
-      loadPendingPets();
+      let isActive = true;
+
+      void (async () => {
+        const isAdmin = await isCurrentUserAdmin();
+        if (!isActive) return;
+
+        if (!isAdmin) {
+          setAccessStatus("denied");
+          setPendingPets([]);
+          setSelectedPet(null);
+          showModal({
+            title: MODAL_TITLE.error,
+            message: "Você não tem permissão para acessar esta área.",
+            variant: "error",
+            confirmText: MODAL_BUTTON.ok,
+          });
+          return;
+        }
+
+        setAccessStatus("granted");
+        void loadPendingPets();
+      })();
+
+      return () => {
+        isActive = false;
+      };
     }, [loadPendingPets])
   );
 
   const handleApprovePet = async (petId: string) => {
+    if (accessStatus !== "granted") return;
     setIsProcessing(true);
     try {
       // Encontrar o pet para obter ownerId e name
@@ -170,6 +213,7 @@ export default function PendingPetsApprovalScreen() {
   };
 
   const handleRejectPet = async (petId: string) => {
+    if (accessStatus !== "granted") return;
     if (!rejectionReason.trim()) {
       showModal({
         title: MODAL_TITLE.warning,
@@ -264,7 +308,7 @@ export default function PendingPetsApprovalScreen() {
           </View>
         </View>
 
-        {isLoading ? (
+        {isLoading || accessStatus !== "granted" ? (
           <View style={styles.centerContainer}>
             <ActivityIndicator size="large" color={colors.primary} />
           </View>
@@ -326,7 +370,7 @@ export default function PendingPetsApprovalScreen() {
           cancelText={modal.cancelText}
           showCancelButton={modal.showCancelButton}
           onConfirm={modal.onConfirm}
-          onClose={hideModal}
+          onClose={closeModal}
         />
       </SafeAreaView>
     );
@@ -425,7 +469,7 @@ export default function PendingPetsApprovalScreen() {
         cancelText={modal.cancelText}
         showCancelButton={modal.showCancelButton}
         onConfirm={modal.onConfirm}
-        onClose={hideModal}
+        onClose={closeModal}
       />
     </SafeAreaView>
   );

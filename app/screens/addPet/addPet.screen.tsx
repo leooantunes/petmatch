@@ -169,7 +169,7 @@ export default function AddPetScreen() {
         throw new Error("Usuário não autenticado. Faça login novamente.");
       }
 
-      await storageRef.putFile(normalizedUri);
+      await storageRef.putFile(normalizedUri, { contentType: "image/jpeg" });
       return await storageRef.getDownloadURL();
     } catch (error: any) {
       console.error("Erro ao fazer upload:", error);

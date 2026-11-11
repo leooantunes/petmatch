@@ -1,0 +1,67 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    function isSelf(uid) {
+      return signedIn() && request.auth.uid == uid;
+    }
+
+    // Admin = existe um documento admins/{uid}. Criado só pelo console
+    // ou Admin SDK (o cliente não tem permissão de escrita em /admins).
+    function isAdmin() {
+      return signedIn()
+        && exists(/databases/$(database)/documents/admins/$(request.auth.uid));
+    }
+
+    function moderationFields() {
+      return ['isApproved', 'approvedAt', 'rejectedAt', 'rejectionReason'];
+    }
+
+    match /admins/{uid} {
+      // Cada usuário só consegue checar se ele mesmo é admin.
+      allow read: if isSelf(uid);
+      allow write: if false;
+    }
+
+    match /users/{uid} {
+      // Outros usuários logados precisam ler o perfil do dono do pet
+      // (telefone para o WhatsApp e pushToken para notificações).
+      allow read: if signedIn();
+      allow create, update: if isSelf(uid);
+      allow delete: if isSelf(uid);
+    }
+
+    match /pets/{petId} {
+      allow read: if signedIn() && (
+        resource.data.isApproved == true
+        || resource.data.ownerId == request.auth.uid
+        || isAdmin()
+      );
+
+      // Todo pet novo entra pendente, em nome de quem cria.
+      allow create: if signedIn()
+        && request.resource.data.ownerId == request.auth.uid
+        && request.resource.data.isApproved == false
+        && !request.resource.data.keys().hasAny(['approvedAt', 'rejectedAt', 'rejectionReason']);
+
+      // Só admin aprova/rejeita, e só mexe nos campos de moderação.
+      // O app não tem edição de pet pelo dono; se for criada, liberar aqui
+      // sem permitir alterar moderationFields() nem ownerId.
+      allow update: if isAdmin()
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(moderationFields());
+
+      allow delete: if signedIn()
+        && (resource.data.ownerId == request.auth.uid || isAdmin());
+    }
+
+    // Qualquer outra coleção fica fechada por padrão.
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

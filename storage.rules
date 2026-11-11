@@ -1,0 +1,35 @@
+rules_version = '2';
+
+service firebase.storage {
+  match /b/{bucket}/o {
+
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    function isImageUnder(maxMb) {
+      return request.resource.contentType.matches('image/.*')
+        && request.resource.size < maxMb * 1024 * 1024;
+    }
+
+    match /petPhotos/{fileName} {
+      allow read: if signedIn();
+      // Uploads só criam arquivos novos; ninguém sobrescreve foto alheia.
+      allow create: if signedIn() && isImageUnder(10);
+      allow update, delete: if false;
+    }
+
+    match /profilePhotos/{fileName} {
+      allow read: if signedIn();
+      // O nome do arquivo carrega o UID do dono: profile_{uid}_{timestamp}.jpg
+      allow create: if signedIn()
+        && fileName.matches('profile_' + request.auth.uid + '_.*')
+        && isImageUnder(5);
+      allow update, delete: if false;
+    }
+
+    match /{allPaths=**} {
+      allow read, write: if false;
+    }
+  }
+}
